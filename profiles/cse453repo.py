@@ -6,22 +6,21 @@ import geni.rspec.emulab as emulab
 
 ### Configuration
 
-# Number of machines
-n_machines = 3
-
 # Boilerplate setup
 pc = portal.Context()
 request = pc.makeRequestRSpec()
+
+# Number of machines
+pc.defineParameter("n_machines", "Number of machines",
+                   portal.ParameterType.INTEGER, 3)
 
 # Parameter to set virtualized mode or not
 modelist = [
     ('bare', 'Bare metal'),
     ('vm', 'Virtualized')]
-
 pc.defineParameter("mode", "Select VM or baremetal mode",
                    portal.ParameterType.STRING,
-                   modelist[0], modelist,
-                   longDescription="Bare metal or virtualized mode?")
+                   modelist[0], modelist)
 
 # Retrieve the values the user specifies during instantiation
 params = pc.bindParameters()
@@ -30,7 +29,7 @@ params = pc.bindParameters()
 mylink = request.Link('mylink')
 mylink.Site('undefined')
 
-for i in range(n_machines):
+for i in range(params.n_machines):
     # Create node
     n = request.RawPC('machine%u' % i)
     n.disk_image = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD'
