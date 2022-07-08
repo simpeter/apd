@@ -1,24 +1,33 @@
 #!/bin/bash
+#
+# This runs as geniuser in /.
 
 # All output and commands go to logfile in /tmp
 set -x
 exec 1>/tmp/virtualize.log 2>&1
 
+# Configuration
+n_machines=3
+
 function get_token()
 {
-    awk -F, "\$1 == \"machine$1\" { print \$2 }" tokens.csv
+    awk -F, "\$1 == \"machine$1\" { print \$2 }" /tmp/tokens.csv
 }
 
-echo "running test" > /tmp/test.txt
-echo $PWD >> /tmp/test.txt
-echo $USER >> /tmp/test.txt
+#echo "running test" > /tmp/test.txt
+#echo $PWD >> /tmp/test.txt
+#echo $USER >> /tmp/test.txt
 
 # With virtualization
-apt-get update
-apt-get install --yes snapd
-snap install lxd
+sudo apt-get update
+sudo apt-get install --yes snapd
+sudo snap install lxd
 
-lxd init --preseed <<EOF
+# The rest runs only on machine0
+test x`hostname -s` == xmachine0 || exit 0
+
+# Setup master LXD instance
+sudo lxd init --preseed <<EOF
 config:
   core.https_address: `hostname -s`:8443
 networks:
@@ -62,13 +71,13 @@ cluster:
 EOF
 
 # Generate cluster join tokens
-for i in `seq 9`; do
-    lxc cluster add machine$i
+for i in `seq $((n_machines - 1))`; do
+    sudo lxc cluster add machine$i
 done
-lxc cluster list-tokens -f csv > tokens.csv
+sudo lxc cluster list-tokens -f csv > /tmp/tokens.csv
 
 # Join all cluster nodes
-for i in `seq 9`; do
+for i in `seq $((n_machines - 1))`; do
     ssh -oStrictHostKeyChecking=no machine$i "sudo lxd init --preseed <<EOF
 config: {}
 networks: []
