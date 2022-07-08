@@ -25,6 +25,13 @@ pc.defineParameter("mode", "Select VM or baremetal mode",
 # Retrieve the values the user specifies during instantiation
 params = pc.bindParameters()
 
+# Check parameter validity
+if params.n_machines < 1 or params.n_machines > 10:
+    pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 10 machines.", ["n_machines"]))
+
+# Abort execution if there are any errors, and report them
+portal.context.verifyParameters()
+
 # Create starfish network topology
 mylink = request.Link('mylink')
 mylink.Site('undefined')
