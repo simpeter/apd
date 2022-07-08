@@ -19,7 +19,7 @@ modelist = [
     ('vm', 'Virtualized')]
 
 pc.defineParameter("mode", "Select VM or baremetal mode",
-                   portal.ParameterType.NODETYPE,
+                   portal.ParameterType.STRING,
                    modelist[0], modelist,
                    longDescription="Bare metal or virtualized mode?")
 
