@@ -1,0 +1,29 @@
+config: {}
+networks: []
+storage_pools: []
+profiles: []
+projects: []
+cluster:
+  server_name: machine1
+  enabled: true
+  member_config:
+  - entity: storage-pool
+    name: local
+    key: size
+    value: 20GB
+    description: '"size" property for storage pool "local"'
+  - entity: storage-pool
+    name: local
+    key: source
+    value: ""
+    description: '"source" property for storage pool "local"'
+  - entity: storage-pool
+    name: local
+    key: zfs.pool_name
+    value: ""
+    description: '"zfs.pool_name" property for storage pool "local"'
+  cluster_address: machine0:8443
+  server_address: machine1:8443
+  cluster_password: ""
+  cluster_certificate_path: ""
+  cluster_token: ""

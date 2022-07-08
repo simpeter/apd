@@ -16,7 +16,7 @@ for i in range(10):
     n = request.RawPC('machine%u' % i)
     n.disk_image = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD'
     iface = n.addInterface('interface-%u' % i)
-    n.addService(pg.Execute(shell="sh", command="/local/repository/test.sh"))
+    n.addService(pg.Execute(shell="bash", command="/local/repository/virtualize.sh"))
     mylink.addInterface(iface)
 
 # Print the generated rspec
