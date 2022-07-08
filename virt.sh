@@ -1,4 +1,4 @@
-#/bin/bash -x
+#!/bin/bash -x
 
 # With virtualization
 sudo apt update

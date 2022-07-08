@@ -1,4 +1,4 @@
-#/bin/bash -x
+#!/bin/bash -x
 
 # Install
 mkdir projects
