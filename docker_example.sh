@@ -37,3 +37,4 @@ Connect to port 16686 on whichever machine runs the jaeger service
 # Inspect/debug
 sudo docker container ls
 sudo docker exec -it 7a61f3dc26d1 bash
+journalctl -u docker.service

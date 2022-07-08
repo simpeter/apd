@@ -4,6 +4,8 @@ import geni.portal as portal
 import geni.rspec.pg as pg
 import geni.rspec.emulab as emulab
 
+n_vms = 3
+
 pc = portal.Context()
 request = pc.makeRequestRSpec()
 
@@ -11,7 +13,7 @@ request = pc.makeRequestRSpec()
 mylink = request.Link('mylink')
 mylink.Site('undefined')
 
-for i in range(10):
+for i in range(n_vms):
     # Create node
     n = request.RawPC('machine%u' % i)
     n.disk_image = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD'

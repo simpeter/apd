@@ -27,7 +27,7 @@ sudo lxc cluster add worker2
 #On each worker machine: repeat first 4 steps, but choose to join cluster
 #sudo lxc launch ubuntu:20.04 manager1vm --vm -c limits.memory=64GB
 sudo lxc launch images:ubuntu/20.04/cloud vm1 --vm #-c limits.memory=64GB
-for i in `seq 19`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB; done # launch 19 VMs on cluster
+#for i in `seq 19`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB; done # launch 19 VMs on cluster
 #sudo lxc launch images:ubuntu/20.04/default manager1vm --vm -c limits.memory=64GB
 #sudo lxc network forward create lxdbr0 <local_cloudlab_host-ip> target_address=<VM-IP>
 
@@ -54,12 +54,12 @@ sudo sh get-docker.sh
 #sudo docker context create manager1vm --default-stack-orchestrator=swarm --docker host=http://<vm-ip>:2375
 #sudo docker context use manager1vm
 
-# Install
+# Install DeathStarBench
 sudo lxc exec vm1 -- bash
 sudo apt install git
 mkdir projects
 cd projects
-git clone https://github.com/delimitrou/DeathStarBench.git
+git clone https://githu1b.com/delimitrou/DeathStarBench.git
 sudo docker swarm init
 for i in `seq 19`; do sudo lxc exec vm$i -n -- docker swarm join --token SWMTKN-1-3samam666gxbcg8p3j29frdw5jf9mo37vkeztcxxq214b1tkq5-0krdu9qp7b9xktkucvbcnvhta 240.3.0.66:2377 & done; wait
 #Login to all worker nodes and run the join command displayed by swarm init

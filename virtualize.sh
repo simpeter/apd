@@ -69,7 +69,7 @@ lxc cluster list-tokens -f csv > tokens.csv
 
 # Join all cluster nodes
 for i in `seq 9`; do
-    ssh machine$i "sudo lxd init --preseed <<EOF
+    ssh -oStrictHostKeyChecking=no machine$i "sudo lxd init --preseed <<EOF
 config: {}
 networks: []
 storage_pools: []
