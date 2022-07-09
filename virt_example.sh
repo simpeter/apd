@@ -29,7 +29,6 @@ sudo lxc cluster add worker2
 sudo lxc launch images:ubuntu/20.04/cloud vm1 --vm -c limits.memory=4GB
 #for i in `seq 19`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB; done # launch 19 VMs on cluster
 #sudo lxc launch images:ubuntu/20.04/default manager1vm --vm -c limits.memory=64GB
-#sudo lxc network forward create lxdbr0 <local_cloudlab_host-ip> target_address=<VM-IP>
 
 # In the VM shell
 apt update
@@ -64,3 +63,6 @@ sudo docker swarm init
 for i in `seq 19`; do sudo lxc exec vm$i -n -- docker swarm join --token SWMTKN-1-3samam666gxbcg8p3j29frdw5jf9mo37vkeztcxxq214b1tkq5-0krdu9qp7b9xktkucvbcnvhta 240.3.0.66:2377 & done; wait
 #Login to all worker nodes and run the join command displayed by swarm init
 sudo docker stack deploy --compose-file docker-compose-swarm.yml hotelreservation
+
+# Setup network forward (warning: this forwards the entire host IP -- keep an SSH session open)
+sudo lxc network forward create lxdfan0 <local_cloudlab_host-ip> target_address=<VM-IP>

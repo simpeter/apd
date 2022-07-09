@@ -12,6 +12,53 @@ function get_token()
     awk -F, "\$1 == \"machine$1\" { print \$2 }" /tmp/tokens.csv
 }
 
+# This script runs only on machine0
+test x`hostname -s` == xmachine0 || exit 0
+
+# Setup master LXD instance
+sudo lxd init --preseed <<EOF
+config:
+  core.https_address: `hostname -s`:8443
+networks:
+- config:
+    bridge.mode: fan
+    fan.underlay_subnet: 10.10.1.0/24
+  description: ""
+  name: lxdfan0
+  type: ""
+  project: default
+storage_pools:
+- config:
+    size: 20GB
+  description: ""
+  name: local
+  driver: zfs
+profiles:
+- config: {}
+  description: ""
+  devices:
+    eth0:
+      name: eth0
+      network: lxdfan0
+      type: nic
+    root:
+      path: /
+      pool: local
+      type: disk
+  name: default
+projects: []
+cluster:
+  server_name: `hostname -s`
+  enabled: true
+  member_config: []
+  cluster_address: ""
+  cluster_certificate: ""
+  server_address: ""
+  cluster_password: ""
+  cluster_certificate_path: ""
+  cluster_token: ""
+EOF
+
 # Generate cluster join tokens
 for i in `seq $((n_machines - 1))`; do
     sudo lxc cluster add machine$i
@@ -63,9 +110,9 @@ sleep 30
 # Install docker on all VMs
 for i in `seq $nvms`; do
     sudo lxc exec vm$i -n -- sh -c "
-ifconfig enp5s0 mtu 1450
 apt-get update
-apt-get install --yes curl
+apt-get install --yes curl net-tools
+ifconfig enp5s0 mtu 1450
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh" &
 done
