@@ -63,6 +63,7 @@ sleep 30
 # Install docker on all VMs
 for i in `seq $nvms`; do
     sudo lxc exec vm$i -n -- sh -c "
+ifconfig enp5s0 mtu 1450
 apt-get update
 apt-get install --yes curl
 curl -fsSL https://get.docker.com -o get-docker.sh

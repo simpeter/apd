@@ -15,8 +15,6 @@ sudo apt-get update
 sudo apt-get install --yes snapd libxml-xpath-perl
 sudo snap install lxd
 
-exit 0
-
 # The rest runs only on machine0
 test x`hostname -s` == xmachine0 || exit 0
 
