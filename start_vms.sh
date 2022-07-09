@@ -57,8 +57,8 @@ done
 for i in `seq $nvms`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB; done
 
 # Wait until all VMs are up
-echo "Waiting 20 seconds for VMs to start..."
-sleep 20
+echo "Waiting 30 seconds for VMs to start..."
+sleep 30
 
 # Install docker on all VMs
 for i in `seq $nvms`; do
