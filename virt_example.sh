@@ -26,7 +26,7 @@ sudo lxc cluster add worker1
 sudo lxc cluster add worker2
 #On each worker machine: repeat first 4 steps, but choose to join cluster
 #sudo lxc launch ubuntu:20.04 manager1vm --vm -c limits.memory=64GB
-sudo lxc launch images:ubuntu/20.04/cloud vm1 --vm #-c limits.memory=64GB
+sudo lxc launch images:ubuntu/20.04/cloud vm1 --vm -c limits.memory=4GB
 #for i in `seq 19`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB; done # launch 19 VMs on cluster
 #sudo lxc launch images:ubuntu/20.04/default manager1vm --vm -c limits.memory=64GB
 #sudo lxc network forward create lxdbr0 <local_cloudlab_host-ip> target_address=<VM-IP>

@@ -56,6 +56,10 @@ done
 # Launch $nvms VMs on LXD cluster
 for i in `seq $nvms`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB; done
 
+# Wait until all VMs are up
+echo "Waiting 10 seconds for VMs to start..."
+sleep 10
+
 # Install docker on all VMs
 for i in `seq $nvms`; do
     sudo lxc exec vm$i -n -- sh -c "
