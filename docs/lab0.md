@@ -98,23 +98,8 @@ What's the expected output?
    page. To request an extension, you need to provide a
    reason. We are providing a boilerplate blurb for this purpose,
    here.
-   
-    > Test
-	`abcd`
 
-	
-        asdfsda
-		sdfa
-		fdsa
-		sfd
-		sfda
-		sfda
-		
-	```
-	asdf
-	```
-
-	
+        TODO
 
    Requests for extensions have to be approved and that might take a
    little while. Hence, we do not recommend this route. Instead, make
