@@ -35,28 +35,71 @@ Once the experiment is created, you should be able to view the
 information under the [user dashboard
 page](https://www.cloudlab.us/user-dashboard.php).
 
-## Logging in 
+## Log into Experiment Machines
 
-Once the experiment is ready, click `List View` and you will find SSH
-commands to access each node. On the same tab, you can also
-reboot/reload your nodes if something goes wrong.
+Once the experiment is ready (this can take a few minutes), click
+`List View` and you will find SSH commands to access each node. On the
+same tab, you can also reboot/reload your nodes if something goes
+wrong.
 
-## Starting VMs
+## Find a Client Machine at UW
 
-## Running iperf
+## Run iperf
 
-Running benchmark to baremetal machine, and to VM
+Explain what iperf is
 
-## Installing DeathStartBench
+Run benchmark from UW client to baremetal machine
+
+What's the expected output?
+
+## Install and Start DeathStarBench on Bare Metal Machines
+
+(look at example shell script docker_example.sh in repo to explain
+this step)
 
 Starting it up
 
-## Installing wrk2 
+## Testing DeathStarBench
 
-Testing
-Running experiments
+Use curl. See example shell script
+
+## Installing wrk2 on Client Machine
+
+Look at docker_example.sh for prereqs
+
+## Testing wrk2
+
+Run the default experiment (see docker_example.sh)
+
+What's the expected output?
+
+## Starting VMs
+
+Select the virtualized option in the cse453repo profile. These come
+with the VM monitor pre-installed. Then use start_vms.sh script that's
+pulled automatically.
+
+## Run iperf in VMs
+
+Run benchmark from UW client to VM
+
+What's the expected output?
+
+## Run DeathStarBench in VMs and Test It
 
 ## Policies on Using CloudLab Resources
 
-1. Before you start your first experiment, please read this [page](https://cloudlab.us/aup.php). 
-2. By default, each experiment will expire in 16 hours. Should we allow extension?
+1. Before you start your first experiment, please read this
+   [page](https://cloudlab.us/aup.php). 
+
+2. By default, each experiment will expire in 16 hours. This is enough
+   for most runs. If you run out of time, you can request an extension
+   via the `Extend` button on your experiment's CloudLab profile
+   page. To request an extension, you need to provide a
+   reason. We are providing a template blurb for this purpose,
+   below.
+   
+   Requests for extensions have to be approved and that might take a
+   little while. Hence, we do not recommend this route. Instead, make
+   sure that all your data is saved and create a new experiment
+   whenever you can.
