@@ -17,8 +17,8 @@ have a CloudLab account, simply request to join the `cse453` project.
 
 To start a new experiment, go to your CloudLab dashboard's  [`Project Profile`](https://www.cloudlab.us/user-dashboard.php#projectprofiles) page. Go to `cse453repo` profile and click `instantiate` button. 
 You can configure the number of machines you need (maximum 5) and select mode. 
-Click on `Next` to move to the next page. Name your experiments and choose which cluster you want to start your
-experiment. Each cluster has a variety of hardware. For more information on the hardware CloudLab provides, please refer to this [page](http://docs.cloudlab.us/hardware.html).
+Click on `Next` to move to the next page. Name and choose the cluster you want to start your
+experiment. For more information on the hardware CloudLab provides, please refer to this [page](http://docs.cloudlab.us/hardware.html).
 
 Once the experiment is created, you should be able to view the
 information under the [`Experiments`](https://www.cloudlab.us/user-dashboard.php#experiments) page.
