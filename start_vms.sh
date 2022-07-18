@@ -13,7 +13,25 @@ function get_token()
 }
 
 # This script runs only on machine0
-test x`hostname -s` == xmachine0 || exit 0
+test x`hostname -s` == xmachine0 || { echo "This script has to run on machine0"; exit 1 }
+
+# Parse commandline
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+	--tcg)
+	    LXC_OPTS='-c raw.qemu.conf="[machine] accel=\"tcg\"" -c raw.qemu="-cpu max"'
+	    shift
+	    ;;
+	-h | --help)
+	    echo "Usage: $0 [--tcg]"
+	    exit 0
+	    ;;
+	*)
+	    echo "Unexpected option: $1"
+	    shift
+	    ;;
+    esac
+done
 
 # Setup master LXD instance
 sudo lxd init --preseed <<EOF
@@ -101,7 +119,7 @@ EOF"
 done
 
 # Launch $nvms VMs on LXD cluster
-for i in `seq $nvms`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB; done
+for i in `seq $nvms`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB $LXC_OPTS; done
 
 # Wait until all VMs are up
 echo "Waiting 30 seconds for VMs to start..."
@@ -123,5 +141,6 @@ sudo lxc exec vm1 -- sh -c "
 sudo apt-get install --yes git
 mkdir projects
 cd projects
-git clone https://github.com/delimitrou/DeathStarBench.git
+git clone -n https://github.com/delimitrou/DeathStarBench.git
+cd DeathStarBench && git checkout ff0c39df331106bbf1e20be5724be718f44b73f1
 sudo docker swarm init"

@@ -12,5 +12,5 @@ exec 1>/tmp/virtualize.log 2>&1
 
 # With virtualization
 sudo apt-get update
-sudo apt-get install --yes snapd libxml-xpath-perl
+sudo apt-get install --yes snapd libxml-xpath-perl joe
 sudo snap install lxd
