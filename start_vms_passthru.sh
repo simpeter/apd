@@ -9,8 +9,9 @@ DOMAIN=${HOSTNAME#*.}
 
 # Start passthrough VMs on all machines
 for i in `seq 0 $((n_machines - 1))`; do
-    ssh -t -oStrictHostKeyChecking=no machine$i.$DOMAIN "
-NETDEV=`ip -br -oneline -4 ad show to 10.10.1.$((i + 1)) | cut -f1,1 -d' '`
+    ssh -oStrictHostKeyChecking=no machine$i.$DOMAIN "
+NETDEV=\`ip -br -oneline -4 ad show to 10.10.1.$((i + 1)) | cut -f1,1 -d' '\`
+echo machine$i NETDEV=\$NETDEV
 sudo lxd init --preseed <<EOF
 config: {}
 networks:
@@ -44,7 +45,7 @@ projects: []
 cluster: null
 EOF
 sudo lxc init images:ubuntu/20.04/cloud vm$((i + 1)) --vm -c limits.memory=4GB
-sudo lxc config device add vm$((i + 1)) eth1 nic nictype=physical parent=$NETDEV
+sudo lxc config device add vm$((i + 1)) eth1 nic nictype=physical parent=\$NETDEV
 sudo lxc start vm$((i + 1))"
 done
 
