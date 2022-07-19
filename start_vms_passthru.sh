@@ -3,13 +3,15 @@
 . config.sh
 
 # This script runs only on machine0
-test x`hostname -s` == xmachine0 || { echo "This script has to run on machine0"; exit 1 }
+test x`hostname -s` == xmachine0 || { echo "This script has to run on machine0"; exit 1; }
 
 DOMAIN=${HOSTNAME#*.}
 
 # Start passthrough VMs on all machines
 for i in `seq 0 $((n_machines - 1))`; do
-    ssh -oStrictHostKeyChecking=no machine$i.$DOMAIN "sudo lxd init --preseed <<EOF
+    ssh -t -oStrictHostKeyChecking=no machine$i.$DOMAIN "
+NETDEV=`ip -br -oneline -4 ad show to 10.10.1.$((i + 1)) | cut -f1,1 -d' '`
+sudo lxd init --preseed <<EOF
 config: {}
 networks:
 - config:
@@ -42,7 +44,7 @@ projects: []
 cluster: null
 EOF
 sudo lxc init images:ubuntu/20.04/cloud vm$((i + 1)) --vm -c limits.memory=4GB
-sudo lxc config device add vm$((i + 1)) eth1 nic nictype=physical parent=ens1f0
+sudo lxc config device add vm$((i + 1)) eth1 nic nictype=physical parent=$NETDEV
 sudo lxc start vm$((i + 1))"
 done
 

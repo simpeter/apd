@@ -8,7 +8,7 @@ function get_token()
 }
 
 # This script runs only on machine0
-test x`hostname -s` == xmachine0 || { echo "This script has to run on machine0"; exit 1 }
+test x`hostname -s` == xmachine0 || { echo "This script has to run on machine0"; exit 1; }
 
 # Parse commandline
 while [[ $# -gt 0 ]]; do
