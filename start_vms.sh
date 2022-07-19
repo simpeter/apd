@@ -1,11 +1,6 @@
 #!/bin/bash -x
 
-# Configuration
-n_machines=`geni-get manifest | xpath -e 'rspec/data_set/data_item[attribute::name = "emulab.net.parameter.n_machines"]/text()' -q`
-
-### Configuration
-# Number of VMs
-nvms=3
+. config.sh
 
 function get_token()
 {
@@ -144,3 +139,5 @@ cd projects
 git clone -n https://github.com/delimitrou/DeathStarBench.git
 cd DeathStarBench && git checkout ff0c39df331106bbf1e20be5724be718f44b73f1
 sudo docker swarm init"
+
+echo "Add other VMs via the join command presented by docker"
