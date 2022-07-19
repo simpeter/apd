@@ -54,7 +54,7 @@ of users. This is typically 99% of users or more. The actual number
 depends on our assessment of what is in our control and what is
 not. In our project, we will care about 99% of users.
 
-## Assignment 1: Performance (10 pts)
+## Assignment 1: Performance (5 pts)
 
 Assume that we have a number of virtualization technologies at our
 disposal:
@@ -72,6 +72,15 @@ DeathStarBench application using each of these technologies and
 evaluate 99 percentile service latencies under a variety of load
 points. Draw the latency-load curve for each technology.
 
+Once you have all four curves, you should interpret them. What load
+can each setup handle before 99%-ile latencies become untenable
+(larger than 500ms)? Which technology provides the best performance?
+Why does each technology provide each level of performance? What are
+the characteristics of each curve? Where is the knee point and what
+does it signify?
+
+### Detailed Instructions
+
 Instantiate the `cse453repo` profile with 3 machines in the
 appropriate mode for each experiment and deploy DeathStarBench on all
 machines, running the hotel reservation workload. Then, attach your
@@ -83,31 +92,38 @@ configure `wrk2` to generate enough load. Otherwise, your curve will
 fail to materialize (it will not look like a curve). Remember that we
 are interested in 99%-ile latency, not average.
 
-Once you have all four curves, you should interpret them. What load
-can each setup handle before 99%-ile latencies become untenable
-(larger than 500ms)? Which technology provides the best performance?
-Why does each technology provide each level of performance? What are
-the characteristics of each curve? Where is the knee point and what
-does it signify?
-
-### Detailed Instructions
-
 We have provided shell scripts in `/local/repository` that will help
 you setup each virtualization mode. We explain how to run them,
 here. For each of the configurations, make sure that the previous
 instance of DeathStarBench is not running anymore. Otherwise, you can
-performance crosstalk (lots of noise).
+get performance crosstalk (lots of noise).
 
 1. See `docker_example.sh` for instructions on how to install docker
    and DeathStarBench, as well as how to configure a swarm and run the
    hotel reservation benchmark on it.
    
 2. Run `start_vms.sh` to setup VMs and a virtual network on each
-   CloudLab machine.
+   CloudLab machine. Then, follow the `docker_example.sh` to setup the
+   benchmark within those VMs.
 
-3. 
+3. Run `start_vms_passthru.sh` to setup VMs using each bare metal
+   machine's physical network interface that is connected to the
+   internal network (`10.10.1.x`). Then, follow the
+   `docker_example.sh` to setup the benchmark within those VMs.
 
-4. Run `start_vms.sh` with parameter `trap+emulate`.
+4. Run `start_vms.sh` with parameter `trap+emulate`. Then, follow the
+   `docker_example.sh` to setup the benchmark within those VMs.
+
+For each setup, run `wrk2` from your client machine, using the
+workload configuration file provided in the hotel reservation
+benchmark. Specify a load rate and record the measured 99-percentile
+latency and throughput. Pay close attention to any errors in `wrk2`'s
+output. Also, make sure that you specify enough threads and
+connections to be able to provide the given load. Please record the
+specified offered rate and what throughput was reported by
+`wrk2`. Doing so will help you determine whether you are indeed
+configuring `wrk2` properly to offer enough load. Also, report the
+offered load for each data point to us.
 
 ### Bonus: Error margin (2 pts)
 
@@ -139,3 +155,74 @@ median and percentiles, as well as median, minimum, and maximum.
 When presenting your graphs, explain why you selected this style of
 error bars. Also, interpret the results. What level of noise is
 visible and why might it be there. Is the level of noise acceptable?
+
+### Bonus: Device Pass-through for Containers? (2 pts)
+
+Would device pass-through work with containers? If so, how would it
+work? If not, why not?
+
+## Assignment 2: Performance Isolation (5 pts)
+
+Of course, tenants do not just run applications on cloud hosts in
+isolation. The common case is that machines are shared among multiple
+tenants, each running their application. You are going to investigate
+this scenario in this assignment.
+
+The performance goals are identical to assignment 1 (we want
+acceptable 99%-ile latency, while maximimzing load). Let's first look
+at the different virtualization technologies. In this case, we are
+going to ignore device passthrough, as it requires hardware IO
+virtualization to enable multiple tenants to share devices, which is
+not available on all CloudLab machines. We are also going to ignore
+trap+emulate virtualization, as it is too heavy-weight. Two
+configurations remain:
+
+1. Bare metal servers running containers
+
+2. Virtual machines (VMs) running with hardware virtualization and a
+   software IO path
+
+You are going to run two instances of the hotel reservation
+application simultaneously. In the VM case, this means creating two
+separate VMs per CloudLab machine, so each tenant can run in their own
+VM.
+
+You will again evaluate each of these technologies for their provided
+application performance. To do so, you will run the hotel reservation
+DeathStarBench application using each of these technologies and
+evaluate 99 percentile service latencies under a variety of load
+points for both tenants. Draw the latency-load curve for each
+technology and tenant, keeping both tenants' load identical.
+
+In a second benchmark, you will evaluate the technologies for
+disparate tenant loads. The benchmark is the same, but you keep one
+tenant at the load that you determined to be the knee-point of the
+latency-load curve in assignment 1, when the tenant was running
+alone. Keep that load running in the background (just set a long
+duration). Then, set a load of 10 requests/s for the tenant under
+measurement and investigate the 99%-ile latency.
+
+performance isolation (w/ containers, hardware VM)
+  Run multiple instances of hotelreservation
+  Measure 99%-ile latency when both are under load
+  Measure 99%-ile latency when one is under full load (background), but other is under low load (measured)
+
+
+### Detailed Instructions
+
+Instantiate the `cse453repo` profile with 3 machines in the
+appropriate mode for each experiment and deploy DeathStarBench on all
+machines, running the hotel reservation workload. Then, attach your
+client and start measuring with the default profile for hotel
+reservation using the `wrk2` client.
+
+## Assignment 3: Consolidation (5 pts)
+
+Consolidate apps onto single machine (w/ containers, hardware VM)
+  Motivation: Operators want to save cost
+  Draw latency over load graph
+  Show goodput versus offered load
+  Goal: 99%-ile latency < 500ms
+
+### Detailed Instructions
+
