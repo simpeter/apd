@@ -16,11 +16,11 @@ have a CloudLab account, simply request to join the `cse453` project.
 ## Start an Experiment
 
 To start a new experiment, go to your CloudLab dashboard's  [`Project Profile`](https://www.cloudlab.us/user-dashboard.php#projectprofiles) page. Go to `cse453repo` profile and click `instantiate` button. 
-You can configure the number of machines you need (maximum 5) and select mode. 
+You can configure the number of machines you need (maximum 10) and select mode. 
 Click on `Next` to move to the next page. Name and choose the cluster you want to start your
 experiment. For more information on the hardware CloudLab provides, please refer to this [page](http://docs.cloudlab.us/hardware.html).
 
-Once the experiment is created, you should be able to view the
+It may take a few mintues for the experiment to start. Once the experiment is created, you should be able to view the
 information under the [`Experiments`](https://www.cloudlab.us/user-dashboard.php#experiments) page.
 
 ## Log into Experiment Machines
@@ -29,30 +29,90 @@ Once the experiment is ready (this can take a few minutes), click
 `List View`, and you will find SSH commands to access each node. On the
 same tab, you can also reboot/reload your nodes if something goes wrong.
 
-## Find a Client Machine at UW
+<!-- ## Find a Client Machine at UW -->
 
 ## Run iperf
 
-Explain what iperf is
+[iperf](https://iperf.fr/iperf-doc.php) is a tool for network throughput measurements between two hosts (a client that generates traffic and a server that receives traffic). You'll use iperf to measure the bandwidth between nodes in your experiment. <br />
+Step 1: Find the ip address of the server
+```console
+machine0:~> ifconfig | grep -s '10.10.' | awk '{ print $2 }'
+10.10.1.1
+```
 
-Run benchmark from UW client to baremetal machine
+On the server side:
+```console
+machine0:~> iperf -s
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  128 KByte (default)
+------------------------------------------------------------
+[  4] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 52910
+[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0-10.0 sec  11.0 GBytes  9.41 Gbits/sec
+```
+On the client side:
+```console
+machine1:~> iperf -c 10.10.1.1
+------------------------------------------------------------
+Client connecting to 10.10.1.1, TCP port 5001
+TCP window size: 4.00 MByte (default)
+------------------------------------------------------------
+[  3] local 10.10.1.2 port 52910 connected with 10.10.1.1 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0-10.0 sec  11.0 GBytes  9.42 Gbits/sec
+```
 
-What's the expected output?
+How to find the ip address? What's the expected output?
 
 ## Install and Start DeathStarBench on Bare Metal Machines
+We will use docker and docker compose to run 
 
-(look at example shell script docker_example.sh in repo to explain
-this step)
+```bash
+# Install docker and docker compose on each machine
+mkdir projects
+cd projects
+git clone https://github.com/delimitrou/DeathStarBench.git
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+# TODO: install docker-compse
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Set up docker swarm
+IP=`ip ad show | grep -s '10.10.' | awk '{ print $2 }'` # Local network IP
+sudo docker swarm init --advertise-addr ${IP%/*}
+#Login to all worker nodes and run the join command displayed by swarm init
+sudo docker stack deploy --compose-file docker-compose-swarm.yml hotelreservation
+
+# Start hotel reservation application (run on a single machine)
+cd DeathStarBench/hotelReservation/
+docker-compose up -d
+
+# Show services running
+sudo docker stack services hotelreservation
+```
 
 Starting it up
 
 ## Testing DeathStarBench
 
-Use curl. See example shell script
+```bash
+# Test
+curl 'http://amd220.utah.cloudlab.us:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
+curl 'http://amd220.utah.cloudlab.us:5000/user?username=Cornell_1&password=1111111111'
+```
 
 ## Installing wrk2 on Client Machine
 
 Look at docker_example.sh for prereqs
+```
+# Evaluate (from a client machine across Internet, but also locally works)
+#sudo apt install python3-aiohttp libssl-dev libz-dev luarocks lua-socket
+#sudo luarocks install luasocket
+make -C DeathStarBench/hotelReservation/wrk2
+./wrk2/wrk -D exp -t 10 -c 100 -d 10 -L -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://localhost:5000 -R 10000
+```
 
 ## Testing wrk2
 
@@ -91,3 +151,5 @@ What's the expected output?
    We recommend you save your data and create a new experiment
    whenever you can. If you do have a need to extend the nodes, 
    do not extend them by more than one day. **We will terminate any cluster running for more than 48 hours**.
+
+3. If you want to change the default shell, go to `Manage Account` -> `Default Shell`
