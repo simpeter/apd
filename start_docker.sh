@@ -7,8 +7,7 @@ test x`hostname -s` == xmachine0 || { echo "This script has to run on machine0";
 
 # Start Docker on all machines
 for i in `seq 0 $((n_machines - 1))`; do
-    ssh -oStrictHostKeyChecking=no machine$i "curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh"
+    ssh -oStrictHostKeyChecking=no machine$i "curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh"
 
 # Install DeathStarBench
 mkdir ~/projects
