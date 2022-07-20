@@ -20,13 +20,12 @@ pc.defineParameter("n_machines", "Number of machines",
                    portal.ParameterType.INTEGER, 3)
 
 # Parameter to set virtualized mode or not
-# XXX: Outdated. We just always install the VMM now. It doesn't harm anything if no VMs are started.
-# modelist = [
-#     ('bare', 'Bare metal'),
-#     ('vm', 'Virtualized')]
-# pc.defineParameter("mode", "Select VM or baremetal mode",
-#                    portal.ParameterType.STRING,
-#                    modelist[0], modelist)
+modelist = [
+    ('default', 'Select any x86 machine'),
+    ('passthru', 'Select machines that support device pass-through')]
+pc.defineParameter("mode", "Select default or device pass-through mode",
+                   portal.ParameterType.STRING,
+                   modelist[0], modelist)
 
 # Retrieve the values the user specifies during instantiation
 params = pc.bindParameters()
@@ -47,7 +46,10 @@ for i in range(params.n_machines):
     n = request.RawPC('machine%u' % i)
     n.disk_image = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD'
     iface = n.addInterface('interface-%u' % i)
-    # if params.mode == "vm":
+    if params.mode == "passthru":
+        # We know that the AMD machines support device pass-through.
+        # XXX: This is restrictive, as other machine types might support it, too. Not clear how to constrain the hardware type to a set of machines, rather than just a single type.
+        n.hardware_type = "c6525-25g"
     n.addService(pg.Execute(shell="bash", command="/local/repository/virtualize.sh"))
     mylink.addInterface(iface)
 

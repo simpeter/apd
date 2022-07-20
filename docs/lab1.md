@@ -81,16 +81,16 @@ does it signify?
 
 ### Detailed Instructions
 
-Instantiate the `cse453repo` profile with 3 machines in the
-appropriate mode for each experiment and deploy DeathStarBench on all
-machines, running the hotel reservation workload. Then, attach your
-client and start measuring with the default profile for hotel
-reservation using the `wrk2` client. Make sure that you gather enough
-data points to clearly show the latency-load curve that is going to
-result as you drive load up towards overload. Also, make sure you
-configure `wrk2` to generate enough load. Otherwise, your curve will
-fail to materialize (it will not look like a curve). Remember that we
-are interested in 99%-ile latency, not average.
+Instantiate the `cse453repo` profile with 3 machines in `passthru`
+mode for the experiment and deploy DeathStarBench on all machines,
+running the hotel reservation workload. Then, attach your client and
+start measuring with the default profile for hotel reservation using
+the `wrk2` client. Make sure that you gather enough data points to
+clearly show the latency-load curve that is going to result as you
+drive load up towards overload. Also, make sure you configure `wrk2`
+to generate enough load. Otherwise, your curve will fail to
+materialize (it will not look like a curve). Remember that we are
+interested in 99%-ile latency, not average.
 
 We have provided shell scripts in `/local/repository` that will help
 you setup each virtualization mode. We explain how to run them,
@@ -125,7 +125,7 @@ specified offered rate and what throughput was reported by
 configuring `wrk2` properly to offer enough load. Also, report the
 offered load for each data point to us.
 
-### Bonus: Error margin (2 pts)
+### Bonus: Error Margin (2 pts)
 
 No experiment setup is perfect. In the real world, there are always
 factors outside of our control. From the already mentioned bad
