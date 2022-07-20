@@ -21,8 +21,8 @@ pc.defineParameter("n_machines", "Number of machines",
 
 # Parameter to set virtualized mode or not
 modelist = [
-    ('default', 'Select any x86 machine'),
-    ('passthru', 'Select machines that support device pass-through')]
+    ('default', 'default - Select any x86 machine'),
+    ('passthru', 'passthru - Select only machines that support device pass-through')]
 pc.defineParameter("mode", "Select default or device pass-through mode",
                    portal.ParameterType.STRING,
                    modelist[0], modelist)
