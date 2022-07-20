@@ -179,8 +179,7 @@ configurations remain:
 
 1. Bare metal servers running containers
 
-2. Virtual machines (VMs) running with hardware virtualization and a
-   software IO path
+2. VMs running with hardware virtualization and a software IO path
 
 You are going to run two instances of the hotel reservation
 application simultaneously. In the VM case, this means creating two
@@ -199,30 +198,52 @@ disparate tenant loads. The benchmark is the same, but you keep one
 tenant at the load that you determined to be the knee-point of the
 latency-load curve in assignment 1, when the tenant was running
 alone. Keep that load running in the background (just set a long
-duration). Then, set a load of 10 requests/s for the tenant under
+duration). Then, set a load of 300 requests/s for the tenant under
 measurement and investigate the 99%-ile latency.
 
-performance isolation (w/ containers, hardware VM)
-  Run multiple instances of hotelreservation
-  Measure 99%-ile latency when both are under load
-  Measure 99%-ile latency when one is under full load (background), but other is under low load (measured)
-
+For the second benchmark, you should also compare these latencies with
+a scenario where multiple clients connect to the same tenant's
+service, without there being a second tenant. How do the latencies
+compare?
 
 ### Detailed Instructions
 
-Instantiate the `cse453repo` profile with 3 machines in the
-appropriate mode for each experiment and deploy DeathStarBench on all
-machines, running the hotel reservation workload. Then, attach your
-client and start measuring with the default profile for hotel
-reservation using the `wrk2` client.
+Instantiate the `cse453repo` profile with 3 machines in `default` mode
+for each experiment. Deploy DeathStarBench on all machines, running
+the hotel reservation workload, as in assignment 1. Then, copy
+`hotelreservation2.yml` from `/local/repository` to
+`DeathStarBench/hotelreservation` and start it, too (to start the
+second tenant). Finally, attach your client and start measuring with
+the default profile for hotel reservation using the `wrk2`
+client. Depending on the benchmark, different configurations are
+useful:
+
+1. Start both clients at roughly the same time, using two logins to
+   your client machine.
+
+2. Start the background client, running for a long time. Then, in
+   another terminal, start the foreground client.
+
+### Bonus: Latency over Time (3 pts)
+
+Is the background workload affected by the foreground tenant?
+Investigate request latencies over time for the background workload,
+as you start and stop the foreground tenant. You can draw these
+background-tenant latencies over time on a graph. The `-P` option of
+the `wrk2` program will help you with it.
 
 ## Assignment 3: Consolidation (5 pts)
 
-Consolidate apps onto single machine (w/ containers, hardware VM)
-  Motivation: Operators want to save cost
-  Draw latency over load graph
-  Show goodput versus offered load
-  Goal: 99%-ile latency < 500ms
+The cloud operator's goal is to minimize cost. Currently, the hotel
+reservation application requires 3 servers. Can we reduce this number?
+Start the experiment with just a single server and measure latency
+over load.
+
+How does the measured knee-point of the curve compare to the one
+measured in assignment 1? Calculate the ratio of the knee-point
+throughputs between the two cases and compare it to the ratio of
+machines used. Is the comparison favorable? Stipulate what might
+impact whether the comparison is favorable or not.
 
 ### Detailed Instructions
 
