@@ -11,8 +11,8 @@ for i in `seq 0 $((n_machines - 1))`; do
 sudo sh get-docker.sh"
 
 # Install DeathStarBench
-mkdir projects
-cd projects
+mkdir ~/projects
+cd ~/projects
 git clone -n https://github.com/delimitrou/DeathStarBench.git
 cd DeathStarBench && git checkout ff0c39df331106bbf1e20be5724be718f44b73f1
 sudo docker swarm init --advertise-addr 10.10.1.1
