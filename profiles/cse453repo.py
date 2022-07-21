@@ -19,6 +19,10 @@ request = pc.makeRequestRSpec()
 pc.defineParameter("n_servers", "Number of server machines",
                    portal.ParameterType.INTEGER, 3)
 
+# Number of client machines
+pc.defineParameter("n_clients", "Number of client machines",
+                   portal.ParameterType.INTEGER, 1)
+
 # Parameter to set virtualized mode or not
 modelist = [
     ('default', 'default - Any x86 machine'),
@@ -26,10 +30,6 @@ modelist = [
 pc.defineParameter("mode", "Select default or device pass-through mode for servers",
                    portal.ParameterType.STRING,
                    modelist[0], modelist)
-
-# Number of client machines
-pc.defineParameter("n_clients", "Number of client machines",
-                   portal.ParameterType.INTEGER, 1)
 
 # Retrieve the values the user specifies during instantiation
 params = pc.bindParameters()
