@@ -4,11 +4,11 @@
 
 function get_token()
 {
-    awk -F, "\$1 == \"machine$1\" { print \$2 }" /tmp/tokens.csv
+    awk -F, "\$1 == \"server$1\" { print \$2 }" /tmp/tokens.csv
 }
 
-# This script runs only on machine0
-test x`hostname -s` == xmachine0 || { echo "This script has to run on machine0"; exit 1; }
+# This script runs only on server0
+test x`hostname -s` == xserver0 || { echo "This script has to run on server0"; exit 1; }
 
 # Parse commandline
 while [[ $# -gt 0 ]]; do
@@ -73,21 +73,21 @@ cluster:
 EOF
 
 # Generate cluster join tokens
-for i in `seq $((n_machines - 1))`; do
-    sudo lxc cluster add machine$i
+for i in `seq $((n_servers - 1))`; do
+    sudo lxc cluster add server$i
 done
 sudo lxc cluster list-tokens -f csv > /tmp/tokens.csv
 
 # Join all cluster nodes
-for i in `seq $((n_machines - 1))`; do
-    ssh -oStrictHostKeyChecking=no machine$i "sudo lxd init --preseed <<EOF
+for i in `seq $((n_servers - 1))`; do
+    ssh -oStrictHostKeyChecking=no server$i "sudo lxd init --preseed <<EOF
 config: {}
 networks: []
 storage_pools: []
 profiles: []
 projects: []
 cluster:
-  server_name: machine$i
+  server_name: server$i
   enabled: true
   member_config:
   - entity: storage-pool
@@ -105,8 +105,8 @@ cluster:
     key: zfs.pool_name
     value: \"\"
     description: '\"zfs.pool_name\" property for storage pool \"local\"'
-  cluster_address: machine0:8443
-  server_address: machine$i:8443
+  cluster_address: server0:8443
+  server_address: server$i:8443
   cluster_password: \"\"
   cluster_certificate_path: \"\"
   cluster_token: \"`get_token $i`\"
@@ -132,6 +132,7 @@ done
 wait
 
 # Install DeathStarBench
+# XXX: Can replace with a copy of hotelreservation.yml into VM
 sudo lxc exec vm1 -- sh -c "
 sudo apt-get install --yes git
 mkdir projects

@@ -2,14 +2,14 @@
 
 . config.sh
 
-# This script runs only on machine0
-test x`hostname -s` == xmachine0 || { echo "This script has to run on machine0"; exit 1; }
+# This script runs only on server0
+test x`hostname -s` == xserver0 || { echo "This script has to run on server0"; exit 1; }
 
 DOMAIN=${HOSTNAME#*.}
 
-# Start passthrough VMs on all machines
-for i in `seq 0 $((n_machines - 1))`; do
-    ssh -oStrictHostKeyChecking=no machine$i.$DOMAIN "sudo lxd init --preseed <<EOF
+# Start passthrough VMs on all servers
+for i in `seq 0 $((n_servers - 1))`; do
+    ssh -oStrictHostKeyChecking=no server$i.$DOMAIN "sudo lxd init --preseed <<EOF
 config: {}
 networks:
 - config:
@@ -41,9 +41,9 @@ profiles:
 projects: []
 cluster: null
 EOF"
-    ssh -tt -oStrictHostKeyChecking=no machine$i.$DOMAIN "
+    ssh -tt -oStrictHostKeyChecking=no server$i.$DOMAIN "
 NETDEV=\`ip -br -oneline -4 ad show to 10.10.1.$((i + 1)) | cut -f1,1 -d' '\`
-echo machine$i NETDEV=\$NETDEV
+echo server$i NETDEV=\$NETDEV
 sudo lxc init images:ubuntu/20.04/cloud vm$((i + 1)) --vm -c limits.memory=4GB
 sudo lxc config device add vm$((i + 1)) eth1 nic nictype=physical parent=\$NETDEV
 sudo lxc start vm$((i + 1))"
@@ -54,8 +54,8 @@ echo "Waiting 30 seconds for VMs to start..."
 sleep 30
 
 # Install docker on all VMs
-for i in `seq 0 $((n_machines - 1))`; do
-    ssh -oStrictHostKeyChecking=no machine$i.$DOMAIN "sudo lxc exec vm$((i + 1)) -n -- sh -c \"
+for i in `seq 0 $((n_servers - 1))`; do
+    ssh -oStrictHostKeyChecking=no server$i.$DOMAIN "sudo lxc exec vm$((i + 1)) -n -- sh -c \"
 apt-get update
 apt-get install --yes curl net-tools
 ifconfig enp6s0 10.10.1.$((i + 1)) netmask 255.255.255.0 up
@@ -64,6 +64,7 @@ sh get-docker.sh\""
 done
 
 # Install DeathStarBench
+# XXX: Can replace with a copy of hotelreservation.yml into VM
 sudo lxc exec vm1 -- sh -c "
 sudo apt-get install --yes git
 mkdir projects

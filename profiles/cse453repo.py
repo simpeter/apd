@@ -15,24 +15,30 @@ import geni.rspec.emulab as emulab
 pc = portal.Context()
 request = pc.makeRequestRSpec()
 
-# Number of machines
-pc.defineParameter("n_machines", "Number of machines",
+# Number of server machines
+pc.defineParameter("n_servers", "Number of server machines",
                    portal.ParameterType.INTEGER, 3)
 
 # Parameter to set virtualized mode or not
 modelist = [
-    ('default', 'default - Select any x86 machine'),
-    ('passthru', 'passthru - Select only machines that support device pass-through')]
-pc.defineParameter("mode", "Select default or device pass-through mode",
+    ('default', 'default - Any x86 machine'),
+    ('passthru', 'passthru - Only machines that support device pass-through')]
+pc.defineParameter("mode", "Select default or device pass-through mode for servers",
                    portal.ParameterType.STRING,
                    modelist[0], modelist)
+
+# Number of client machines
+pc.defineParameter("n_clients", "Number of client machines",
+                   portal.ParameterType.INTEGER, 1)
 
 # Retrieve the values the user specifies during instantiation
 params = pc.bindParameters()
 
 # Check parameter validity
-if params.n_machines < 1 or params.n_machines > 10:
-    pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 10 machines.", ["n_machines"]))
+if params.n_servers < 1 or params.n_servers > 10:
+    pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 10 servers.", ["n_servers"]))
+if params.n_clients < 1 or params.n_clients > 1:
+    pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 1 clients.", ["n_clients"]))
 
 # Abort execution if there are any errors, and report them
 portal.context.verifyParameters()
@@ -41,15 +47,23 @@ portal.context.verifyParameters()
 mylink = request.Link('mylink')
 mylink.Site('undefined')
 
-for i in range(params.n_machines):
+for i in range(params.n_servers):
     # Create node
-    n = request.RawPC('machine%u' % i)
+    n = request.RawPC('server%u' % i)
     n.disk_image = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD'
     iface = n.addInterface('interface-%u' % i)
     if params.mode == "passthru":
         # We know that the AMD machines support device pass-through.
         # XXX: This is restrictive, as other machine types might support it, too. Not clear how to constrain the hardware type to a set of machines, rather than just a single type.
         n.hardware_type = "c6525-25g"
+    n.addService(pg.Execute(shell="bash", command="/local/repository/virtualize.sh"))
+    mylink.addInterface(iface)
+
+for i in range(params.n_clients):
+    # Create node
+    n = request.RawPC('client%u' % i)
+    n.disk_image = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD'
+    iface = n.addInterface('interface-%u' % params.n_servers + i)
     n.addService(pg.Execute(shell="bash", command="/local/repository/virtualize.sh"))
     mylink.addInterface(iface)
 

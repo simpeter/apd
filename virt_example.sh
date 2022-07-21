@@ -18,9 +18,9 @@ Would you like to create a new Fan overlay network? (yes/no) [default=yes]:
 What subnet should be used as the Fan underlay? [default=auto]: 10.10.1.0/24 
 Would you like stale cached images to be updated automatically? (yes/no) [default=yes]: 
 Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]: "
-sudo lxc cluster add machine1
-sudo lxc cluster add machine2
-#On each worker machine: repeat first 4 steps, but choose to join cluster
+sudo lxc cluster add server1
+sudo lxc cluster add server2
+#On each worker server: repeat first 4 steps, but choose to join cluster
 #sudo lxc launch ubuntu:20.04 manager1vm --vm -c limits.memory=64GB
 sudo lxc launch images:ubuntu/20.04/cloud vm1 --vm -c limits.memory=4GB
 #for i in `seq 19`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB; done # launch 19 VMs on cluster
@@ -65,7 +65,7 @@ sudo lxc network forward create lxdfan0 <local_cloudlab_host-ip> target_address=
 
 ###### Setup device passthrough ######
 
-# On machine[012]
+# On server[012]
 sudo lxd init --preseed <<EOF
 config: {}
 networks:
@@ -117,7 +117,7 @@ EOF
 # Would you like stale cached images to be updated automatically? (yes/no) [default=yes]: 
 # Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]: "
 
-# Old cluster-based try -- didn't work because adding physical network devices seems to always refer to machine0 on the cluster, which is stupid
+# Old cluster-based try -- didn't work because adding physical network devices seems to always refer to server0 on the cluster, which is stupid
 # "Would you like to use LXD clustering? (yes/no) [default=no]: 
 # Do you want to configure a new storage pool? (yes/no) [default=yes]: 
 # Name of the new storage pool [default=default]: 
@@ -137,9 +137,9 @@ EOF
 # Again: 
 # Would you like stale cached images to be updated automatically? (yes/no) [default=yes]: 
 # Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]: "
-# sudo lxc cluster enable machine0
-# sudo lxc cluster add machine1
-# sudo lxc cluster add machine2
+# sudo lxc cluster enable server0
+# sudo lxc cluster add server1
+# sudo lxc cluster add server2
 
 # sudo lxd init
 # "Would you like to use LXD clustering? (yes/no) [default=no]: yes
@@ -152,7 +152,7 @@ EOF
 # Choose "zfs.pool_name" property for storage pool "default": 
 # Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]: "
 
-# Init VMs on machine[012]
+# Init VMs on server[012]
 sudo lxc init images:ubuntu/20.04/cloud vm1 --vm -c limits.memory=4GB
 sudo lxc config device add vm1 eth1 nic nictype=physical parent=ens1f0
 sudo lxc start vm1
