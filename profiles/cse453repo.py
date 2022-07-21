@@ -8,6 +8,7 @@ entire repo is checked out into /local/repository on each created machine.
 import geni.portal as portal
 import geni.rspec.pg as pg
 import geni.rspec.emulab as emulab
+from lxml import etree as ET
 
 ### Configuration
 
@@ -23,30 +24,9 @@ lablist = [
 pc.defineParameter("lab", "Select the lab you are working on",
                    portal.ParameterType.STRING, lablist[2], lablist)
 
-# Retrieve the values the user specifies during instantiation
-params = pc.bindParameters()
-
-if params.lab == 'lab0':
-        n_servers = 3
-        n_clients = 1
-        mode = 'default'
-elif params.lab == 'lab1':
-        n_servers = 3
-        n_clients = 1
-        mode = 'passthru'
-elif params.lab == 'lab2':
-        n_servers = 1
-        n_clients = 1
-        mode = 'default'
-else:
-    pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
-
-# Abort execution if there are any errors, and report them
-portal.context.verifyParameters()
-
 # Number of server machines
 pc.defineParameter("n_servers", "Number of server machines",
-                   portal.ParameterType.INTEGER, n_servers)
+                   portal.ParameterType.INTEGER, 3, advanced=True)
 
 # Number of client machines
 pc.defineParameter("n_clients", "Number of client machines",
@@ -68,8 +48,38 @@ if params.n_servers < 1 or params.n_servers > 10:
 if params.n_clients < 1 or params.n_clients > 1:
     pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 1 clients.", ["n_clients"]))
 
+if params.lab == 'lab0':
+        params.n_servers = 3
+        params.n_clients = 1
+        params.mode = 'default'
+elif params.lab == 'lab1':
+        params.n_servers = 3
+        params.n_clients = 1
+        params.mode = 'passthru'
+elif params.lab == 'lab2':
+        params.n_servers = 1
+        params.n_clients = 1
+        params.mode = 'default'
+else:
+    pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
+
 # Abort execution if there are any errors, and report them
 portal.context.verifyParameters()
+
+class Parameters(pg.Resource):
+    def _write(self, root):
+        ns = "{http://www.protogeni.net/resources/rspec/ext/johnsond/1}"
+        paramXML = "%sparameter" % (ns,)
+
+        el = ET.SubElement(root,"%sprofile_parameters" % (ns,))
+
+        param = ET.SubElement(el,paramXML)
+        param.text = 'n_servers=%u' % (params.n_servers,)
+
+        return el
+
+parameters = Parameters()
+pg.addResource(parameters)
 
 # Create starfish network topology
 mylink = request.Link('mylink')
