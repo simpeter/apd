@@ -65,6 +65,9 @@ elif params.lab == 'lab2':
 else:
     pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
 
+# Retrieve the values the user specifies during instantiation
+params = pc.bindParameters()
+
 # Create starfish network topology
 mylink = request.Link('mylink')
 mylink.Site('undefined')
