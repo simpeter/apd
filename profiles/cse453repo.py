@@ -27,17 +27,17 @@ pc.defineParameter("lab", "Select the lab you are working on",
 params = pc.bindParameters()
 
 if params.lab == 'lab0':
-        params.n_servers = 3
-        params.n_clients = 1
-        params.mode = 'default'
+        n_servers = 3
+        n_clients = 1
+        mode = 'default'
 elif params.lab == 'lab1':
-        params.n_servers = 3
-        params.n_clients = 1
-        params.mode = 'passthru'
+        n_servers = 3
+        n_clients = 1
+        mode = 'passthru'
 elif params.lab == 'lab2':
-        params.n_servers = 1
-        params.n_clients = 1
-        params.mode = 'default'
+        n_servers = 1
+        n_clients = 1
+        mode = 'default'
 else:
     pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
 
@@ -46,7 +46,7 @@ portal.context.verifyParameters()
 
 # Number of server machines
 pc.defineParameter("n_servers", "Number of server machines",
-                   portal.ParameterType.INTEGER, params.n_servers)
+                   portal.ParameterType.INTEGER, n_servers)
 
 # Number of client machines
 pc.defineParameter("n_clients", "Number of client machines",
