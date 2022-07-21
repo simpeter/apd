@@ -50,19 +50,20 @@ if params.n_clients < 1 or params.n_clients > 1:
 # Abort execution if there are any errors, and report them
 portal.context.verifyParameters()
 
-match params.lab:
-    case 'lab0':
+if params.lab == 'lab0':
         params.n_servers = 3
         params.n_clients = 1
         params.mode = 'default'
-    case 'lab1':
+elif params.lab == 'lab1':
         params.n_servers = 3
         params.n_clients = 1
         params.mode = 'passthru'
-    case 'lab2':
+elif params.lab == 'lab2':
         params.n_servers = 1
         params.n_clients = 1
         params.mode = 'default'
+else:
+    pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
 
 # Create starfish network topology
 mylink = request.Link('mylink')
