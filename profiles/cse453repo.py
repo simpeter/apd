@@ -15,21 +15,28 @@ import geni.rspec.emulab as emulab
 pc = portal.Context()
 request = pc.makeRequestRSpec()
 
+# Lab selection
+lablist = [
+    ('lab0', 'Lab 0'),
+    ('lab1', 'Lab 1'),
+    ('lab2', 'Lab 2')]
+pc.defineParameter("lab", "Select the lab you are working on",
+                   portal.ParameterType.STRING, lablist[0], lablist)
+
 # Number of server machines
 pc.defineParameter("n_servers", "Number of server machines",
-                   portal.ParameterType.INTEGER, 3)
+                   portal.ParameterType.INTEGER, 3, hide=True, min=1, max=10)
 
 # Number of client machines
 pc.defineParameter("n_clients", "Number of client machines",
-                   portal.ParameterType.INTEGER, 1)
+                   portal.ParameterType.INTEGER, 1, hide=True, min=1, max=1)
 
 # Parameter to set virtualized mode or not
 modelist = [
     ('default', 'default - Any x86 machine'),
     ('passthru', 'passthru - Only machines that support device pass-through')]
 pc.defineParameter("mode", "Select default or device pass-through mode for servers",
-                   portal.ParameterType.STRING,
-                   modelist[0], modelist)
+                   portal.ParameterType.STRING, modelist[0], modelist, hide=True)
 
 # Retrieve the values the user specifies during instantiation
 params = pc.bindParameters()
@@ -42,6 +49,20 @@ if params.n_clients < 1 or params.n_clients > 1:
 
 # Abort execution if there are any errors, and report them
 portal.context.verifyParameters()
+
+match params.lab:
+    case 'lab0':
+        params.n_servers = 3
+        params.n_clients = 1
+        params.mode = 'default'
+    case 'lab1':
+        params.n_servers = 3
+        params.n_clients = 1
+        params.mode = 'passthru'
+    case 'lab2':
+        params.n_servers = 1
+        params.n_clients = 1
+        params.mode = 'default'
 
 # Create starfish network topology
 mylink = request.Link('mylink')
