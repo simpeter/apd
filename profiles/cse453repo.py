@@ -22,7 +22,7 @@ lablist = [
     ('lab1', 'Lab 1'),
     ('lab2', 'Lab 2')]
 pc.defineParameter("lab", "Select the lab you are working on",
-                   portal.ParameterType.STRING, lablist[2], lablist)
+                   portal.ParameterType.STRING, lablist[0], lablist)
 
 # Number of server machines
 pc.defineParameter("n_servers", "Number of server machines",
@@ -68,13 +68,13 @@ portal.context.verifyParameters()
 
 class Parameters(pg.Resource):
     def _write(self, root):
-        ns = "{http://www.protogeni.net/resources/rspec/ext/johnsond/1}"
-        paramXML = "%sparameter" % (ns,)
+        ns = "{http://www.protogeni.net/resources/rspec/ext/profile-parameters/1}"
+        paramXML = "%sdata_item" % (ns,)
 
-        el = ET.SubElement(root,"%sprofile_parameters" % (ns,))
+        el = ET.SubElement(root,"%sdata_set" % (ns,))
 
         param = ET.SubElement(el,paramXML)
-        param.text = 'n_servers=%u' % (params.n_servers,)
+        param.text = 'n_servers=%u' % int(params.n_servers)
 
         return el
 
