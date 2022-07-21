@@ -23,9 +23,30 @@ lablist = [
 pc.defineParameter("lab", "Select the lab you are working on",
                    portal.ParameterType.STRING, lablist[0], lablist)
 
+# Retrieve the values the user specifies during instantiation
+params = pc.bindParameters()
+
+if params.lab == 'lab0':
+        params.n_servers = 3
+        params.n_clients = 1
+        params.mode = 'default'
+elif params.lab == 'lab1':
+        params.n_servers = 3
+        params.n_clients = 1
+        params.mode = 'passthru'
+elif params.lab == 'lab2':
+        params.n_servers = 1
+        params.n_clients = 1
+        params.mode = 'default'
+else:
+    pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
+
+# Abort execution if there are any errors, and report them
+portal.context.verifyParameters()
+
 # Number of server machines
 pc.defineParameter("n_servers", "Number of server machines",
-                   portal.ParameterType.INTEGER, 3, advanced=True)
+                   portal.ParameterType.INTEGER, params.n_servers)
 
 # Number of client machines
 pc.defineParameter("n_clients", "Number of client machines",
@@ -49,24 +70,6 @@ if params.n_clients < 1 or params.n_clients > 1:
 
 # Abort execution if there are any errors, and report them
 portal.context.verifyParameters()
-
-if params.lab == 'lab0':
-        params.n_servers = 3
-        params.n_clients = 1
-        params.mode = 'default'
-elif params.lab == 'lab1':
-        params.n_servers = 3
-        params.n_clients = 1
-        params.mode = 'passthru'
-elif params.lab == 'lab2':
-        params.n_servers = 1
-        params.n_clients = 1
-        params.mode = 'default'
-else:
-    pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
-
-# Retrieve the values the user specifies during instantiation
-params = pc.bindParameters()
 
 # Create starfish network topology
 mylink = request.Link('mylink')
