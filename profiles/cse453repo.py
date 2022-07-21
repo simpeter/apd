@@ -20,7 +20,9 @@ request = pc.makeRequestRSpec()
 lablist = [
     ('lab0', 'Lab 0'),
     ('lab1', 'Lab 1'),
-    ('lab2', 'Lab 2')]
+    ('lab2', 'Lab 2'),
+    ('lab3', 'Lab 3'),
+    ('lab4', 'Lab 4')]
 pc.defineParameter("lab", "Select the lab you are working on",
                    portal.ParameterType.STRING, lablist[0], lablist)
 
@@ -60,6 +62,7 @@ elif params.lab == 'lab2':
         params.n_servers = 1
         params.n_clients = 1
         params.mode = 'default'
+elif params.lab == 'lab4':
 else:
     pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
 
