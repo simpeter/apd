@@ -62,9 +62,9 @@ elif params.lab == 'lab2':
         params.n_servers = 1
         params.n_clients = 1
         params.mode = 'default'
-elif params.lab == 'lab4':
 else:
-    pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
+    if params.lab != 'lab4':
+        pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
 
 # Abort execution if there are any errors, and report them
 portal.context.verifyParameters()
