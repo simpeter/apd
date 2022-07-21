@@ -79,7 +79,7 @@ class Parameters(pg.Resource):
         return el
 
 parameters = Parameters()
-pg.addResource(parameters)
+request.addResource(parameters)
 
 # Create starfish network topology
 mylink = request.Link('mylink')
