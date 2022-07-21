@@ -66,12 +66,15 @@ else:
 # Abort execution if there are any errors, and report them
 portal.context.verifyParameters()
 
+# Add rewritten parameters to the manifest
 class Parameters(pg.Resource):
     def _write(self, root):
         ns = "{http://www.protogeni.net/resources/rspec/ext/profile-parameters/1}"
-        paramXML = "%sdata_item" % (ns,)
+        # paramXML = "%sdata_item" % (ns,)
+        paramXML = "data_item"
 
-        el = ET.SubElement(root,"%sdata_set" % (ns,))
+        # el = ET.SubElement(root,"%sdata_set" % (ns,))
+        el = ET.SubElement(root,"data_set")
 
         param = ET.SubElement(el,paramXML)
         param.text = 'n_servers=%u' % int(params.n_servers)
