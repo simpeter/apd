@@ -37,7 +37,7 @@ params = pc.bindParameters()
 # Check parameter validity
 if params.n_servers < 1 or params.n_servers > 10:
     pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 10 servers.", ["n_servers"]))
-if params.n_clients < 1 or params.n_clients > 1:
+if params.n_clients < 1 or params.n_clients > 2:
     pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 1 clients.", ["n_clients"]))
 
 # Abort execution if there are any errors, and report them
