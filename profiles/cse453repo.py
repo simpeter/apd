@@ -21,7 +21,7 @@ lablist = [
     ('lab1', 'Lab 1'),
     ('lab2', 'Lab 2')]
 pc.defineParameter("lab", "Select the lab you are working on",
-                   portal.ParameterType.STRING, lablist[0], lablist)
+                   portal.ParameterType.STRING, lablist[2], lablist)
 
 # Retrieve the values the user specifies during instantiation
 params = pc.bindParameters()
