@@ -25,11 +25,11 @@ pc.defineParameter("lab", "Select the lab you are working on",
 
 # Number of server machines
 pc.defineParameter("n_servers", "Number of server machines",
-                   portal.ParameterType.INTEGER, 3, advanced=True, min=1, max=5)
+                   portal.ParameterType.INTEGER, 3, advanced=True)
 
 # Number of client machines
 pc.defineParameter("n_clients", "Number of client machines",
-                   portal.ParameterType.INTEGER, 1, advanced=True, min=1, max=1)
+                   portal.ParameterType.INTEGER, 1, advanced=True)
 
 # Parameter to set virtualized mode or not
 modelist = [
