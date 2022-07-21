@@ -22,8 +22,8 @@ sudo docker stack deploy --compose-file docker-compose-swarm.yml hotelreservatio
 sudo docker stack services hotelreservation
 
 # Evaluate (from a client machine across Internet, but also locally works)
-#sudo apt install python3-aiohttp libssl-dev libz-dev luarocks lua-socket
-#sudo luarocks install luasocket
+sudo apt install python3-aiohttp libssl-dev libz-dev luarocks lua-socket
+sudo luarocks install luasocket
 make -C DeathStarBench/hotelReservation/wrk2
 ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -L -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://localhost:5000 -R 10000
 
