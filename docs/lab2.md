@@ -8,4 +8,4 @@ Measure maximum throughput with default deployment.
 
 Now, `start_tmpfs.sh`.
 
-Redeploy and remeasure. Perf difference?
+Deploy `hotelreservation-tmpfs.yml` and remeasure. Perf difference?

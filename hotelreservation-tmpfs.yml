@@ -110,6 +110,8 @@ services:
       - TLS
     image: igorrudyk1/hotel_reserv_reserve_single_node:latest
     entrypoint: reservation
+    logging:
+      driver: none
     depends_on:
       - mongodb-reservation
       - memcached-reserve
@@ -170,7 +172,8 @@ services:
       - MEMCACHED_CACHE_SIZE=128
       - MEMCACHED_THREADS=2
     logging:
-      driver: none
+      options:
+        max-size: 50m
     deploy:
       replicas: 1
       restart_policy:
