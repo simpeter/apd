@@ -2,6 +2,8 @@
 
 sudo mkdir -p /mnt/geo /mnt/profile /mnt/rate /mnt/recommendation /mnt/reservation /mnt/user
 
+sudo umount /mnt/geo /mnt/profile /mnt/rate /mnt/recommendation /mnt/reservation /mnt/user
+
 sudo mount -ttmpfs tmpfs /mnt/geo
 sudo mount -ttmpfs tmpfs /mnt/profile
 sudo mount -ttmpfs tmpfs /mnt/rate
