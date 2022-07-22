@@ -1,6 +1,8 @@
 # Lab 2: Storage
 
-Run with 1 machine (`default` mode).
+Run `cse453` cloudlab profile with `lab2` parameter.
+
+`start_docker.sh`.
 
 Measure maximum throughput with default deployment.
 
