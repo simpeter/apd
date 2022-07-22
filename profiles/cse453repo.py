@@ -22,7 +22,7 @@ lablist = [
     ('lab1', 'Lab 1'),
     ('lab2', 'Lab 2'),
     ('lab3', 'Lab 3'),
-    ('lab4', 'Lab 4')]
+    ('lab4', 'Lab 4 - Advanced options available')]
 pc.defineParameter("lab", "Select the lab you are working on",
                    portal.ParameterType.STRING, lablist[0], lablist)
 
