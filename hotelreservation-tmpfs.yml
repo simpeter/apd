@@ -170,8 +170,7 @@ services:
       - MEMCACHED_CACHE_SIZE=128
       - MEMCACHED_THREADS=2
     logging:
-      options:
-        max-size: 50m
+      driver: none
     deploy:
       replicas: 1
       restart_policy:
@@ -219,6 +218,7 @@ services:
 
   mongodb-reservation:
     image: mongo:4.4.6
+    command: --journalCommitInterval 1
     hostname: reservation-db
     volumes:
       - /mnt/reservation:/data/db
