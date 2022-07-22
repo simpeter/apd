@@ -65,21 +65,25 @@ local function recommend()
 end
 
 local function reserve()
-  local in_date = math.random(9, 23)
-  local out_date = in_date + math.random(1, 5)
+  local in_date = math.random(1, 23)
+  local out_date = in_date + 1
+  local in_year = math.random(1000, 9940)
+  local in_month = math.random(10, 12)
 
   local in_date_str = tostring(in_date)
+  local in_year_str = tostring(in_year)
+  local in_month_str = tostring(in_month)
   if in_date <= 9 then
-    in_date_str = "2015-04-0" .. in_date_str 
+    in_date_str = in_year_str .. "-" .. in_month_str .. "-0" .. in_date_str 
   else
-    in_date_str = "2015-04-" .. in_date_str
+    in_date_str = in_year_str .. "-" .. in_month_str .. "-" .. in_date_str 
   end
 
   local out_date_str = tostring(out_date)
   if out_date <= 9 then
-    out_date_str = "2015-04-0" .. out_date_str 
+    in_date_str = in_year_str .. "-" .. in_month_str .. "-0" .. out_date_str 
   else
-    out_date_str = "2015-04-" .. out_date_str
+    in_date_str = in_year_str .. "-" .. in_month_str .. "-" .. out_date_str 
   end
 
   local hotel_id = tostring(math.random(1, 80))

@@ -134,6 +134,12 @@ What's the expected output?
 
 ## Run DeathStarBench in VMs and Test It
 
+Warning: Running the benchmark workload multiple times can give wrong
+results. For example, the default workload has a limited date range
+from which it reserves hotel beds. Once that range runs out, all
+requests return an error and the benchmark will have a very high
+throughput.
+
 ## Policies on Using CloudLab Resources
 
 1. Before you start your first experiment, please read this
