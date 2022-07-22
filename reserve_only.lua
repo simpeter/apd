@@ -81,9 +81,9 @@ local function reserve()
 
   local out_date_str = tostring(out_date)
   if out_date <= 9 then
-    in_date_str = in_year_str .. "-" .. in_month_str .. "-0" .. out_date_str 
+    out_date_str = in_year_str .. "-" .. in_month_str .. "-0" .. out_date_str 
   else
-    in_date_str = in_year_str .. "-" .. in_month_str .. "-" .. out_date_str 
+    out_date_str = in_year_str .. "-" .. in_month_str .. "-" .. out_date_str 
   end
 
   local hotel_id = tostring(math.random(1, 80))
