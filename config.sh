@@ -5,8 +5,6 @@ function geni_get_parameter()
     geni-get manifest | xpath -e "rspec/ns0:data_set/ns0:data_item[attribute::name = \"$1\"]/text()" -q
 }
 
-geni_get_parameter n_servers
-
 # Number of servers
 n_servers=`geni_get_parameter n_servers`
 
