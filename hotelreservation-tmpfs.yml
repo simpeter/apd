@@ -97,6 +97,8 @@ services:
       - TLS
     image: igorrudyk1/hotel_reserv_user_single_node:latest
     entrypoint: user
+    logging:
+      driver: none
     depends_on:
       - mongodb-user
       - consul
