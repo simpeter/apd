@@ -47,8 +47,8 @@ params = pc.bindParameters()
 # Check parameter validity
 if params.n_servers < 1 or params.n_servers > 10:
     pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 10 servers.", ["n_servers"]))
-if params.n_clients < 1 or params.n_clients > 1:
-    pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 1 clients.", ["n_clients"]))
+if params.n_clients < 1 or params.n_clients > 3:
+    pc.reportError(portal.ParameterError("You must choose at least 1 and no more than 3 clients.", ["n_clients"]))
 
 if params.lab == 'lab0':
         params.n_servers = 3
@@ -73,14 +73,15 @@ portal.context.verifyParameters()
 class Parameters(pg.Resource):
     def _write(self, root):
         ns = "{http://www.protogeni.net/resources/rspec/ext/profile-parameters/1}"
-        # paramXML = "%sdata_item" % (ns,)
-        paramXML = "data_item"
+        paramXML = "%sdata_item" % (ns,)
+        el = ET.SubElement(root,"%sdata_set" % (ns,))
 
-        # el = ET.SubElement(root,"%sdata_set" % (ns,))
-        el = ET.SubElement(root,"data_set")
-
-        param = ET.SubElement(el,paramXML)
-        param.text = 'n_servers=%u' % int(params.n_servers)
+        param = ET.SubElement(el,paramXML, name='n_servers')
+        param.text = '%u' % int(params.n_servers)
+        param = ET.SubElement(el,paramXML, name='n_clients')
+        param.text = '%u' % int(params.n_clients)
+        param = ET.SubElement(el,paramXML, name='mode')
+        param.text = params.mode
 
         return el
 
