@@ -132,13 +132,14 @@ done
 wait
 
 # Install DeathStarBench
-# XXX: Can replace with a copy of hotelreservation.yml into VM
-sudo lxc exec vm1 -- sh -c "
-sudo apt-get install --yes git
-mkdir projects
-cd projects
-git clone -n https://github.com/delimitrou/DeathStarBench.git
-cd DeathStarBench && git checkout ff0c39df331106bbf1e20be5724be718f44b73f1
-sudo docker swarm init"
+sudo lxc cp hotelreservation.yml vm1:/root
+sudo lxc exec vm1 -- sh -c "sudo docker swarm init"
+# sudo lxc exec vm1 -- sh -c "
+# sudo apt-get install --yes git
+# mkdir projects
+# cd projects
+# git clone -n https://github.com/delimitrou/DeathStarBench.git
+# cd DeathStarBench && git checkout ff0c39df331106bbf1e20be5724be718f44b73f1
+# sudo docker swarm init"
 
 echo "Add other VMs via the join command presented by docker"

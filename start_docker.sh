@@ -10,5 +10,6 @@ for i in `seq 0 $((n_servers - 1))`; do
     ssh -oStrictHostKeyChecking=no server$i "curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh"
 done
 
-sudo docker swarm init --advertise-addr 10.10.1.1
+IP=`ip ad show | grep -s '10.10.' | awk '{ print $2 }'` # Local network IP
+sudo docker swarm init --advertise-addr ${IP%/*}
 echo "Add other servers via the join command presented by docker"
