@@ -10,7 +10,7 @@ sudo sh get-docker.sh
 
 # Run single server
 cd projects/DeathStarBench/hotelReservation/
-docker-compose up -d
+sudo docker compose up -d --build
 
 # Run on cluster
 IP=`ip ad show | grep -s '10.10.' | awk '{ print $2 }'` # Local network IP
@@ -31,6 +31,7 @@ make -C DeathStarBench/hotelReservation/wrk2
 # Test
 curl 'http://server0:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
 curl 'http://server0:5000/user?username=Cornell_1&password=1111111111'
+curl 'http://server0:5000/reservation?inDate=2010-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
 
 # Trace
 Connect to port 16686 on whichever server runs the jaeger service
@@ -39,3 +40,6 @@ Connect to port 16686 on whichever server runs the jaeger service
 sudo docker container ls
 sudo docker exec -it 7a61f3dc26d1 bash
 journalctl -u docker.service
+
+# Stopping and cleanup
+sudo docker volume prune
