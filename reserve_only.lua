@@ -65,8 +65,8 @@ local function recommend()
 end
 
 local function reserve()
-  local in_date = math.random(1, 23)
-  local out_date = in_date + 5
+  local in_date = math.random(1, 18)
+  local out_date = in_date + 10
   local in_year = math.random(1000, 9940)
   local in_month = math.random(10, 12)
 
