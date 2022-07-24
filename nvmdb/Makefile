@@ -1,0 +1,1 @@
+nvmdb: nvmdb.o
