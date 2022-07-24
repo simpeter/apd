@@ -4,6 +4,8 @@
 # Run single server
 cd DeathStarBench/hotelReservation/
 sudo docker compose up -d --build
+sudo docker compose -f docker-compose-localmounts.yml up -d --build
+sudo docker compose -f hotelreservation-nvmdb.yml up -d --build
 
 # Run on cluster
 sudo docker stack deploy --compose-file hotelreservation.yml hotelreservation
@@ -32,6 +34,8 @@ sudo docker exec -it 7a61f3dc26d1 bash
 journalctl -u docker.service
 
 # Stopping and cleanup
-sudo docker stack rm hotelreservation
-sudo docker compose down
-sudo docker volume prune
+sudo docker stack rm hotelreservation && sudo docker volume prune
+sudo docker compose down && sudo docker volume prune
+
+sudo umount /mnt/*
+sudo rm -rf /mnt/*
