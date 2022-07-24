@@ -15,10 +15,12 @@ have a CloudLab account, simply request to join the `cse453` project.
 
 ## Start an Experiment
 
-To start a new experiment, go to your CloudLab dashboard's  [`Project Profile`](https://www.cloudlab.us/user-dashboard.php#projectprofiles) page. Go to `cse453repo` profile and click `instantiate` button. 
-You can configure the number of machines you need (maximum 10) and select mode. 
-Click on `Next` to move to the next page. Name and choose the cluster you want to start your
-experiment. For more information on the hardware CloudLab provides, please refer to this [page](http://docs.cloudlab.us/hardware.html).
+To start a new experiment, follow these steps:
+
+1. Select a profile: go to your CloudLab dashboard's  [`Project Profile`](https://www.cloudlab.us/user-dashboard.php#projectprofiles) page. Go to `cse453repo` profile and click `instantiate` button. 
+2. Parameterize: select the lab you are working on. Optionally, you can configure the number of server machines (maximum 10) and the number of client machines. Click on `Next` to move to the next page.
+3. Finalize: Name and choose the cluster you want to start your experiment. For more information on the hardware CloudLab provides, please refer to this [page](http://docs.cloudlab.us/hardware.html). We also recommend checking the [resource availability](https://www.cloudlab.us/resinfo.php) page to make sure you select a cluster with enough machines.
+4. Schedule: Optionally, select when you would like to start this experiment. If you want to start your experiment immediately, skip this step and click `Finish`.
 
 It may take a few mintues for the experiment to start. Once the experiment is created, you should be able to view the
 information under the [`Experiments`](https://www.cloudlab.us/user-dashboard.php#experiments) page.
