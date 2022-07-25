@@ -121,7 +121,7 @@ Running 10s test @ http://server0:5000
 Requests/sec:   5453.90
 Transfer/sec:      2.25MB
 ```
-
+<!-- 
 ## Starting VMs
 
 Select the virtualized option in the cse453repo profile. These come
@@ -140,7 +140,7 @@ Warning: Running the benchmark workload multiple times can give wrong
 results. For example, the default workload has a limited date range
 from which it reserves hotel beds. Once that range runs out, all
 requests return an error and the benchmark will have a very high
-throughput.
+throughput. -->
 
 ## Policies on Using CloudLab Resources
 
