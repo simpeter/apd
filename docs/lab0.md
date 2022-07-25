@@ -18,12 +18,14 @@ have a CloudLab account, simply request to join the `cse453` project.
 To start a new experiment, follow these steps:
 
 1. Select a profile: go to your CloudLab dashboard's  [`Project Profile`](https://www.cloudlab.us/user-dashboard.php#projectprofiles) page. Go to `cse453repo` profile and click `instantiate` button. 
-2. Parameterize: select the lab you are working on. Optionally, you can configure the number of server machines (maximum 10) and the number of client machines. Click on `Next` to move to the next page.
+2. Parameterize: select the lab you are working on. Optionally, you can configure the number of server machines (maximum 10) and the number of client machines (maximum 3). Click on `Next` to move to the next page.
 3. Finalize: Name and choose the cluster you want to start your experiment. For more information on the hardware CloudLab provides, please refer to this [page](http://docs.cloudlab.us/hardware.html). We also recommend checking the [resource availability](https://www.cloudlab.us/resinfo.php) page to make sure you select a cluster with enough machines.
 4. Schedule: Optionally, select when you would like to start this experiment. If you want to start your experiment immediately, skip this step and click `Finish`.
 
 It may take a few mintues for the experiment to start. Once the experiment is created, you should be able to view the
 information under the [`Experiments`](https://www.cloudlab.us/user-dashboard.php#experiments) page.
+
+Note: For each lab, you will create one or more client machines and one or more server machines. You will deploy the applications on server machines and run the load generator on the client machines.
 
 ## Log into Experiment Machines
 
@@ -31,71 +33,57 @@ Once the experiment is ready (this can take a few minutes), click
 `List View`, and you will find SSH commands to access each node. On the
 same tab, you can also reboot/reload your nodes if something goes wrong.
 
-<!-- ## Find a Client Machine at UW -->
-
 ## Run iperf
 
 [iperf](https://iperf.fr/iperf-doc.php) is a tool for network throughput measurements between two hosts (a client that generates traffic and a server that receives traffic). You'll use iperf to measure the bandwidth between nodes in your experiment. <br />
-Step 1: Find the ip address of the server
+Step 1: Log in and find the ip address of one of the server machines.
 ```console
-machine0:~> ifconfig | grep -s '10.10.' | awk '{ print $2 }'
+user@server0:~$ ifconfig | grep -s '10.10.' | awk '{ print $2 }'
 10.10.1.1
 ```
 
 On the server side:
 ```console
-machine0:~> iperf -s
+user@server0:~$ iperf -s
 ------------------------------------------------------------
 Server listening on TCP port 5001
 TCP window size:  128 KByte (default)
 ------------------------------------------------------------
-[  4] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 52910
+[  4] local 10.10.1.1 port 5001 connected with 10.10.1.4 port 49842
 [ ID] Interval       Transfer     Bandwidth
+[  4]  0.0-10.0 sec  11.0 GBytes  9.40 Gbits/sec
 [  4]  0.0-10.0 sec  11.0 GBytes  9.41 Gbits/sec
 ```
-On the client side:
+Step 2: Log in one of the client machines:
 ```console
-machine1:~> iperf -c 10.10.1.1
+user@client0:~$ iperf -c 10.10.1.1
 ------------------------------------------------------------
 Client connecting to 10.10.1.1, TCP port 5001
-TCP window size: 4.00 MByte (default)
+TCP window size: 3.79 MByte (default)
 ------------------------------------------------------------
-[  3] local 10.10.1.2 port 52910 connected with 10.10.1.1 port 5001
+[  3] local 10.10.1.4 port 49842 connected with 10.10.1.1 port 5001
 [ ID] Interval       Transfer     Bandwidth
-[  3]  0.0-10.0 sec  11.0 GBytes  9.42 Gbits/sec
+[  3]  0.0-10.0 sec  11.0 GBytes  9.41 Gbits/sec
 ```
 
-How to find the ip address? What's the expected output?
+You should be able to get a similar result. 
 
 ## Install and Start DeathStarBench on Bare Metal Machines
-We will use docker and docker compose to run 
+ssh into the `server0` node.
 
 ```bash
-# Install docker and docker compose on each machine
-mkdir projects
-cd projects
-git clone https://github.com/delimitrou/DeathStarBench.git
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-# TODO: install docker-compse
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+git clone --recurse-submodules https://gitlab.cs.washington.edu/syslab/cse453-cloud-project.git
+cd cse453-cloud-project
 
-# Set up docker swarm
-IP=`ip ad show | grep -s '10.10.' | awk '{ print $2 }'` # Local network IP
-sudo docker swarm init --advertise-addr ${IP%/*}
-#Login to all worker nodes and run the join command displayed by swarm init
-sudo docker stack deploy --compose-file docker-compose-swarm.yml hotelreservation
+# This script will set up docker and docker swarm. Follow the instructions in the output to add other servers as workers (via `docker swarm join`).
+sudo bash start_docker.sh
 
-# Start hotel reservation application (run on a single machine)
-cd DeathStarBench/hotelReservation/
-docker-compose up -d
+cd DeathStarBench/hotelReservation
+sudo docker compose up -d --build
+sudo docker compose -f docker-compose-localmounts.yml up -d --build
+sudo docker compose -f hotelreservation-nvmdb.yml up -d --build
 
-# Show services running
-sudo docker stack services hotelreservation
 ```
-
-Starting it up
 
 ## Testing DeathStarBench
 
