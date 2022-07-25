@@ -78,37 +78,49 @@ cd cse453-cloud-project
 # This script will set up docker and docker swarm. Follow the instructions in the output to add other servers as workers (via `docker swarm join`).
 sudo bash start_docker.sh
 
+
+# Deploy the hotel reservation applicaion
 cd DeathStarBench/hotelReservation
 sudo docker compose up -d --build
 sudo docker compose -f docker-compose-localmounts.yml up -d --build
 sudo docker compose -f hotelreservation-nvmdb.yml up -d --build
 
+# Check the status of deployment
+sudo docker service ls
 ```
+Make sure all services are running before you move to the next section.
 
-## Testing DeathStarBench
-
-```bash
-# Test
-curl 'http://amd220.utah.cloudlab.us:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
-curl 'http://amd220.utah.cloudlab.us:5000/user?username=Cornell_1&password=1111111111'
+## Testing DeathStarBench using curl
+Once all services are running, ssh into one of the client machines. 
+```console
+user@client0:~$ curl 'http://server0:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
+{"message":"Reserve successfully!"}
+user@client0:~$ curl 'http://server0:5000/user?username=Cornell_1&password=1111111111'
+{"message":"Login successfully!"}
 ```
+You should be able to get the same result.
 
 ## Installing wrk2 on Client Machine
-
-Look at docker_example.sh for prereqs
-```
-# Evaluate (from a client machine across Internet, but also locally works)
-#sudo apt install python3-aiohttp libssl-dev libz-dev luarocks lua-socket
-#sudo luarocks install luasocket
-make -C DeathStarBench/hotelReservation/wrk2
-./wrk2/wrk -D exp -t 10 -c 100 -d 10 -L -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://localhost:5000 -R 10000
+We will use wrk2, a HTTP benchmarking tool, as the load generator. You will install wrk2 on client machines in this step.
+```bash
+# Install wrk2
+cd cse453-cloud-project
+sudo bash start_client.sh
 ```
 
-## Testing wrk2
-
-Run the default experiment (see docker_example.sh)
-
-What's the expected output?
+## Testing wrk2 on Client Machine
+Once wrk2 is installed, you can test it with the following command.
+```console
+user@client0:~/cse453-cloud-project/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 10000
+Running 10s test @ http://server0:5000
+  10 threads and 100 connections
+  Thread Stats   Avg      Stdev     99%   +/- Stdev
+    Latency     2.29s     1.32s    4.76s    58.85%
+    Req/Sec       -nan      -nan   0.00      0.00%
+  54504 requests in 9.99s, 22.50MB read
+Requests/sec:   5453.90
+Transfer/sec:      2.25MB
+```
 
 ## Starting VMs
 
