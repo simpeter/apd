@@ -8,8 +8,13 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <pthread.h>
 
-#define PORT	27017
+#define DEBUG(fmt, ...) \
+  fprintf(stderr, "TID %lu: " fmt, pthread_self(), ##__VA_ARGS__);
+
+#define PORT		27017
+#define MAX_BUF		4096
 
 #define OP_MSG		2013
 #define OP_REPLY	1
@@ -18,13 +23,14 @@
 #define TYPE_NONE	0
 #define TYPE_STRING	2
 #define TYPE_DOCUMENT	3
+#define TYPE_INT32	0x10
 
 struct MsgHeader {
     int32_t   messageLength; // total message size, including this
     int32_t   requestID;     // identifier for this message
     int32_t   responseTo;    // requestID from the original request
     int32_t   opCode;        // message type
-};
+}  __attribute__((packed));
 
 struct Op_Query {
   struct MsgHeader header;                 // standard message header
@@ -33,7 +39,16 @@ struct Op_Query {
   int32_t     numberToSkip;           // number of documents to skip
   int32_t     numberToReturn;         // number of documents to return in the first OP_REPLY batch
   int32_t	length;
-};
+} __attribute__((packed));
+
+struct Admin_Op_Query {
+  struct MsgHeader header;                 // standard message header
+  int32_t     flags;                  // bit values of query options.
+  char	      fullCollectionName[11];	// admin.$cmd
+  int32_t     numberToSkip;           // number of documents to skip
+  int32_t     numberToReturn;         // number of documents to return in the first OP_REPLY batch
+  int32_t	length;
+}  __attribute__((packed));
 
 struct Op_Reply {
   struct MsgHeader header;         // standard message header
@@ -42,7 +57,7 @@ struct Op_Reply {
   int32_t     startingFrom;   // where in the cursor this reply is starting
   int32_t     numberReturned; // number of documents in the reply
   int32_t	length;
-};
+}  __attribute__((packed));
 
 static char in1_bytes[] = {
   0x3a, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
@@ -154,17 +169,144 @@ static char count_response[] = {
   0x00, 0xf0, 0x3f, 0x00
 };
 
-static int connfd;
+static char createindexes_response[] = {
+  0x84, 0x00, 0x00, 0x00, 0x58, 0x00, 0x00, 0x00,
+  0xa9, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+  0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x01, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00,
+  0x10, 0x6e, 0x75, 0x6d, 0x49, 0x6e, 0x64, 0x65,
+  0x78, 0x65, 0x73, 0x42, 0x65, 0x66, 0x6f, 0x72,
+  0x65, 0x00, 0x02, 0x00, 0x00, 0x00, 0x10, 0x6e,
+  0x75, 0x6d, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x65,
+  0x73, 0x41, 0x66, 0x74, 0x65, 0x72, 0x00, 0x02,
+  0x00, 0x00, 0x00, 0x02, 0x6e, 0x6f, 0x74, 0x65,
+  0x00, 0x1a, 0x00, 0x00, 0x00, 0x61, 0x6c, 0x6c,
+  0x20, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x65, 0x73,
+  0x20, 0x61, 0x6c, 0x72, 0x65, 0x61, 0x64, 0x79,
+  0x20, 0x65, 0x78, 0x69, 0x73, 0x74, 0x00, 0x01,
+  0x6f, 0x6b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0xf0, 0x3f, 0x00
+};
 
-static void respond(struct Op_Reply *response, ssize_t size, struct Op_Query *query)
+static char getnonce_response[] = {
+  0x51, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
+  0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+  0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x01, 0x00, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+  0x02, 0x6e, 0x6f, 0x6e, 0x63, 0x65, 0x00, 0x11,
+  0x00, 0x00, 0x00, 0x33, 0x34, 0x34, 0x33, 0x35,
+  0x33, 0x61, 0x66, 0x66, 0x31, 0x66, 0x39, 0x64,
+  0x61, 0x37, 0x34, 0x00, 0x01, 0x6f, 0x6b, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x3f,
+  0x00
+};
+
+static char ping_response[] = {
+  0x35, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00,
+  0x05, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+  0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x01, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00,
+  0x01, 0x6f, 0x6b, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0xf0, 0x3f, 0x00
+};
+
+static char ismaster_response[] = {
+  0x3f, 0x01, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00,
+  0x03, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+  0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x01, 0x00, 0x00, 0x00, 0x1b, 0x01, 0x00, 0x00,
+  0x08, 0x69, 0x73, 0x6d, 0x61, 0x73, 0x74, 0x65,
+  0x72, 0x00, 0x01, 0x03, 0x74, 0x6f, 0x70, 0x6f,
+  0x6c, 0x6f, 0x67, 0x79, 0x56, 0x65, 0x72, 0x73,
+  0x69, 0x6f, 0x6e, 0x00, 0x2d, 0x00, 0x00, 0x00,
+  0x07, 0x70, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73,
+  0x49, 0x64, 0x00, 0x62, 0xdc, 0xd0, 0x4c, 0x47,
+  0x37, 0xa0, 0x43, 0xf9, 0xe9, 0xf0, 0x46, 0x12,
+  0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x10, 0x6d, 0x61, 0x78, 0x42, 0x73, 0x6f,
+  0x6e, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53,
+  0x69, 0x7a, 0x65, 0x00, 0x00, 0x00, 0x00, 0x01,
+  0x10, 0x6d, 0x61, 0x78, 0x4d, 0x65, 0x73, 0x73,
+  0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x42,
+  0x79, 0x74, 0x65, 0x73, 0x00, 0x00, 0x6c, 0xdc,
+  0x02, 0x10, 0x6d, 0x61, 0x78, 0x57, 0x72, 0x69,
+  0x74, 0x65, 0x42, 0x61, 0x74, 0x63, 0x68, 0x53,
+  0x69, 0x7a, 0x65, 0x00, 0xa0, 0x86, 0x01, 0x00,
+  0x09, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x54, 0x69,
+  0x6d, 0x65, 0x00, 0x4b, 0xa4, 0x8e, 0x2e, 0x82,
+  0x01, 0x00, 0x00, 0x10, 0x6c, 0x6f, 0x67, 0x69,
+  0x63, 0x61, 0x6c, 0x53, 0x65, 0x73, 0x73, 0x69,
+  0x6f, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75,
+  0x74, 0x4d, 0x69, 0x6e, 0x75, 0x74, 0x65, 0x73,
+  0x00, 0x1e, 0x00, 0x00, 0x00, 0x10, 0x63, 0x6f,
+  0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+  0x49, 0x64, 0x00, 0x01, 0x00, 0x00, 0x00, 0x10,
+  0x6d, 0x69, 0x6e, 0x57, 0x69, 0x72, 0x65, 0x56,
+  0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x10, 0x6d, 0x61, 0x78, 0x57,
+  0x69, 0x72, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69,
+  0x6f, 0x6e, 0x00, 0x09, 0x00, 0x00, 0x00, 0x08,
+  0x72, 0x65, 0x61, 0x64, 0x4f, 0x6e, 0x6c, 0x79,
+  0x00, 0x00, 0x01, 0x6f, 0x6b, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0xf0, 0x3f, 0x00
+};
+
+static int __thread connfd;
+static _Atomic int32_t requestID = 7;
+
+static void respond(struct Op_Reply *response, ssize_t size, struct MsgHeader *h)
 {
-  static int32_t requestID = 7;
-
   response->header.requestID = requestID++;
-  response->header.responseTo = query->header.requestID;
+  response->header.responseTo = h->requestID;
 
   ssize_t len = send(connfd, response, size, 0);
   assert(len == size);
+}
+
+static char *parse_admin(char *buf, char *end, struct Admin_Op_Query *query)
+{
+  for(char *b = buf; b < end;) {
+    uint8_t *kind = b++;
+
+    switch(*kind) {
+    case TYPE_INT32:
+      {
+	size_t tlen = strlen(b) + 1;
+	char *sn = b;
+	DEBUG("Got int32 (%s).\n", sn);
+	b += tlen;
+	if(!strcmp(sn, "getnonce")) {
+	  DEBUG("Sending getnonce response\n");
+	  respond((struct Op_Reply *)getnonce_response, sizeof(getnonce_response), &query->header);
+	  return end;	// XXX: Stopping parsing right away
+	}
+
+	if(!strcmp(sn, "ping")) {
+	  DEBUG("Sending ping response\n");
+	  respond((struct Op_Reply *)ping_response, sizeof(ping_response), &query->header);
+	  return end;	// XXX: Stopping parsing right away
+	}
+
+	if(!strcmp(sn, "ismaster")) {
+	  DEBUG("Sending ismaster response\n");
+	  respond((struct Op_Reply *)ismaster_response, sizeof(ismaster_response), &query->header);
+	  return end;	// XXX: Stopping parsing right away
+	}
+      }
+      break;
+
+    default:
+      assert(!"NYI");
+      break;
+    }
+  }
+
+  return end;
 }
 
 static char *parse(char *buf, char *end, struct Op_Query *query)
@@ -183,11 +325,16 @@ static char *parse(char *buf, char *end, struct Op_Query *query)
 	char *sn = b;
 	int32_t *len = (void *)(b + tlen);
 	char *sv = b + tlen + sizeof(int32_t);
-	fprintf(stderr, "Got string (%s): len = %d, %s\n", sn, *len, sv);
+	DEBUG("Got string (%s): len = %d, %s\n", sn, *len, sv);
 	b += tlen + sizeof(int32_t) + *len;
 	if(!strcmp(sn, "count")) {
-	  fprintf(stderr, "Sending count response\n");
-	  respond((struct Op_Reply *)count_response, sizeof(count_response), query);
+	  DEBUG("Sending count response\n");
+	  respond((struct Op_Reply *)count_response, sizeof(count_response), &query->header);
+	  return end;	// XXX: Stopping parsing right away
+	}
+	if(!strcmp(sn, "createIndexes")) {
+	  DEBUG("Sending createIndexes response\n");
+	  respond((struct Op_Reply *)createindexes_response, sizeof(createindexes_response), &query->header);
 	  return end;	// XXX: Stopping parsing right away
 	}
       }
@@ -197,7 +344,7 @@ static char *parse(char *buf, char *end, struct Op_Query *query)
       {
 	size_t tlen = strlen(b) + 1;
 	char *sn = b;
-	fprintf(stderr, "Got document (%s)\n", sn);
+	DEBUG("Got document (%s)\n", sn);
 	int32_t *dlen = (void *)(b + tlen);
 	// Recurse
 	b = parse(b + tlen + sizeof(int32_t), b + tlen + sizeof(int32_t) + *dlen, query);
@@ -213,9 +360,171 @@ static char *parse(char *buf, char *end, struct Op_Query *query)
   return end;
 }
 
+static void *admin_thread(void *arg)
+{
+  // Handshake
+  char buf[MAX_BUF];
+
+  connfd = (intptr_t)arg;
+
+  ssize_t n = read(connfd, buf, sizeof(in1_bytes));
+  assert(n == sizeof(in1_bytes));
+  if(memcmp(buf, in1_bytes, sizeof(in1_bytes) != 0)) {
+    DEBUG("Received: ");
+    for(int i = 0; i < sizeof(in1_bytes); i++) {
+      DEBUG("%x ", buf[i]);
+    }
+    DEBUG("\n");
+    exit(EXIT_FAILURE);
+  }
+  n = write(connfd, out1_bytes, sizeof(out1_bytes));
+  assert(n == sizeof(out1_bytes));
+
+  n = read(connfd, buf, sizeof(in2_bytes));
+  assert(n == sizeof(in2_bytes));
+  if(memcmp(buf, in2_bytes, sizeof(in2_bytes) != 0)) {
+    DEBUG("Received: ");
+    for(int i = 0; i < sizeof(in2_bytes); i++) {
+      DEBUG("%x ", buf[i]);
+    }
+    DEBUG("\n");
+    exit(EXIT_FAILURE);
+  }
+  n = write(connfd, out2_bytes, sizeof(out2_bytes));
+  assert(n == sizeof(out2_bytes));
+
+  n = read(connfd, buf, sizeof(in3_bytes));
+  assert(n == sizeof(in3_bytes));
+  if(memcmp(buf, in3_bytes, sizeof(in3_bytes) != 0)) {
+    DEBUG("Received: ");
+    for(int i = 0; i < sizeof(in3_bytes); i++) {
+      DEBUG("%x ", buf[i]);
+    }
+    DEBUG("\n");
+    exit(EXIT_FAILURE);
+  }
+  n = write(connfd, out3_bytes, sizeof(out3_bytes));
+  assert(n == sizeof(out3_bytes));
+
+  for(;;) {
+    struct Op_Query *q = (void *)buf;
+    int n = read(connfd, buf, sizeof(struct Op_Query));
+    if(n == -1) {
+      perror("read");
+      exit(EXIT_FAILURE);
+    }
+
+    // Assert it's a query (that's all I know how to process)
+    assert(n == sizeof(struct Op_Query) || n == sizeof(struct Admin_Op_Query));
+    assert(q->header.opCode == OP_QUERY);
+
+    // Read the remaining query
+    int rn = read(connfd, buf + n, q->header.messageLength - n);
+    assert(rn == q->header.messageLength - n);
+
+    // Is it to the admin db?
+    if(!memcmp(q->fullCollectionName, "admin.$cmd", 10)) {
+      struct Admin_Op_Query *aq = (void *)buf;
+      DEBUG("Parsing admin query...\n");
+      char *nb = parse_admin(&buf[sizeof(struct Admin_Op_Query)], &buf[sizeof(struct Admin_Op_Query) + q->length], aq);
+      assert(nb == &buf[sizeof(struct Admin_Op_Query) + q->length]);
+      DEBUG("Done parsing\n");
+    } else {
+      // Has to be to the reservation-db
+      assert(!memcmp(q->fullCollectionName, "reservation-db.$cmd", 20));
+
+      DEBUG("Received: ");
+      for(int i = 0; i < n + rn; i++) {
+	fprintf(stderr, "%x ", buf[i]);
+      }
+      fprintf(stderr, "\n");
+      DEBUG("n = %d, %.*s\n", n, n, buf);
+      DEBUG("len = %u\n", q->header.messageLength);
+
+      // Parse query
+      /* DEBUG("Sleeping...\n"); */
+      /* sleep(20); */
+      DEBUG("Parsing...\n");
+      char *nb = parse(&buf[sizeof(struct Op_Query)], &buf[sizeof(struct Op_Query) + q->length], q);
+      assert(nb == &buf[sizeof(struct Op_Query) + q->length]);
+      DEBUG("Done parsing\n");
+    }
+  }
+
+  return NULL;
+}
+
+static void *server_thread(void *arg)
+{
+  // Handshake
+  char buf[MAX_BUF];
+
+  connfd = (intptr_t)arg;
+
+#if 0
+  ssize_t n = read(connfd, buf, sizeof(in1_bytes));
+  assert(n == sizeof(in1_bytes));
+  if(memcmp(buf, in1_bytes, sizeof(in1_bytes) != 0)) {
+    DEBUG("Received: ");
+    for(int i = 0; i < sizeof(in1_bytes); i++) {
+      DEBUG("%x ", buf[i]);
+    }
+    DEBUG("\n");
+    exit(EXIT_FAILURE);
+  }
+  n = write(connfd, out1_bytes, sizeof(out1_bytes));
+  assert(n == sizeof(out1_bytes));
+#endif
+
+  for(;;) {
+    struct Op_Query *q = (void *)buf;
+    int n = read(connfd, buf, sizeof(struct Op_Query));
+
+    // Assert it's a query (that's all I know how to process)
+    assert(n == sizeof(struct Op_Query) || n == sizeof(struct Admin_Op_Query));
+    assert(q->header.opCode == OP_QUERY);
+
+    // Read the remaining query
+    int rn = read(connfd, buf + n, q->header.messageLength - n);
+    assert(rn == q->header.messageLength - n);
+
+    // Is it to the admin db?
+    if(!memcmp(q->fullCollectionName, "admin.$cmd", 10)) {
+      struct Admin_Op_Query *aq = (void *)buf;
+      DEBUG("Parsing admin query...\n");
+      char *nb = parse_admin(&buf[sizeof(struct Admin_Op_Query)], &buf[sizeof(struct Admin_Op_Query) + q->length], aq);
+      assert(nb == &buf[sizeof(struct Admin_Op_Query) + q->length]);
+      DEBUG("Done parsing\n");
+    } else {
+      // Has to be to the reservation-db
+      assert(!memcmp(q->fullCollectionName, "reservation-db.$cmd", 20));
+
+      DEBUG("Received: ");
+      for(int i = 0; i < n + rn; i++) {
+	fprintf(stderr, "%x ", buf[i]);
+      }
+      fprintf(stderr, "\n");
+      DEBUG("n = %d, %.*s\n", n, n, buf);
+      DEBUG("len = %u\n", q->header.messageLength);
+
+      // Parse query
+      /* DEBUG("Sleeping...\n"); */
+      /* sleep(20); */
+      DEBUG("Parsing...\n");
+      char *nb = parse(&buf[sizeof(struct Op_Query)], &buf[sizeof(struct Op_Query) + q->length], q);
+      assert(nb == &buf[sizeof(struct Op_Query) + q->length]);
+      DEBUG("Done parsing\n");
+    }
+  }
+
+  return NULL;
+}
+
 int main(int argc, char *argv[])
 {
   struct sockaddr_in servaddr, cli;
+
+  DEBUG("NVMdb\n");
 
   // socket create and verification
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -242,85 +551,24 @@ int main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 
-  int len = sizeof(cli);
-  connfd = accept(sockfd, (struct sockaddr *)&cli, &len);
-  if (connfd < 0) {
-    perror("accept");
-    exit(EXIT_FAILURE);
-  }
-
-  // Handshake
-#define MAX_BUF	4096
-  static char buf[MAX_BUF];
-
-  ssize_t n = read(connfd, buf, sizeof(in1_bytes));
-  assert(n == sizeof(in1_bytes));
-  if(memcmp(buf, in1_bytes, sizeof(in1_bytes) != 0)) {
-    fprintf(stderr, "Received: ");
-    for(int i = 0; i < sizeof(in1_bytes); i++) {
-      fprintf(stderr, "%x ", buf[i]);
+  // Keep accepting connections and spawning threads for them
+  // XXX: The first connection is a special admin connection
+  for(int i = 0;; i++) {
+    int len = sizeof(cli);
+    intptr_t connfd = accept(sockfd, (struct sockaddr *)&cli, &len);
+    if (connfd < 0) {
+      perror("accept");
+      exit(EXIT_FAILURE);
     }
-    fprintf(stderr, "\n");
-    exit(EXIT_FAILURE);
-  }
-  n = write(connfd, out1_bytes, sizeof(out1_bytes));
-  assert(n == sizeof(out1_bytes));
 
-  n = read(connfd, buf, sizeof(in2_bytes));
-  assert(n == sizeof(in2_bytes));
-  if(memcmp(buf, in2_bytes, sizeof(in2_bytes) != 0)) {
-    fprintf(stderr, "Received: ");
-    for(int i = 0; i < sizeof(in2_bytes); i++) {
-      fprintf(stderr, "%x ", buf[i]);
-    }
-    fprintf(stderr, "\n");
-    exit(EXIT_FAILURE);
-  }
-  n = write(connfd, out2_bytes, sizeof(out2_bytes));
-  assert(n == sizeof(out2_bytes));
+    DEBUG("New connection - spawning thread %d\n", i);
 
-  n = read(connfd, buf, sizeof(in3_bytes));
-  assert(n == sizeof(in3_bytes));
-  if(memcmp(buf, in3_bytes, sizeof(in3_bytes) != 0)) {
-    fprintf(stderr, "Received: ");
-    for(int i = 0; i < sizeof(in3_bytes); i++) {
-      fprintf(stderr, "%x ", buf[i]);
-    }
-    fprintf(stderr, "\n");
-    exit(EXIT_FAILURE);
-  }
-  n = write(connfd, out3_bytes, sizeof(out3_bytes));
-  assert(n == sizeof(out3_bytes));
-
-  for(;;) {
-    struct Op_Query *q = (void *)buf;
-    int n = read(connfd, buf, sizeof(struct Op_Query));
-
-    // Assert it's a query (that's all I know how to process)
-    assert(n == sizeof(struct Op_Query));
-    assert(q->header.opCode == OP_QUERY);
-
-    // Read the remaining query
-    int rn = read(connfd, buf + sizeof(struct Op_Query), q->header.messageLength - sizeof(struct Op_Query));
-    assert(rn == q->header.messageLength - sizeof(struct Op_Query));
-    // Has to be to the reservation-db
-    assert(memcmp(q->fullCollectionName, "reservation-db.$cmd", 20) == 0);
-
-    fprintf(stderr, "Received: ");
-    for(int i = 0; i < n + rn; i++) {
-      fprintf(stderr, "%x ", buf[i]);
-    }
-    fprintf(stderr, "\n");
-    fprintf(stderr, "n = %d, %.*s\n", n, n, buf);
-    fprintf(stderr, "len = %u\n", q->header.messageLength);
-
-    // Parse query
-    /* fprintf(stderr, "Sleeping...\n"); */
-    /* sleep(20); */
-    fprintf(stderr, "Parsing...\n");
-    char *nb = parse(&buf[sizeof(struct Op_Query)], &buf[sizeof(struct Op_Query) + q->length], q);
-    assert(nb == &buf[sizeof(struct Op_Query) + q->length]);
-    fprintf(stderr, "Done parsing\n");
+    pthread_t t;
+    /* int r = pthread_create(&t, NULL, i == 0 ? admin_thread : server_thread, */
+    /* 			   (void *)connfd); */
+    int r = pthread_create(&t, NULL, server_thread,
+			   (void *)connfd);
+    assert(r == 0);
   }
 
   return EXIT_SUCCESS;
