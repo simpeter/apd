@@ -9,19 +9,40 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
-struct MsgHeader {
-    int32_t   messageLength; // total message size, including this
-    int32_t   requestID;     // identifier for this message
-    int32_t   responseTo;    // requestID from the original request
-                           //   (used in responses from the database)
-    int32_t   opCode;        // message type
-};
-
 #define PORT	27017
 
 #define OP_MSG		2013
 #define OP_REPLY	1
 #define OP_QUERY	2004
+
+#define TYPE_NONE	0
+#define TYPE_STRING	2
+#define TYPE_DOCUMENT	3
+
+struct MsgHeader {
+    int32_t   messageLength; // total message size, including this
+    int32_t   requestID;     // identifier for this message
+    int32_t   responseTo;    // requestID from the original request
+    int32_t   opCode;        // message type
+};
+
+struct Op_Query {
+  struct MsgHeader header;                 // standard message header
+  int32_t     flags;                  // bit values of query options.
+  char	      fullCollectionName[20];	// reservation-db.$cmd
+  int32_t     numberToSkip;           // number of documents to skip
+  int32_t     numberToReturn;         // number of documents to return in the first OP_REPLY batch
+  int32_t	length;
+};
+
+struct Op_Reply {
+  struct MsgHeader header;         // standard message header
+  int32_t     responseFlags;  // bit values - see details below
+  int64_t     cursorID;       // cursor id if client needs to do get more's
+  int32_t     startingFrom;   // where in the cursor this reply is starting
+  int32_t     numberReturned; // number of documents in the reply
+  int32_t	length;
+};
 
 static char in1_bytes[] = {
   0x3a, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
@@ -122,38 +143,80 @@ static char out3_bytes[] = {
   0x00, 0x00, 0xf0, 0x3f, 0x00
 };
 
-struct Section {
-  uint8_t	kind;
+static char count_response[] = {
+  0x3c, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00,
+  0x07, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+  0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00,
+  0x10, 0x6e, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+  0x6f, 0x6b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0xf0, 0x3f, 0x00
 };
 
-struct document {
-  int32_t	length;
-};
+static int connfd;
 
-struct Op_Query {
-  struct MsgHeader header;                 // standard message header
-  int32_t     flags;                  // bit values of query options.
-  char	      fullCollectionName[11];	// admin.$cmd
-  int32_t     numberToSkip;           // number of documents to skip
-  int32_t     numberToReturn;         // number of documents to return in the first OP_REPLY batch
-  struct document  query;                  // query object.  See below for details.
-};
+static void respond(struct Op_Reply *response, ssize_t size, struct Op_Query *query)
+{
+  static int32_t requestID = 7;
 
-struct Op_Reply {
-  struct MsgHeader header;         // standard message header
-  int32_t     responseFlags;  // bit values - see details below
-  int64_t     cursorID;       // cursor id if client needs to do get more's
-  int32_t     startingFrom;   // where in the cursor this reply is starting
-  int32_t     numberReturned; // number of documents in the reply
-  struct document    reply;      // documents
-};
+  response->header.requestID = requestID++;
+  response->header.responseTo = query->header.requestID;
+
+  ssize_t len = send(connfd, response, size, 0);
+  assert(len == size);
+}
+
+static char *parse(char *buf, char *end, struct Op_Query *query)
+{
+  for(char *b = buf; b < end;) {
+    uint8_t *kind = b++;
+
+    switch(*kind) {
+    case TYPE_NONE:
+      b++;
+      break;
+
+    case TYPE_STRING:
+      {
+	size_t tlen = strlen(b) + 1;
+	char *sn = b;
+	int32_t *len = (void *)(b + tlen);
+	char *sv = b + tlen + sizeof(int32_t);
+	fprintf(stderr, "Got string (%s): len = %d, %s\n", sn, *len, sv);
+	b += tlen + sizeof(int32_t) + *len;
+	if(!strcmp(sn, "count")) {
+	  fprintf(stderr, "Sending count response\n");
+	  respond((struct Op_Reply *)count_response, sizeof(count_response), query);
+	  return end;	// XXX: Stopping parsing right away
+	}
+      }
+      break;
+
+    case TYPE_DOCUMENT:
+      {
+	size_t tlen = strlen(b) + 1;
+	char *sn = b;
+	fprintf(stderr, "Got document (%s)\n", sn);
+	int32_t *dlen = (void *)(b + tlen);
+	// Recurse
+	b = parse(b + tlen + sizeof(int32_t), b + tlen + sizeof(int32_t) + *dlen, query);
+      }
+      break;
+
+    default:
+      assert(!"NYI");
+      break;
+    }
+  }
+
+  return end;
+}
 
 int main(int argc, char *argv[])
 {
-  printf("NVMdb\n");
-
   struct sockaddr_in servaddr, cli;
-   
+
   // socket create and verification
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd == -1) {
@@ -180,7 +243,7 @@ int main(int argc, char *argv[])
   }
 
   int len = sizeof(cli);
-  int connfd = accept(sockfd, (struct sockaddr *)&cli, &len);
+  connfd = accept(sockfd, (struct sockaddr *)&cli, &len);
   if (connfd < 0) {
     perror("accept");
     exit(EXIT_FAILURE);
@@ -232,13 +295,16 @@ int main(int argc, char *argv[])
   for(;;) {
     struct Op_Query *q = (void *)buf;
     int n = read(connfd, buf, sizeof(struct Op_Query));
+
+    // Assert it's a query (that's all I know how to process)
     assert(n == sizeof(struct Op_Query));
     assert(q->header.opCode == OP_QUERY);
 
     // Read the remaining query
     int rn = read(connfd, buf + sizeof(struct Op_Query), q->header.messageLength - sizeof(struct Op_Query));
     assert(rn == q->header.messageLength - sizeof(struct Op_Query));
-    assert(memcmp(q->header.fullCollectionName, "reservation-db.$cmd", 20) == 0);
+    // Has to be to the reservation-db
+    assert(memcmp(q->fullCollectionName, "reservation-db.$cmd", 20) == 0);
 
     fprintf(stderr, "Received: ");
     for(int i = 0; i < n + rn; i++) {
@@ -247,6 +313,14 @@ int main(int argc, char *argv[])
     fprintf(stderr, "\n");
     fprintf(stderr, "n = %d, %.*s\n", n, n, buf);
     fprintf(stderr, "len = %u\n", q->header.messageLength);
+
+    // Parse query
+    /* fprintf(stderr, "Sleeping...\n"); */
+    /* sleep(20); */
+    fprintf(stderr, "Parsing...\n");
+    char *nb = parse(&buf[sizeof(struct Op_Query)], &buf[sizeof(struct Op_Query) + q->length], q);
+    assert(nb == &buf[sizeof(struct Op_Query) + q->length]);
+    fprintf(stderr, "Done parsing\n");
   }
 
   return EXIT_SUCCESS;

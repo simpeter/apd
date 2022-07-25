@@ -216,6 +216,10 @@ services:
     restart: always
     volumes:
       - /mnt/reservation:/data/db 
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+     - seccomp:unconfined
 
   mongodb-user:
     image: mongo:4.4.6
