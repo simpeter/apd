@@ -11,7 +11,7 @@
 #include <pthread.h>
 #include <stdbool.h>
 
-#ifdef NDEBUG
+#ifdef NOLOG
 #	define DEBUG(fmt, ...)
 #else
 #	define DEBUG(fmt, ...) \
@@ -231,6 +231,7 @@ struct state {
 static int __thread connfd;
 static _Atomic int32_t requestID = 4;
 static struct state __thread state;
+static pthread_mutex_t biglock = PTHREAD_MUTEX_INITIALIZER;
 
 static void respond(struct Op_Reply *response, ssize_t size, struct MsgHeader *h)
 {
@@ -437,6 +438,22 @@ static void *server_thread(void *arg)
 	if(state.inDate[0] == '\0') {
 	  respond((struct Op_Reply *)find_hotelid_response, sizeof(find_hotelid_response), &q->header);
 	} else {
+	  int r = pthread_mutex_lock(&biglock);
+	  assert(r == 0);
+	  printf("find hotelId = '%s', inDate = '%s', outDate = '%s'\n",
+	       state.hotelId, state.inDate, state.outDate);
+	  char response[MAX_BUF];
+	  int n = scanf("find %s\n", response);
+	  assert(n == 1);
+	  if(!strcmp(response, "FOUND")) {
+	    DEBUG("find FOUND\n");
+	  } else if(!strcmp(response, "NOTFOUND")) {
+	    DEBUG("find NOTFOUND\n");
+	  } else {
+	    assert(!"NYI");
+	  }
+	  r = pthread_mutex_unlock(&biglock);
+	  assert(r == 0);
 	  respond((struct Op_Reply *)find_response, sizeof(find_response), &q->header);
 	}
       }
@@ -444,6 +461,21 @@ static void *server_thread(void *arg)
       if(state.insert) {
 	DEBUG("insert hotelId = '%s', inDate = '%s', outDate = '%s', customerName = '%s', number = %d\n",
 	       state.hotelId, state.inDate, state.outDate, state.customerName, state.number);
+
+	int r = pthread_mutex_lock(&biglock);
+	assert(r == 0);
+	printf("insert hotelId = '%s', inDate = '%s', outDate = '%s', customerName = '%s', number = %d\n",
+	       state.hotelId, state.inDate, state.outDate, state.customerName, state.number);
+	char response[MAX_BUF];
+	int n = scanf("insert %s\n", response);
+	assert(n == 1);
+	if(!strcmp(response, "OK")) {
+	  DEBUG("insert OK\n");
+	} else {
+	  assert(!"NYI");
+	}
+	r = pthread_mutex_unlock(&biglock);
+	assert(r == 0);
 
 	respond((struct Op_Reply *)insert_response, sizeof(insert_response), &q->header);
       }

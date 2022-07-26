@@ -1,4 +1,5 @@
-CFLAGS = -g -pthread -O2 -DNDEBUG
+CFLAGS = -g -pthread
+#-O2 -DNOLOG
 LDFLAGS = -pthread
 
 nvmdb: nvmdb.o
