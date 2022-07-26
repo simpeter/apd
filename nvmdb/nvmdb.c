@@ -11,8 +11,12 @@
 #include <pthread.h>
 #include <stdbool.h>
 
-#define DEBUG(fmt, ...) \
+#ifdef NDEBUG
+#	define DEBUG(fmt, ...)
+#else
+#	define DEBUG(fmt, ...) \
   fprintf(stderr, "connfd %d: " fmt, connfd, ##__VA_ARGS__);
+#endif
 
 #define PORT		27017
 #define MAX_BUF		4096
@@ -206,9 +210,22 @@ static char find_hotelid_response[] = {
   0x00, 0x00, 0x00, 0x00, 0xf0, 0x3f, 0x00
 };
 
+static char insert_response[] = {
+  0x3c, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00,
+  0x0f, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+  0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00,
+  0x10, 0x6e, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+  0x6f, 0x6b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0xf0, 0x3f, 0x00
+};
+
 struct state {
-  bool	find;
-  char	hotelId[MAX_BUF], inDate[MAX_BUF], outDate[MAX_BUF];
+  bool		find, insert;
+  char		hotelId[MAX_BUF], inDate[MAX_BUF], outDate[MAX_BUF],
+    customerName[MAX_BUF];
+  int32_t	number;
 };
 
 static int __thread connfd;
@@ -305,8 +322,14 @@ static char *parse(char *buf, char *end, struct Op_Query *query)
 	if(!strcmp(sn, "hotelId")) {
 	  strcpy(state.hotelId, sv);
 	}
+	if(!strcmp(sn, "customerName")) {
+	  strcpy(state.customerName, sv);
+	}
 	if(!strcmp(sn, "find")) {
 	  state.find = true;
+	}
+	if(!strcmp(sn, "insert")) {
+	  state.insert = true;
 	}
       }
       break;
@@ -343,6 +366,10 @@ static char *parse(char *buf, char *end, struct Op_Query *query)
 	  // Nothing to do
 	  continue;
 	}
+	if(!strcmp(sn, "number")) {
+	  state.number = n;
+	  continue;
+	}
       }
       break;
 
@@ -377,8 +404,8 @@ static void *server_thread(void *arg)
     if(!memcmp(q->fullCollectionName, "admin.$cmd", 10)) {
       struct Admin_Op_Query *aq = (void *)buf;
       /* DEBUG("Parsing admin query...\n"); */
-      char *nb = parse_admin(&buf[sizeof(struct Admin_Op_Query)], &buf[sizeof(struct Admin_Op_Query) + q->length], aq);
-      assert(nb == &buf[sizeof(struct Admin_Op_Query) + q->length]);
+      char *nb = parse_admin(&buf[sizeof(struct Admin_Op_Query)], &buf[sizeof(struct Admin_Op_Query) + q->length - 4], aq);
+      assert(nb == &buf[sizeof(struct Admin_Op_Query) + q->length - 4]);
       /* DEBUG("Done parsing\n"); */
     } else {
       // Has to be to the reservation-db
@@ -399,12 +426,12 @@ static void *server_thread(void *arg)
 
       memset(&state, 0, sizeof(struct state));
 
-      char *nb = parse(&buf[sizeof(struct Op_Query)], &buf[sizeof(struct Op_Query) + q->length], q);
-      assert(nb == &buf[sizeof(struct Op_Query) + q->length]);
+      char *nb = parse(&buf[sizeof(struct Op_Query)], &buf[sizeof(struct Op_Query) + q->length - 4], q);
+      assert(nb == &buf[sizeof(struct Op_Query) + q->length - 4]);
       /* DEBUG("Done parsing\n"); */
 
       if(state.find) {
-	fprintf(stderr, "find hotelId = '%s', inDate = '%s', outDate = '%s'\n",
+	DEBUG("find hotelId = '%s', inDate = '%s', outDate = '%s'\n",
 	       state.hotelId, state.inDate, state.outDate);
 
 	if(state.inDate[0] == '\0') {
@@ -412,6 +439,13 @@ static void *server_thread(void *arg)
 	} else {
 	  respond((struct Op_Reply *)find_response, sizeof(find_response), &q->header);
 	}
+      }
+
+      if(state.insert) {
+	DEBUG("insert hotelId = '%s', inDate = '%s', outDate = '%s', customerName = '%s', number = %d\n",
+	       state.hotelId, state.inDate, state.outDate, state.customerName, state.number);
+
+	respond((struct Op_Reply *)insert_response, sizeof(insert_response), &q->header);
       }
     }
   }
