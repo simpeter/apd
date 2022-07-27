@@ -53,7 +53,7 @@ Now, `start_tmpfs.sh`.
 
 You will compile and run a special version of the hotel reservation
 app that enables synchronous journaling. The vanilla version uses
-asynchronous journaling, which is durable under all failure
+asynchronous journaling, which is not durable under all failure
 situations, but this version is. The reason for using asynchronous
 journaling in the vanilla version is that SSDs and HDDs are often not
 fast enough to provide good performance with synchronous
@@ -91,6 +91,16 @@ that replaces MongoDB for the hotel reservation app.
 To simplify your job, we have provided a simple network frontend to
 your database application that speaks enough of the MongoDB network
 API to interface properly with the hotel reservation app.
+
+Use `start_tmpfs.sh` to put other MongoDB instances on tmpfs.
+
+To better see the difference in performance, you are going to edit
+`DeathStarBench/hotelReservation/services/reservation/server.go`, line
+214, to execute the loop 100 times, instead of once. Run `docker
+compose -f hotelreservation-nvmdb.yml up -d --build -t1` to build the
+new hotel reservation app.
+
+Use `bench_reserve.sh` on the client to measure. 
 
 <!-- Put a different file system in and measure performance. Why is the -->
 <!-- perf different? -->

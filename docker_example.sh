@@ -5,7 +5,7 @@
 cd DeathStarBench/hotelReservation/
 sudo docker compose up -d --build
 sudo docker compose -f docker-compose-localmounts.yml up -d --build
-sudo docker compose -f hotelreservation-nvmdb.yml up -d --build
+sudo docker compose -f hotelreservation-nvmdb.yml up -d --build -t1
 
 # Run on cluster
 sudo docker stack deploy --compose-file hotelreservation.yml hotelreservation
@@ -30,12 +30,14 @@ Connect to port 16686 on whichever server runs the jaeger service
 
 # Inspect/debug
 sudo docker ps
-sudo docker exec -it 7a61f3dc26d1 bash
+sudo docker exec -it hotel_reserv_reservation_mongo gdb -p 1 nvmdb
 journalctl -u docker.service
+sudo docker logs hotel_reserv_reservation_mongo
 
 # Stopping and cleanup
 sudo docker stack rm hotelreservation && sudo docker volume prune
-sudo docker compose down && sudo docker volume prune
+sudo docker compose down -t1 && sudo docker volume prune
+sudo docker compose -f hotelreservation-nvmdb.yml down -t1
 
 sudo umount /mnt/*
 sudo rm -rf /mnt/*
