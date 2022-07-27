@@ -130,7 +130,7 @@ bash start_vms.sh
 
 ## Run iperf in VMs
 
-Similar to running iperf on bare mental servers, you will run the iperf client on client machines and the iperf server inside a VM. 
+Run the iperf client on client machines and the iperf server inside a VM. 
 
 On the server side:
 ```console
@@ -159,6 +159,15 @@ TCP window size:  374 KByte (default)
 ```
 
 ## Run DeathStarBench in VMs and Test It
+
+Similar to testing DeathStarBench in bare mental servers, run curl on one of the client machines:
+
+```console
+user@client0:~$ curl 'http://server0:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
+{"message":"Reserve successfully!"}
+user@client0:~$ curl 'http://server0:5000/user?username=Cornell_1&password=1111111111'
+{"message":"Login successfully!"}
+```
 
 <!-- Warning: Running the benchmark workload multiple times can give wrong
 results. For example, the default workload has a limited date range
