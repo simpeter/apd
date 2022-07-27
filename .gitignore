@@ -1,1 +1,5 @@
 .DS_Store
+nvmdb/nvmdb
+nvmdb/nvmdb.o
+nvmdb/outtest
+nvmdb/outtest.o
