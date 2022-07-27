@@ -1,7 +1,7 @@
 #!/bin/bash
 
 coproc ./nvmdb
-#echo out = ${COPROC[0]}, in = ${COPROC[1]}
+echo out = ${COPROC[0]}, in = ${COPROC[1]} >/dev/stderr
 
 while true; do
     read -u ${COPROC[0]} CMD REST

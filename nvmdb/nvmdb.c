@@ -442,6 +442,7 @@ static void *server_thread(void *arg)
 	  assert(r == 0);
 	  printf("find hotelId = '%s', inDate = '%s', outDate = '%s'\n",
 	       state.hotelId, state.inDate, state.outDate);
+	  fprintf(stderr, "Waiting for input...\n");
 	  char response[MAX_BUF];
 	  int n = scanf("find %s\n", response);
 	  if(n == EOF) {
