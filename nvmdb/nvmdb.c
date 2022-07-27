@@ -444,6 +444,10 @@ static void *server_thread(void *arg)
 	       state.hotelId, state.inDate, state.outDate);
 	  char response[MAX_BUF];
 	  int n = scanf("find %s\n", response);
+	  if(n == EOF) {
+	    perror("scanf");
+	    exit(EXIT_FAILURE);
+	  }
 	  assert(n == 1);
 	  if(!strcmp(response, "FOUND")) {
 	    DEBUG("find FOUND\n");
