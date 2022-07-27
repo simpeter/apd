@@ -54,7 +54,7 @@ sudo lxc exec vm1 -- bash
 sudo apt install git
 mkdir projects
 cd projects
-git clone https://githu1b.com/delimitrou/DeathStarBench.git
+git clone https://github.com/delimitrou/DeathStarBench.git
 sudo docker swarm init
 for i in `seq $nvms`; do sudo lxc exec vm$i -n -- docker swarm join --token <TOKEN> 240.3.0.66:2377 & done; wait
 #Login to all worker nodes and run the join command displayed by swarm init

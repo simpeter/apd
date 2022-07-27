@@ -33,7 +33,7 @@ Once the experiment is ready (this can take a few minutes), click
 `List View`, and you will find SSH commands to access each node. On the
 same tab, you can also reboot/reload your nodes if something goes wrong.
 
-## Run iperf
+## Run iperf on bare mental servers
 
 [iperf](https://iperf.fr/iperf-doc.php) is a tool for network throughput measurements between two hosts (a client that generates traffic and a server that receives traffic). You'll use iperf to measure the bandwidth between nodes in your experiment. <br />
 Step 1: Log in and find the ip address of one of the server machines.
@@ -78,7 +78,6 @@ cd cse453-cloud-project
 # This script will set up docker and docker swarm. Follow the instructions in the output to add other servers as workers (via `docker swarm join`).
 sudo bash start_docker.sh
 
-
 # Deploy the hotel reservation applicaion
 cd DeathStarBench/hotelReservation
 sudo docker compose up -d --build
@@ -121,22 +120,47 @@ Running 10s test @ http://server0:5000
 Requests/sec:   5453.90
 Transfer/sec:      2.25MB
 ```
-<!-- 
+
 ## Starting VMs
 
-Select the virtualized option in the cse453repo profile. These come
-with the VM monitor pre-installed. Then use start_vms.sh script that's
-pulled automatically.
+In lab1, you will explore different virtualization technologies. Run the following script to set up VMs on each server.
+```bash
+bash start_vms.sh 
+```
 
 ## Run iperf in VMs
 
-Run benchmark from UW client to VM
+Similar to running iperf on bare mental servers, you will run the iperf client on client machines and the iperf server inside a VM. 
 
-What's the expected output?
+On the server side:
+```console
+xfzhu@server0:~$ sudo lxc exec vm1 -- bash
+root@vm1:~# iperf -s
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  128 KByte (default)
+------------------------------------------------------------
+[  4] local 240.1.0.109 port 5001 connected with 10.10.1.4 port 50008
+[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0-10.0 sec  10.7 GBytes  9.16 Gbits/sec
+^Croot@vm1:~#
+```
+
+On the client side:
+```console
+user@client0:~$ iperf -c 10.10.1.1
+------------------------------------------------------------
+Client connecting to 10.10.1.1, TCP port 5001
+TCP window size:  374 KByte (default)
+------------------------------------------------------------
+[  3] local 10.10.1.4 port 50008 connected with 10.10.1.1 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0-10.0 sec  10.7 GBytes  9.16 Gbits/sec
+```
 
 ## Run DeathStarBench in VMs and Test It
 
-Warning: Running the benchmark workload multiple times can give wrong
+<!-- Warning: Running the benchmark workload multiple times can give wrong
 results. For example, the default workload has a limited date range
 from which it reserves hotel beds. Once that range runs out, all
 requests return an error and the benchmark will have a very high
