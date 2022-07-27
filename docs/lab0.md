@@ -80,9 +80,7 @@ sudo bash start_docker.sh
 
 # Deploy the hotel reservation applicaion
 cd DeathStarBench/hotelReservation
-sudo docker compose up -d --build
-sudo docker compose -f docker-compose-localmounts.yml up -d --build
-sudo docker compose -f hotelreservation-nvmdb.yml up -d --build
+sudo docker stack deploy --compose-file docker-compose-swarm.yml hotelreservation
 
 # Check the status of deployment
 sudo docker service ls
