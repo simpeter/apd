@@ -51,7 +51,7 @@ under the
 page.
 
 Note: Each lab will create one or more client machines (named
-`client[0-9]` and one or more server machines (named
+`client[0-9]`) and one or more server machines (named
 `server[0-9]`). You will deploy the applications on server machines
 and run load generators on the client machines.
 
