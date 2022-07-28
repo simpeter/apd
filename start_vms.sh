@@ -125,6 +125,7 @@ for i in `seq $nvms`; do
     sudo lxc exec vm$i -n -- sh -c "
 apt-get update
 apt-get install --yes curl net-tools
+apt-get install -y iperf
 ifconfig enp5s0 mtu 1450
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh" &
@@ -133,13 +134,19 @@ wait
 
 # Install DeathStarBench
 sudo lxc cp hotelreservation.yml vm1:/root
-sudo lxc exec vm1 -- sh -c "sudo docker swarm init"
-# sudo lxc exec vm1 -- sh -c "
-# sudo apt-get install --yes git
-# mkdir projects
-# cd projects
-# git clone -n https://github.com/delimitrou/DeathStarBench.git
-# cd DeathStarBench && git checkout ff0c39df331106bbf1e20be5724be718f44b73f1
-# sudo docker swarm init"
+# sudo lxc exec vm1 -- sh -c "sudo docker swarm init"
+sudo lxc exec vm1 -- sh -c "
+sudo docker swarm init
+sudo apt-get install --yes git
+git clone --recurse-submodules https://gitlab.cs.washington.edu/syslab/cse453-cloud-project.git
+cd cse453-cloud-project/DeathStarBench/hotelReservation
+sudo docker stack deploy --compose-file docker-compose-swarm.yml hotelreservation
+"
 
 echo "Add other VMs via the join command presented by docker"
+
+
+# Setup network forward
+VM1_IP=$(sudo lxc exec vm1 -- sh -c "ifconfig | grep '240' " | awk '{ print $2}')
+LOCAL_IP=$(ifconfig | grep -s '10.10.' | awk '{ print $2 }')
+sudo lxc network forward create lxdfan0 $LOCAL_IP target_address=$VM1_IP

@@ -56,7 +56,7 @@ TCP window size:  128 KByte (default)
 ```
 Step 2: Log in one of the client machines:
 ```console
-user@client0:~$ iperf -c 10.10.1.1
+user@client0:~$ iperf -c 10.10.1.1 # change the ip address to your server's ip address
 ------------------------------------------------------------
 Client connecting to 10.10.1.1, TCP port 5001
 TCP window size: 3.79 MByte (default)
@@ -108,7 +108,8 @@ sudo bash start_client.sh
 ## Testing wrk2 on Client Machine
 Once wrk2 is installed, you can test it with the following command.
 ```console
-user@client0:~/cse453-cloud-project/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 10000
+user@client0:~/cse453-cloud-project$ cd DeathStarBench/hotelReservation/
+user@client0:~/cse453-cloud-project/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 2000
 Running 10s test @ http://server0:5000
   10 threads and 100 connections
   Thread Stats   Avg      Stdev     99%   +/- Stdev
@@ -121,8 +122,9 @@ Transfer/sec:      2.25MB
 
 ## Starting VMs
 
-In lab1, you will explore different virtualization technologies. Run the following script to set up VMs on each server.
+In lab1, you will explore different virtualization technologies. Run the following script to set up VMs on `server0`.
 ```bash
+cd cse453-cloud-project
 bash start_vms.sh 
 ```
 
@@ -146,7 +148,7 @@ TCP window size:  128 KByte (default)
 
 On the client side:
 ```console
-user@client0:~$ iperf -c 10.10.1.1
+user@client0:~$ iperf -c 10.10.1.1 # change the ip address to your server's ip address
 ------------------------------------------------------------
 Client connecting to 10.10.1.1, TCP port 5001
 TCP window size:  374 KByte (default)
@@ -158,7 +160,7 @@ TCP window size:  374 KByte (default)
 
 ## Run DeathStarBench in VMs and Test It
 
-Similar to testing DeathStarBench in bare mental servers, run curl on one of the client machines:
+Similar to testing DeathStarBench in bare mental servers, run curl on one of the client machines (make sure all service are running via `docker service ls`):
 
 ```console
 user@client0:~$ curl 'http://server0:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
