@@ -2,7 +2,8 @@
 
 This lab is ungraded and intended to get you set up with the project's
 infrastructure. Please go through all the steps, make sure that each
-one works and that you have access to everything described here.
+one works, that you have access to everything described here, and that
+you **send us a link to your clone of this repository**.
 
 ## Create a CloudLab Account ([Link](https://www.cloudlab.us/signup.php?pid=cse453))
 
@@ -13,7 +14,7 @@ access the nodes in CloudLab. Click on `Submit
 Request`. We will approve your request within 24 hours. If you already
 have a CloudLab account, simply request to join the `cse453` project.
 
-## Clone the cse453 repository
+## Clone this repository and send us a link
 
 TODO: Might be easier to have students clone the main repo and then
 point to it in CloudLab.
@@ -66,9 +67,51 @@ experiment and start over from scratch.
 Note that experiments automatically terminate after 16 hours (unless
 you picked a different duration when you scheduled your
 experiment). When this happens, all the data stored on the experiment
-machines is deleted. To retain data across experiments, you should
-create a gitlab repository among your team mates. You can push all
-important data to your repo to share and retain it.
+machines is deleted. To retain data across experiments and share it
+with your team mates, you can push all important data to your cloned
+repository.
+
+### Setting up the SSH Authentication Agent
+
+The following sections and labs will require you to run many
+scripts. The scripts will setup various software packages across the
+machines in your CloudLab experiment. To do so, they will log into
+each machine using SSH. For this to work seamlessly, you need to setup
+an SSH authentication agent on your local work computer and make sure
+it is forwarded to the CloudLab machine that you have logged
+into. Depending on which OS and SSH package you use, the process will
+be different. We provide quick instructions for popular combinations
+in this section.
+
+TODO: Xiangfeng to describe MacOS setup
+
+Linux and OpenSSH
+=================
+
+If it's not already running, you can start an SSH authentication agent
+by typing `ssh-agent` into any terminal. This will output a few shell
+commands. For example:
+
+```console
+simon@bigbox:~$ ssh-agent
+SSH_AUTH_SOCK=/tmp/ssh-3NZIVp0q7Itp/agent.875946; export SSH_AUTH_SOCK;
+SSH_AGENT_PID=875947; export SSH_AGENT_PID;
+echo Agent pid 875947;
+```
+
+You should copy&paste these commands and run them in your
+terminal. This ensures that future runs of SSH within the terminal are
+able to find it. There are more permanent ways to setup `ssh-agent`
+across all of your terminals. Please refer to your OS documentation on
+how to do that.
+
+Once `ssh-agent` is set up, you should then run `ssh-add` to add your
+SSH keys to your agent. This might require you to enter a few
+passwords. Once done, you can then run `ssh -A` to login to any of the
+CloudLab hosts and `ssh` will forward the agent connection to those
+hosts. This means that you and the scripts you'll run can SSH into
+other CloudLab hosts without you needing to re-enter SSH key
+passwords.
 
 ## Run iperf on bare metal servers
 
@@ -241,7 +284,7 @@ throughput. -->
    reason. We are providing a boilerplate blurb for this purpose,
    here.
 
-        TODO
+        I am still running experiments. Please grant me a short extension.
 
    We recommend you save your data and create a new experiment
    whenever you can. If you do have a need to extend the nodes, do not

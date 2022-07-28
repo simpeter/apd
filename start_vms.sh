@@ -145,8 +145,7 @@ sudo docker stack deploy --compose-file docker-compose-swarm.yml hotelreservatio
 
 echo "Add other VMs via the join command presented by docker"
 
-
 # Setup network forward
-VM1_IP=$(sudo lxc exec vm1 -- sh -c "ifconfig | grep '240' " | awk '{ print $2}')
-LOCAL_IP=$(ifconfig | grep -s '10.10.' | awk '{ print $2 }')
-sudo lxc network forward create lxdfan0 $LOCAL_IP target_address=$VM1_IP
+# VM1_IP=$(sudo lxc exec vm1 -- sh -c "ifconfig | grep '240' " | awk '{ print $2}')
+# LOCAL_IP=$(ifconfig | grep -s '10.10.' | awk '{ print $2 }')
+# sudo lxc network forward create lxdfan0 $LOCAL_IP target_address=$VM1_IP
