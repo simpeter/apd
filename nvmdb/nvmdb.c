@@ -440,19 +440,16 @@ static void *server_thread(void *arg)
 	} else {
 	  int r = pthread_mutex_lock(&biglock);
 	  assert(r == 0);
-	  printf("find hotelId = '%s', inDate = '%s', outDate = '%s'\n",
+	  printf("find hotelId %s inDate %s outDate %s\n",
 	       state.hotelId, state.inDate, state.outDate);
-	  fprintf(stderr, "Waiting for input...\n");
+	  DEBUG("Waiting for input...\n");
 	  char response[MAX_BUF];
-	  int n = scanf("find %s\n", response);
-	  if(n == EOF) {
-	    perror("scanf");
-	    exit(EXIT_FAILURE);
-	  }
-	  assert(n == 1);
-	  if(!strcmp(response, "FOUND")) {
+	  char *ret = fgets(response, MAX_BUF, stdin);
+	  assert(ret != NULL);
+	  DEBUG("Got input '%s'...\n", response);
+	  if(!strncmp(response, "find FOUND", 10)) {
 	    DEBUG("find FOUND\n");
-	  } else if(!strcmp(response, "NOTFOUND")) {
+	  } else if(!strncmp(response, "find NOTFOUND", 13)) {
 	    DEBUG("find NOTFOUND\n");
 	  } else {
 	    assert(!"NYI");
@@ -464,17 +461,19 @@ static void *server_thread(void *arg)
       }
 
       if(state.insert) {
-	DEBUG("insert hotelId = '%s', inDate = '%s', outDate = '%s', customerName = '%s', number = %d\n",
+	DEBUG("insert1 hotelId %s inDate %s outDate %s customerName %s number %d\n",
 	       state.hotelId, state.inDate, state.outDate, state.customerName, state.number);
 
 	int r = pthread_mutex_lock(&biglock);
 	assert(r == 0);
 	printf("insert hotelId = '%s', inDate = '%s', outDate = '%s', customerName = '%s', number = %d\n",
 	       state.hotelId, state.inDate, state.outDate, state.customerName, state.number);
+	DEBUG("Waiting for input...\n");
 	char response[MAX_BUF];
-	int n = scanf("insert %s\n", response);
-	assert(n == 1);
-	if(!strcmp(response, "OK")) {
+	char *ret = fgets(response, MAX_BUF, stdin);
+	assert(ret != NULL);
+	DEBUG("Got input '%s'...\n", response);
+	if(!strncmp(response, "insert OK", 9)) {
 	  DEBUG("insert OK\n");
 	} else {
 	  assert(!"NYI");
@@ -495,6 +494,11 @@ int main(int argc, char *argv[])
   struct sockaddr_in servaddr, cli;
 
   fprintf(stderr, "NVMdb\n");
+
+  // Stdout always line buffered
+  setlinebuf(stdout);
+  setvbuf(stdin, NULL, _IONBF, 0);
+  /* setlinebuf(stdin); */
 
   // socket create and verification
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
