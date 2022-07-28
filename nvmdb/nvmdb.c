@@ -461,7 +461,7 @@ static void *server_thread(void *arg)
       }
 
       if(state.insert) {
-	DEBUG("insert1 hotelId %s inDate %s outDate %s customerName %s number %d\n",
+	DEBUG("insert hotelId %s inDate %s outDate %s customerName %s number %d\n",
 	       state.hotelId, state.inDate, state.outDate, state.customerName, state.number);
 
 	int r = pthread_mutex_lock(&biglock);
