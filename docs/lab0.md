@@ -13,34 +13,70 @@ access the nodes in CloudLab. Click on `Submit
 Request`. We will approve your request within 24 hours. If you already
 have a CloudLab account, simply request to join the `cse453` project.
 
+## Clone the cse453 repository
+
+TODO: Might be easier to have students clone the main repo and then
+point to it in CloudLab.
+
 ## Start an Experiment
 
 To start a new experiment, follow these steps:
 
-1. Select a profile: go to your CloudLab dashboard's  [`Project Profile`](https://www.cloudlab.us/user-dashboard.php#projectprofiles) page. Go to `cse453repo` profile and click `instantiate` button. 
-2. Parameterize: select the lab you are working on. Optionally, you can configure the number of server machines (maximum 10) and the number of client machines (maximum 3). Click on `Next` to move to the next page.
-3. Finalize: Name and choose the cluster you want to start your experiment. For more information on the hardware CloudLab provides, please refer to this [page](http://docs.cloudlab.us/hardware.html). We also recommend checking the [resource availability](https://www.cloudlab.us/resinfo.php) page to make sure you select a cluster with enough machines.
-4. Schedule: Optionally, select when you would like to start this experiment. If you want to start your experiment immediately, skip this step and click `Finish`.
+1. Select a profile: go to your CloudLab dashboard's [`Project
+   Profile`](https://www.cloudlab.us/user-dashboard.php#projectprofiles)
+   page. Go to `cse453repo` profile and click `instantiate` button.
+2. Parameterize: select the lab you are working on. For lab 4, you can
+   configure the number of server machines and the number of client
+   machines under advanced options. Click on `Next` to move to the
+   next page.
+3. Finalize: Name and choose the cluster you want to start your
+   experiment. If you are curious about the hardware CloudLab
+   provides, you can refer to this
+   [page](http://docs.cloudlab.us/hardware.html). In case your request
+   cannot be fulfilled due to resources being unavailable, we
+   recommend checking the [resource
+   availability](https://www.cloudlab.us/resinfo.php) page to make
+   sure you select a cluster with enough machines. Each lab
+   automatically constrains the hardware choice to machines that have
+   the features necessary to complete it, so you cannot make a wrong
+   choice here.
+4. Schedule: Optionally, select when you would like to start this
+   experiment. If you want to start your experiment immediately, skip
+   this step and click `Finish`.
 
-It may take a few mintues for the experiment to start. Once the experiment is created, you should be able to view the
-information under the [`Experiments`](https://www.cloudlab.us/user-dashboard.php#experiments) page.
+It may take a few mintues for the experiment to start. Once the
+experiment is created, you should be able to view the information
+under the
+[`Experiments`](https://www.cloudlab.us/user-dashboard.php#experiments)
+page.
 
-Note: For each lab, you will create one or more client machines and one or more server machines. You will deploy the applications on server machines and run the load generator on the client machines.
+Note: Each lab will create one or more client machines (named
+`client[0-9]` and one or more server machines (named
+`server[0-9]`). You will deploy the applications on server machines
+and run load generators on the client machines.
 
 ## Log into Experiment Machines
 
-Once the experiment is ready (this can take a few minutes), click
-`List View`, and you will find SSH commands to access each node. On the
-same tab, you can also reboot/reload your nodes if something goes wrong.
+Click `List View`, and you will find SSH commands to access each
+node. You can start logging in once all machines in the experiment are
+listed as `Ready`. On the same tab, you can also reboot/reload your
+nodes if something goes wrong. You can also `Terminate` the entire
+experiment and start over from scratch.
 
-## Run iperf on bare mental servers
+Note that experiments automatically terminate after 16 hours (unless
+you picked a different duration when you scheduled your
+experiment). When this happens, all the data stored on the experiment
+machines is deleted. To retain data across experiments, you should
+create a gitlab repository among your team mates. You can push all
+important data to your repo to share and retain it.
 
-[iperf](https://iperf.fr/iperf-doc.php) is a tool for network throughput measurements between two hosts (a client that generates traffic and a server that receives traffic). You'll use iperf to measure the bandwidth between nodes in your experiment. <br />
-Step 1: Log in and find the ip address of one of the server machines.
-```console
-user@server0:~$ ifconfig | grep -s '10.10.' | awk '{ print $2 }'
-10.10.1.1
-```
+## Run iperf on bare metal servers
+
+[iperf](https://iperf.fr/iperf-doc.php) is a tool for network
+throughput measurements between two hosts (a client that generates
+traffic and a server that receives traffic). You'll use iperf to
+measure the bandwidth between nodes in your experiment to make sure
+everything is working okay. <br />
 
 On the server side:
 ```console
@@ -54,9 +90,10 @@ TCP window size:  128 KByte (default)
 [  4]  0.0-10.0 sec  11.0 GBytes  9.40 Gbits/sec
 [  4]  0.0-10.0 sec  11.0 GBytes  9.41 Gbits/sec
 ```
-Step 2: Log in one of the client machines:
+
+Then, log in one of the client machines:
 ```console
-user@client0:~$ iperf -c 10.10.1.1 # change the ip address to your server's ip address
+user@client0:~$ iperf -c server0
 ------------------------------------------------------------
 Client connecting to 10.10.1.1, TCP port 5001
 TCP window size: 3.79 MByte (default)
@@ -66,14 +103,18 @@ TCP window size: 3.79 MByte (default)
 [  3]  0.0-10.0 sec  11.0 GBytes  9.41 Gbits/sec
 ```
 
-You should be able to get a similar result. 
+The server and client will start printing measurement results around
+the same time, once both are running. You should be able to get a
+similar result.
 
 ## Install and Start DeathStarBench on Bare Metal Machines
-ssh into the `server0` node.
+
+SSH into the `server0` node.
 
 ```bash
-git clone --recurse-submodules https://gitlab.cs.washington.edu/syslab/cse453-cloud-project.git
-cd cse453-cloud-project
+# This directory always exists. It holds a checked-out cse453
+# repository.
+cd /local/repository
 
 # This script will set up docker and docker swarm. Follow the instructions in the output to add other servers as workers (via `docker swarm join`).
 sudo bash start_docker.sh
@@ -98,18 +139,18 @@ user@client0:~$ curl 'http://server0:5000/user?username=Cornell_1&password=11111
 You should be able to get the same result.
 
 ## Installing wrk2 on Client Machine
-We will use wrk2, a HTTP benchmarking tool, as the load generator. You will install wrk2 on client machines in this step.
+Many assignments will use `wrk2`, a HTTP benchmarking tool, as the load generator. You will install wrk2 on client machines in this step.
 ```bash
 # Install wrk2
-cd cse453-cloud-project
-sudo bash start_client.sh
+cd /local/repository
+./start_client.sh
 ```
 
 ## Testing wrk2 on Client Machine
-Once wrk2 is installed, you can test it with the following command.
+Once `wrk2` is installed, you can test it with the following command.
 ```console
-user@client0:~/cse453-cloud-project$ cd DeathStarBench/hotelReservation/
-user@client0:~/cse453-cloud-project/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 2000
+user@client0:/local/repository$ cd DeathStarBench/hotelReservation/
+user@client0:/local/repository/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 2000
 Running 10s test @ http://server0:5000
   10 threads and 100 connections
   Thread Stats   Avg      Stdev     99%   +/- Stdev
@@ -122,10 +163,13 @@ Transfer/sec:      2.25MB
 
 ## Starting VMs
 
-In lab1, you will explore different virtualization technologies. Run the following script to set up VMs on `server0`.
+In lab1, you will explore different virtualization technologies. Let's
+test that everything works for this. Run the following script to set
+up VMs on `server0`.
+
 ```bash
-cd cse453-cloud-project
-bash start_vms.sh 
+cd /local/repository
+./start_vms.sh 
 ```
 
 ## Run iperf in VMs
@@ -133,8 +177,11 @@ bash start_vms.sh
 Run the iperf client on client machines and the iperf server inside a VM. 
 
 On the server side:
+
+TODO: This might require and extra step to figure out the VM's IP address.
+
 ```console
-xfzhu@server0:~$ sudo lxc exec vm1 -- bash
+sudo lxc exec vm1 -- bash
 root@vm1:~# iperf -s
 ------------------------------------------------------------
 Server listening on TCP port 5001
@@ -143,17 +190,17 @@ TCP window size:  128 KByte (default)
 [  4] local 240.1.0.109 port 5001 connected with 10.10.1.4 port 50008
 [ ID] Interval       Transfer     Bandwidth
 [  4]  0.0-10.0 sec  10.7 GBytes  9.16 Gbits/sec
-^Croot@vm1:~#
 ```
 
 On the client side:
+
 ```console
-user@client0:~$ iperf -c 10.10.1.1 # change the ip address to your server's ip address
+user@client0:~$ iperf -c 240.1.0.109 # change the ip address to your VM's ip address
 ------------------------------------------------------------
 Client connecting to 10.10.1.1, TCP port 5001
 TCP window size:  374 KByte (default)
 ------------------------------------------------------------
-[  3] local 10.10.1.4 port 50008 connected with 10.10.1.1 port 5001
+[  3] local 10.10.1.4 port 50008 connected with 240.1.0.109 port 5001
 [ ID] Interval       Transfer     Bandwidth
 [  3]  0.0-10.0 sec  10.7 GBytes  9.16 Gbits/sec
 ```
