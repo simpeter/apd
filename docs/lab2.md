@@ -132,7 +132,10 @@ shell script to attach your backend's standard input and output to the
 frontend.
 
 Run `docker compose -f hotelreservation-nvmdb.yml up -d --build -t1`
-to build the hotel reservation app with your NVMdb database backend.
+to build the hotel reservation app with your NVMdb database
+backend. In case CloudLab is short on resources, you can finish the
+implementation on your own machine and then simply evaluate everything
+on CloudLab.
 
 If you run into trouble with the database frontend, you can comment
 out the `-O2 -DNOLOG` parameters in `/local/repository/nvmdb/Makefile`

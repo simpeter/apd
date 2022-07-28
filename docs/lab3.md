@@ -1,6 +1,6 @@
 # Lab 2: Fail-over and Availability
 
-## Assignment 1: Crash Consistency (5 pts)
+## Assignment 1: Crash Consistency (10 pts)
 
 You now have to ensure that your database is crash consistent. This
 means that the process or machine should be allowed to crash at any
