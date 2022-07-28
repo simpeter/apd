@@ -112,42 +112,47 @@ similar result.
 SSH into the `server0` node.
 
 ```bash
-# This directory always exists. It holds a checked-out cse453
-# repository.
+# This directory always exists. It holds a checked-out cse453 repository.
 cd /local/repository
 
 # This script will set up docker and docker swarm. Follow the instructions in the output to add other servers as workers (via `docker swarm join`).
-sudo bash start_docker.sh
+sudo ./start_docker.sh
 
-# Deploy the hotel reservation applicaion
-cd DeathStarBench/hotelReservation
-sudo docker stack deploy --compose-file docker-compose-swarm.yml hotelreservation
+# Deploy the hotel reservation application
+sudo docker stack deploy --compose-file hotelreservation.yml hotelreservation
 
 # Check the status of deployment
 sudo docker service ls
 ```
+
 Make sure all services are running before you move to the next section.
 
 ## Testing DeathStarBench using curl
+
 Once all services are running, ssh into one of the client machines. 
+
 ```console
 user@client0:~$ curl 'http://server0:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
 {"message":"Reserve successfully!"}
 user@client0:~$ curl 'http://server0:5000/user?username=Cornell_1&password=1111111111'
 {"message":"Login successfully!"}
 ```
+
 You should be able to get the same result.
 
 ## Installing wrk2 on Client Machine
+
 Many assignments will use `wrk2`, a HTTP benchmarking tool, as the load generator. You will install wrk2 on client machines in this step.
+
 ```bash
 # Install wrk2
 cd /local/repository
 ./start_client.sh
 ```
-
 ## Testing wrk2 on Client Machine
+
 Once `wrk2` is installed, you can test it with the following command.
+
 ```console
 user@client0:/local/repository$ cd DeathStarBench/hotelReservation/
 user@client0:/local/repository/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 2000
@@ -207,7 +212,9 @@ TCP window size:  374 KByte (default)
 
 ## Run DeathStarBench in VMs and Test It
 
-Similar to testing DeathStarBench in bare mental servers, run curl on one of the client machines (make sure all service are running via `docker service ls`):
+Similar to testing DeathStarBench in bare metal servers, run curl on
+one of the client machines (make sure all service are running via
+`docker service ls`):
 
 ```console
 user@client0:~$ curl 'http://server0:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
@@ -237,7 +244,8 @@ throughput. -->
         TODO
 
    We recommend you save your data and create a new experiment
-   whenever you can. If you do have a need to extend the nodes, 
-   do not extend them by more than one day. **We will terminate any cluster running for more than 48 hours**.
+   whenever you can. If you do have a need to extend the nodes, do not
+   extend them by more than one day. **We will terminate any cluster
+   running for more than 48 hours**.
 
 3. If you want to change the default shell, go to `Manage Account` -> `Default Shell`
