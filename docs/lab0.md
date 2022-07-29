@@ -85,12 +85,9 @@ in this section.
 
 TODO: Xiangfeng to describe MacOS setup
 
-Linux and OpenSSH
-=================
-
-If it's not already running, you can start an SSH authentication agent
-by typing `ssh-agent` into any terminal. This will output a few shell
-commands. For example:
+**Linux and OpenSSH.** If it's not already running, you can start an
+SSH authentication agent by typing `ssh-agent` into any terminal. This
+will output a few shell commands. For example:
 
 ```console
 simon@bigbox:~$ ssh-agent
@@ -158,7 +155,8 @@ SSH into the `server0` node.
 # This directory always exists. It holds a checked-out cse453 repository.
 cd /local/repository
 
-# This script will set up docker and docker swarm. Follow the instructions in the output to add other servers as workers (via `docker swarm join`).
+# This script will set up docker and docker swarm. It will output what
+# it is doing. Follow the instructions in the output to add other servers as workers (via `docker swarm join`).
 sudo ./start_docker.sh
 
 # Deploy the hotel reservation application
