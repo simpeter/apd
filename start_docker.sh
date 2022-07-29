@@ -12,4 +12,11 @@ done
 
 IP=`ip ad show | grep -s '10.10.' | awk '{ print $2 }'` # Local network IP
 sudo docker swarm init --advertise-addr ${IP%/*}
-echo "Add other servers via the join command presented by docker"
+# echo "Add other servers via the join command presented by docker"
+
+# Add other servers as workers
+join_command=$(sudo docker swarm join-token worker | awk '/docker/ {print $0}')
+# Start Docker on all servers
+for i in `seq 1 $((n_servers - 1))`; do
+    ssh -oStrictHostKeyChecking=no server$i "$join_command"
+done
