@@ -21,6 +21,9 @@ point to it in CloudLab.
 
 ## Start an Experiment
 
+TODO: Change this to point to students' repo. Explain how to setup web
+hook for auto-update of CloudLab.
+
 To start a new experiment, follow these steps:
 
 1. Select a profile: go to your CloudLab dashboard's [`Project
@@ -60,9 +63,9 @@ and run load generators on the client machines.
 
 Click `List View`, and you will find SSH commands to access each
 node. You can start logging in once all machines in the experiment are
-listed as `Ready`. On the same tab, you can also reboot/reload your
-nodes if something goes wrong. You can also `Terminate` the entire
-experiment and start over from scratch.
+`ready` and their `Startup` column says `Finished`. On the same tab,
+you can also reboot/reload your nodes if something goes wrong. You can
+also `Terminate` the entire experiment and start over from scratch.
 
 Note that experiments automatically terminate after 16 hours (unless
 you picked a different duration when you scheduled your
