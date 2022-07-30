@@ -16,8 +16,8 @@ have a CloudLab account, simply request to join the `cse453` project.
 
 ## Clone this repository and send us a link
 
-TODO: Might be easier to have students clone the main repo and then
-point to it in CloudLab.
+TODO: Easier to have students clone the main repo and then point to it
+in CloudLab.
 
 ## Start an Experiment
 
@@ -115,7 +115,7 @@ passwords.
 
 ## Run iperf on bare metal servers
 
-[iperf](https://iperf.fr/iperf-doc.php) is a tool for network
+[iperf3](https://iperf.fr/iperf-doc.php) is a tool for network
 throughput measurements between two hosts (a client that generates
 traffic and a server that receives traffic). You'll use iperf to
 measure the bandwidth between nodes in your experiment to make sure
@@ -123,7 +123,7 @@ everything is working okay. <br />
 
 On the server side:
 ```console
-user@server0:~$ iperf -s
+user@server0:~$ iperf3 -s
 ------------------------------------------------------------
 Server listening on TCP port 5001
 TCP window size:  128 KByte (default)
@@ -136,7 +136,7 @@ TCP window size:  128 KByte (default)
 
 Then, log in one of the client machines:
 ```console
-user@client0:~$ iperf -c server0
+user@client0:~$ iperf3 -c server0
 ------------------------------------------------------------
 Client connecting to 10.10.1.1, TCP port 5001
 TCP window size: 3.79 MByte (default)
@@ -223,15 +223,18 @@ cd /local/repository
 
 ## Run iperf in VMs
 
-Run the iperf client on client machines and the iperf server inside a VM. 
+Run the iperf3 client on a client machine and the iperf3 server inside `vm1`.
 
 On the server side:
 
-TODO: This might require and extra step to figure out the VM's IP address.
-
 ```console
+VM1_IP=$(sudo lxc exec vm1 -- sh -c "ifconfig | grep '240' " | awk '{ print $2}')
+LOCAL_IP=$(ifconfig | grep -s '10.10.' | awk '{ print $2 }')
+sudo lxc network forward create lxdfan0 $LOCAL_IP target_address=$VM1_IP
+# NOTE: Do not close the SSH session after the last command or you'll
+# lose connectivity to the server
 sudo lxc exec vm1 -- bash
-root@vm1:~# iperf -s
+root@vm1:~# iperf3 -s
 ------------------------------------------------------------
 Server listening on TCP port 5001
 TCP window size:  128 KByte (default)
@@ -239,26 +242,39 @@ TCP window size:  128 KByte (default)
 [  4] local 240.1.0.109 port 5001 connected with 10.10.1.4 port 50008
 [ ID] Interval       Transfer     Bandwidth
 [  4]  0.0-10.0 sec  10.7 GBytes  9.16 Gbits/sec
+^C
+root@vm1:~# exit
+sudo lxc network forward delete lxdfan0 10.10.1.1
 ```
 
 On the client side:
 
 ```console
-user@client0:~$ iperf -c 240.1.0.109 # change the ip address to your VM's ip address
+user@client0:~$ iperf3 -c 10.10.1.1
 ------------------------------------------------------------
 Client connecting to 10.10.1.1, TCP port 5001
 TCP window size:  374 KByte (default)
 ------------------------------------------------------------
-[  3] local 10.10.1.4 port 50008 connected with 240.1.0.109 port 5001
+[  3] local 10.10.1.4 port 50008 connected with 10.10.1.1 port 5001
 [ ID] Interval       Transfer     Bandwidth
 [  3]  0.0-10.0 sec  10.7 GBytes  9.16 Gbits/sec
 ```
 
 ## Run DeathStarBench in VMs and Test It
 
-Similar to testing DeathStarBench in bare metal servers, run curl on
-one of the client machines (make sure all service are running via
-`docker service ls`):
+Similar to testing DeathStarBench in bare metal servers, on `server0`, run:
+
+```console
+VM1_IP=$(sudo lxc exec vm1 -- sh -c "ifconfig | grep '240' " | awk '{ print $2}')
+LOCAL_IP=$(ifconfig | grep -s '10.10.' | awk '{ print $2 }')
+sudo lxc network forward create lxdfan0 $LOCAL_IP target_address=$VM1_IP
+# NOTE: Do not close the SSH session after the last command or you'll
+# lose connectivity to the server
+sudo lxc exec vm1 -- docker stack deploy --compose-file hotelreservation.yml hotelreservation
+```
+
+Then, run curl on one of the client machines (make sure all services
+are running via `docker service ls` in `vm1`):
 
 ```console
 user@client0:~$ curl 'http://server0:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
