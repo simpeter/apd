@@ -135,4 +135,10 @@ wait
 sudo lxc file push hotelreservation.yml vm1/root/
 sudo lxc exec vm1 -- sh -c "sudo docker swarm init"
 
-echo "Add other VMs via the join command presented by docker"
+JOIN_COMMAND=$(sudo lxc exec vm1 -- sh -c "sudo docker swarm join-token worker | awk '/docker/ {print $1}'")
+
+# Start Docker on all servers
+for i in `seq 2 $nvms`; do
+    sudo lxc exec vm$i -n -- sh -c  "$JOIN_COMMAND"
+done
+
