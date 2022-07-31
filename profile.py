@@ -62,6 +62,10 @@ elif params.lab == 'lab2':
         params.n_servers = 1
         params.n_clients = 1
         params.mode = 'default'
+elif params.lab == 'lab3':
+        params.n_servers = 2
+        params.n_clients = 1
+        params.mode = 'default'
 else:
     if params.lab != 'lab4':
         pc.reportError(portal.ParameterError("Invalid lab selected!", ["lab"]))
