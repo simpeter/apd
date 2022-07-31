@@ -29,27 +29,22 @@ using DRAM. DRAM has a similar (better) performance profile, so we
 expect to see at least as good a performance boost.
 
 You are going to mount a `tmpfs` file system for the datastore of the
-MongoDB instances. `tmpfs` is a RAMdisk, so it will use the machine's
+MongoDB instances. `tmpfs` is a ramdisk, so it will use the machine's
 DRAM for storage (obviously, `tmpfs` is not crash-safe, but we will
 ignore that for the moment). You are then going to run the `wrk2`
 benchmark and compare the result to a run with the vanilla version of
 the hotel reservation app that uses the default file system on SSD or
 HDD (depending on what your CloudLab server supports). Repeat each run
 a few times and compare the average. Quantify the performance
-difference. Is it 100x and more (the performance difference of NVM to
-the other storage media)? Explain the observed performance difference
-by describing how the hotel reservation app uses storage for the
-variety of operations that are part of the benchmark.
+difference. Is it comparable to the performance difference of NVM to
+the other storage media, as described in the lecture? Explain the
+observed performance difference by describing how the hotel
+reservation app uses storage for the variety of operations that are
+part of the benchmark.
 
 ### Detailed Instructions
 
-Run `cse453` cloudlab profile with `lab2` parameter.
-
-`start_docker.sh`.
-
-Measure maximum throughput with default deployment.
-
-Now, `start_tmpfs.sh`.
+Run the `lab2` parameter.
 
 You will compile and run a special version of the hotel reservation
 app that enables synchronous journaling. The vanilla version uses
@@ -58,16 +53,55 @@ situations, but this version is. The reason for using asynchronous
 journaling in the vanilla version is that SSDs and HDDs are often not
 fast enough to provide good performance with synchronous
 journaling. Hence, another way to view the performance benefit of NVM
-is that the added performance can be used to provide extra features
-for free.
+is that the added performance can be used to provide extra features.
 
-Deploy `hotelreservation-tmpfs.yml` and remeasure. Perf difference?
+`start_docker.sh`. Now, compile and start our special version of the
+hotel reservation app:
 
-To help explain how hotel reservation app's storage system works, read
-the Go code and look at jaeger traces. You also have a number of knobs
-to experiment with the app. For example, you can change the mix of
-workload operations. You can try each operation individually. Which
-one is most impacted by the storage system? Why?
+```console
+sudo docker compose -f hotelreservation-tmpfs.yml up -d --build -t1
+```
+
+Measure the maximum throughput of this deployment with `wrk2` using
+the same client commands as shown in lab 0. When done, you can
+shutdown and clean up this deployment via:
+
+```console
+sudo docker compose -f hotelreservation-tmpfs.yml down -t1
+sudo rm -rf /mnt/*
+sudo docker volume prune
+```
+
+Now, run `start_tmpfs.sh` to start the `tmpfs` ramdisk. Redeploy
+`hotelreservation-tmpfs.yml` and remeasure. What is the performance
+difference?
+
+To help explain how the hotel reservation app's storage system works,
+read the Go code and look at jaeger traces. Jaeger is a request
+tracing framework that encompasses all the Go services in the
+application for a sample of executed requests. For example, after you
+have executed a few requests via `wrk2`, you can visit port 16686 of
+the server's public IP address (the same you used to SSH into the
+server) from your web browser to see Jaeger's web interface and
+investigate which microservices spent how much time to process a
+particular request. You can then investigate the Go code of these
+services, which you can find in
+`/local/repository/DeathStarBench/hotelReservation/services/*/server.go`. You'll
+see that the app also uses Memcached and MongoDB. These won't show up
+in the Jaeger traces, as they are not written in Go. MongoDB is used
+for data storage, so you should figure out which requests will send
+queries to MongoDB. Which ones use the storage system the most and
+why?
+
+Based on your knowledge, you can adjust a number of experiment
+parameters to investigate the app's performance reaction. For example,
+you can change the mix of workload operations, by editing the Lua
+script that generates these operations on the client side. The script
+resides in
+`/local/repository/DeathStarBench/hotelReservation/wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua`. For
+example, you can execute just reservations, by changing the weights
+assigned to each operation type at the end of the script. We have
+provided `/local/repository/reserve_only.lua` to show how it is done.
 
 ## Assignment 2: Storage Software Performance Impact (10 pts)
 
