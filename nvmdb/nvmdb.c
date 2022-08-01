@@ -461,12 +461,12 @@ static void *server_thread(void *arg)
       }
 
       if(state.insert) {
-	DEBUG("insert hotelId %s inDate %s outDate %s customerName %s number %d\n",
+	DEBUG("insert hotelId = '%s', inDate = '%s', outDate = '%s', customerName = '%s', number = %d\n",
 	       state.hotelId, state.inDate, state.outDate, state.customerName, state.number);
 
 	int r = pthread_mutex_lock(&biglock);
 	assert(r == 0);
-	printf("insert hotelId = '%s', inDate = '%s', outDate = '%s', customerName = '%s', number = %d\n",
+	printf("insert hotelId %s inDate %s outDate %s customerName %s number %d\n",
 	       state.hotelId, state.inDate, state.outDate, state.customerName, state.number);
 	DEBUG("Waiting for input...\n");
 	char response[MAX_BUF];
