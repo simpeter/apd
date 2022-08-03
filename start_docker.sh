@@ -18,5 +18,5 @@ sudo docker swarm init --advertise-addr ${IP%/*}
 JOIN_COMMAND=$(sudo docker swarm join-token worker | awk '/docker/ {print $0}')
 # Start Docker on all servers
 for i in `seq 1 $((n_servers - 1))`; do
-    ssh -oStrictHostKeyChecking=no server$i "$JOIN_COMMAND"
+    ssh -oStrictHostKeyChecking=no server$i "sudo $JOIN_COMMAND"
 done
