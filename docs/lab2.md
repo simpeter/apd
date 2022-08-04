@@ -163,9 +163,15 @@ input and output. The shell script
 and how to implement the API. You can implement your database backend
 in any programming language and then uncomment the `exec` line in the
 shell script to attach your backend's standard input and output to the
-frontend.
+frontend. An example stub implementation in C is provided in
+`example.c`.
 
-Run `docker compose -f hotelreservation-nvmdb.yml up -d --build -t1`
+Run
+
+```console
+docker compose -f hotelreservation-nvmdb.yml up -d --build -t1
+```
+
 to build the hotel reservation app with your NVMdb database
 backend. In case CloudLab is short on resources, you can finish the
 implementation on your own machine and then simply evaluate everything
@@ -173,8 +179,11 @@ on CloudLab.
 
 If you run into trouble with the database frontend, you can comment
 out the `-O2 -DNOLOG` parameters in `/local/repository/nvmdb/Makefile`
-to see additional debugging output, which you can display with `sudo
-docker logs hotel_reserv_reservation_mongo -f`.
+to see additional debugging output, which you can display with
+
+```console
+sudo docker logs hotel_reserv_reservation_mongo -f
+```
 
 For a fair comparison with MongoDB, you should again put MongoDB on
 NVM, via `start_tmpfs.sh`. For NVMdb, the other MongoDB instances
@@ -185,10 +194,15 @@ To better see the difference in performance, you can edit
 214, to execute each insert operation 100 times, instead of once.
 
 Use `bench_reserve.sh` on the client to measure reservation
-latency. Use `wrk -D exp -t 10 -c 100 -d 10 -L -s
-/local/repository/reserve_only.lua http://server0:5000 -R 1000` with
-appropriate parameters to `-t`, `-c`, and `-R`, to measure reservation
-latency and throughput.
+latency. Use
+
+```console
+wrk -D exp -t 10 -c 100 -d 10 -L -s /local/repository/reserve_only.lua
+http://server0:5000 -R 1000
+```
+
+with appropriate parameters to `-t`, `-c`, and `-R`, to measure
+reservation latency and throughput.
 
 ### Bonus: Limited storage space (3 pts)
 

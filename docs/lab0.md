@@ -14,10 +14,18 @@ access the nodes in CloudLab. Click on `Submit
 Request`. We will approve your request within 24 hours. If you already
 have a CloudLab account, simply request to join the `cse453` project.
 
+## Form a group of up to 3 students and let us know who is in it
+
+TODO: Anirudh to describe: Find a group, let us know who's in it and
+their cloudlab accounts. We will assign the group to a subgroup in
+`cse453` project. The group should then use that subgroup in CloudLab
+going forward.
+
 ## Clone this repository and send us a link
 
-TODO: Easier to have students clone the main repo and then point to it
-in CloudLab.
+TODO: Anirudh to describe: Students should clone the main repo and
+then point to it in CloudLab. Send us a link. Will use this to submit
+results.
 
 ## Start an Experiment
 
