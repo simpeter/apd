@@ -1,6 +1,9 @@
 #!/bin/bash
 
-coproc ./example
+DB_BINARY=./example
+
+# Replace ./example, below, with the binary name of your database backend
+coproc $DB_BINARY
 echo out = ${COPROC[0]}, in = ${COPROC[1]} >/dev/stderr
 
 RECS=0
@@ -12,14 +15,14 @@ while true; do
     echo "insert hotelId $HOTELID inDate $INDATE outDate $OUTDATE customerName $RANDOM number $RANDOM" >&${COPROC[1]}
     # echo "insert hotelId $HOTELID inDate $INDATE outDate $OUTDATE"
 
-    # 10% chance that something crashes
+    # 30% chance that something crashes
     if [ $RANDOM -lt 9830 ]; then
 	echo Killing $COPROC_PID after writing $RECS records.
 	kill -9 $COPROC_PID
 	wait 2>/dev/null
-	coproc ./simon_solution.sh
 
-	# Check database for consistency
+	# Restart and check database for consistency
+	coproc $DB_BINARY
 	# echo "Checking database..."
 	for k in ${kv[@]}; do
 	    HOTELID=${k%%,*}
