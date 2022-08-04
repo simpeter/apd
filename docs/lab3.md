@@ -119,7 +119,7 @@ reservation settings.
 Use
 
 ```console
-wrk -D exp -t 10 -c 100 -d 10 -L -s /local/repository/reserve_only.lua
+wrk -D exp -t 10 -c 100 -d 10 -L -s /local/repository/reserve_only.lua \
 http://server0:5000 -R 1000
 ```
 
