@@ -66,9 +66,7 @@ script that will run a large number of random crash tests. The script
 inserts records into the database, crashing the database at random
 instances during the insertion process, restarting it, and assesses
 whether all previously written and acknowledged records can still be
-found in the database. The script will also insert random data
-corruptions to the database files to test whether these issues are
-addressed, as well.
+found in the database.
 
 Once you have tested that your database is indeed crash consistent,
 you should also evaluate the performance of the hotel reservation app
@@ -98,7 +96,7 @@ backend. Simply continue developing your existing database backend
 from assignment 2 of lab 2 to incorporate crash consistency. One
 requirement: Your database **must** store its files in
 `/data/db`. This is the same directory MongoDB uses for its database
-files and will be accessed by the test script.
+files.
 
 To test the crash consistency of your database, you can run
 `test_nvmdb.sh`. This works, even outside of the Docker container, as
@@ -109,7 +107,11 @@ to be tested. When doing this outside of the Docker container, make
 sure that you have manually built your database binary. The script
 with continually test your database. To exit, you simply interrupt it
 via `Ctrl-C`. If you want to re-test from scratch, make sure to delete
-all your database files in `/data/db` first.
+all your database files in `/data/db` first. You should test your
+database for at least 100 insertions, but ideally much more. Note that
+the test script will use arbitrary strings for the values of
+`hotelId`, `inDate`, and `outDate`. Do not expect the values for
+`inDate` and `outDate` to be properly formatted dates, for example.
 
 Use `bench_reserve.sh` on the client to measure reservation
 latency. You may also modify the parameters specified in the `curl`

@@ -197,8 +197,7 @@ Use `bench_reserve.sh` on the client to measure reservation
 latency. Use
 
 ```console
-wrk -D exp -t 10 -c 100 -d 10 -L -s /local/repository/reserve_only.lua
-http://server0:5000 -R 1000
+wrk -D exp -t 10 -c 100 -d 10 -L -s /local/repository/reserve_only.lua http://server0:5000 -R 1000
 ```
 
 with appropriate parameters to `-t`, `-c`, and `-R`, to measure
