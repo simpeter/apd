@@ -129,3 +129,7 @@ reservation latency and throughput.
 
 ## Assignment 2: Availability (5 pts)
 
+
+
+### Detailed Instructions
+
