@@ -6,11 +6,29 @@
 set -x
 exec 1>/tmp/virtualize.log 2>&1
 
-#echo "running test" > /tmp/test.txt
-#echo $PWD >> /tmp/test.txt
-#echo $USER >> /tmp/test.txt
+echo "virtualize.sh credentials:"
+echo $PWD
+echo $USER
+echo $GROUP
 
-# With virtualization
-sudo apt-get update
-sudo apt-get install --yes snapd libxml-xpath-perl joe
-sudo snap install lxd
+HOSTNAME=`hostname -s`
+
+case $HOSTNAME in
+    server*)
+	# Install virtual machine, plus some tools
+	sudo apt-get update
+	sudo apt-get install --yes snapd libxml-xpath-perl joe
+	sudo snap install lxd
+	;;
+
+    client*)
+	# Install the client tools
+	/local/repository/start_client.sh
+	;;
+
+    *)
+	echo "Unknown hostname $HOSTNAME!"
+	;;
+esac
+
+echo "virtualize.sh done"
