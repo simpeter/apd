@@ -1,0 +1,258 @@
+version: "3"
+services:
+  consul:
+    image: consul:latest
+    ports:
+      - "8300:8300"
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:53/udp"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+  frontend:
+    environment:
+      - TLS
+    build: DeathStarBench/hotelReservation
+    image: 127.0.0.1:4000/hotel_reserv_frontend_single_node
+    entrypoint: frontend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - consul
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
+
+  profile:
+    environment:
+      - TLS
+    build: DeathStarBench/hotelReservation
+    image: 127.0.0.1:4000/hotel_reserv_profile_single_node
+    entrypoint: profile
+    depends_on:
+      - mongodb-profile
+      - memcached-profile
+      - consul
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+  search:
+    build: DeathStarBench/hotelReservation
+    image: 127.0.0.1:4000/hotel_reserv_search_single_node
+    entrypoint: search
+    depends_on:
+      - consul
+    environment:
+      - TLS
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+  geo:
+    environment:
+      - TLS
+    build: DeathStarBench/hotelReservation
+    image: 127.0.0.1:4000/hotel_reserv_geo_single_node
+    entrypoint: geo
+    depends_on:
+      - mongodb-geo
+      - consul
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+  rate:
+    environment:
+      - TLS
+    build: DeathStarBench/hotelReservation
+    image: 127.0.0.1:4000/hotel_reserv_rate_single_node
+    entrypoint: rate
+    depends_on:
+      - mongodb-rate
+      - memcached-rate
+      - consul
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+  recommendation:
+    environment:
+      - TLS
+    build: DeathStarBench/hotelReservation
+    image: 127.0.0.1:4000/hotel_reserv_recommend_single_node
+    entrypoint: recommendation
+    depends_on:
+      - mongodb-recommendation
+      - consul
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+  user:
+    environment:
+      - TLS
+    build: DeathStarBench/hotelReservation
+    image: 127.0.0.1:4000/hotel_reserv_user_single_node
+    entrypoint: user
+    depends_on:
+      - mongodb-user
+      - consul
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+  reservation:
+    environment:
+      - TLS
+    build: DeathStarBench/hotelReservation
+    image: 127.0.0.1:4000/hotel_reserv_rsv_single_node
+    entrypoint: reservation
+    depends_on:
+      - mongodb-reservation
+      - memcached-reserve
+      - consul
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "14269"
+      - "5778:5778"
+      - "14268:14268"
+      - "14267"
+      - "16686:16686"
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+  memcached-rate:
+    image: memcached
+    hostname: user-memcached
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+      - MEMCACHED_THREADS=2
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    logging:
+      options:
+        max-size: 50m
+
+  memcached-profile:
+    image: memcached
+    hostname: user-memcached
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+      - MEMCACHED_THREADS=2
+    logging:
+      options:
+        max-size: 50m
+
+  memcached-reserve:
+    image: memcached
+    hostname: user-memcached
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+      - MEMCACHED_THREADS=2
+    logging:
+      options:
+        max-size: 50m
+
+  mongodb-geo:
+    image: mongo:4.4.6
+    hostname: geo-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    volumes:
+      - geo:/data/db
+
+  mongodb-profile:
+    image: mongo:4.4.6
+    hostname: profile-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    volumes:
+      - profile:/data/db
+
+  mongodb-rate:
+    image: mongo:4.4.6
+    hostname: rate-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    volumes:
+      - rate:/data/db
+
+  mongodb-recommendation:
+    image: mongo:4.4.6
+    hostname: recommendation-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    volumes:
+      - recommendation:/data/db
+    
+  mongodb-reservation:
+    build: nvmdb
+    image: 127.0.0.1:4000/hotel_reserv_reservation_mongo
+    hostname: reservation-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    volumes:
+      - /mnt/reservation:/data/db 
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+     - seccomp:unconfined
+
+  mongodb-user:
+    image: mongo:4.4.6
+    hostname: user-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    volumes:
+      - user:/data/db
+
+volumes:
+  geo:
+  profile:
+  rate:
+  recommendation:
+  user:
