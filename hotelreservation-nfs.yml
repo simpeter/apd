@@ -7,128 +7,128 @@ services:
       - "8400:8400"
       - "8500:8500"
       - "8600:53/udp"
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
   frontend:
     environment:
       - TLS
-      - JAEGER_SAMPLE_RATIO
-      - LOG_LEVEL
     build: DeathStarBench/hotelReservation
-    image: hotel_reserv_frontend_single_node
+    image: 127.0.0.1:5000/hotel_reserv_frontend_single_node
     entrypoint: frontend
-    container_name: 'hotel_reserv_frontend'
     ports:
       - "5000:5000"
     depends_on:
       - consul
-    restart: always
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
 
   profile:
     environment:
       - TLS
-      - JAEGER_SAMPLE_RATIO
-      - LOG_LEVEL
     build: DeathStarBench/hotelReservation
-    image: hotel_reserv_profile_single_node
+    image: 127.0.0.1:5000/hotel_reserv_profile_single_node
     entrypoint: profile
-    container_name: 'hotel_reserv_profile'
     depends_on:
       - mongodb-profile
       - memcached-profile
       - consul
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
   search:
     build: DeathStarBench/hotelReservation
-    image: hotel_reserv_search_single_node
+    image: 127.0.0.1:5000/hotel_reserv_search_single_node
     entrypoint: search
-    container_name: 'hotel_reserv_search'
     depends_on:
       - consul
-    restart: always
     environment:
       - TLS
-      - JAEGER_SAMPLE_RATIO
-      - LOG_LEVEL
-      # - GRPC_GO_LOG_VERBOSITY_LEVEL=2
-      # - GRPC_GO_LOG_SEVERITY_LEVEL=info
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
   geo:
     environment:
       - TLS
-      - JAEGER_SAMPLE_RATIO
-      - LOG_LEVEL
     build: DeathStarBench/hotelReservation
-    image: hotel_reserv_geo_single_node
+    image: 127.0.0.1:5000/hotel_reserv_geo_single_node
     entrypoint: geo
-    container_name: 'hotel_reserv_geo'
     depends_on:
       - mongodb-geo
       - consul
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
   rate:
     environment:
       - TLS
-      - JAEGER_SAMPLE_RATIO
-      - LOG_LEVEL
     build: DeathStarBench/hotelReservation
-    image: hotel_reserv_rate_single_node
+    image: 127.0.0.1:5000/hotel_reserv_rate_single_node
     entrypoint: rate
-    container_name: 'hotel_reserv_rate'
     depends_on:
       - mongodb-rate
       - memcached-rate
       - consul
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
   recommendation:
     environment:
       - TLS
-      - JAEGER_SAMPLE_RATIO
-      - LOG_LEVEL
     build: DeathStarBench/hotelReservation
-    image: hotel_reserv_recommend_single_node
+    image: 127.0.0.1:5000/hotel_reserv_recommend_single_node
     entrypoint: recommendation
-    container_name: 'hotel_reserv_recommendation'
     depends_on:
       - mongodb-recommendation
       - consul
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
   user:
     environment:
       - TLS
-      - JAEGER_SAMPLE_RATIO
-      - LOG_LEVEL
     build: DeathStarBench/hotelReservation
-    image: hotel_reserv_user_single_node
+    image: 127.0.0.1:5000/hotel_reserv_user_single_node
     entrypoint: user
-    container_name: 'hotel_reserv_user'
     depends_on:
       - mongodb-user
       - consul
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
   reservation:
     environment:
       - TLS
-      - JAEGER_SAMPLE_RATIO
-      - LOG_LEVEL
     build: DeathStarBench/hotelReservation
-    image: hotel_reserv_rsv_single_node
+    image: 127.0.0.1:5000/hotel_reserv_rsv_single_node
     entrypoint: reservation
-    container_name: 'hotel_reserv_reservation'
     depends_on:
       - mongodb-reservation
       - memcached-reserve
       - consul
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
   jaeger:
     image: jaegertracing/all-in-one:latest
-    container_name: 'hotel_reserv_jaeger'
     ports:
       - "14269"
       - "5778:5778"
@@ -138,25 +138,32 @@ services:
       - "5775:5775/udp"
       - "6831:6831/udp"
       - "6832:6832/udp"
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
   memcached-rate:
     image: memcached
-    # hostname: user-memcached
-    container_name: 'hotel_reserv_rate_mmc'
-    restart: always
+    hostname: user-memcached
     environment:
       - MEMCACHED_CACHE_SIZE=128
       - MEMCACHED_THREADS=2
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
     logging:
       options:
         max-size: 50m
 
   memcached-profile:
     image: memcached
-    # hostname: user-memcached
-    container_name: 'hotel_reserv_profile_mmc'
-    restart: always
+    hostname: user-memcached
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
     environment:
       - MEMCACHED_CACHE_SIZE=128
       - MEMCACHED_THREADS=2
@@ -166,9 +173,11 @@ services:
 
   memcached-reserve:
     image: memcached
-    # hostname: user-memcached
-    container_name: 'hotel_reserv_reservation_mmc'
-    restart: always
+    hostname: user-memcached
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
     environment:
       - MEMCACHED_CACHE_SIZE=128
       - MEMCACHED_THREADS=2
@@ -178,48 +187,67 @@ services:
 
   mongodb-geo:
     image: mongo:4.4.6
-    container_name: 'hotel_reserv_geo_mongo'
-    # hostname: geo-db
-    restart: always
+    hostname: geo-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
     volumes:
-      - /mnt/geo:/data/db
+      - geo:/data/db
 
   mongodb-profile:
     image: mongo:4.4.6
-    container_name: 'hotel_reserv_profile_mongo'
     hostname: profile-db
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
     volumes:
-      - /mnt/profile:/data/db    
+      - profile:/data/db
 
   mongodb-rate:
     image: mongo:4.4.6
-    container_name: 'hotel_reserv_rate_mongo'
     hostname: rate-db
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
     volumes:
-      - /mnt/rate:/data/db   
+      - rate:/data/db
 
   mongodb-recommendation:
     image: mongo:4.4.6
     hostname: recommendation-db
-    container_name: 'hotel_reserv_recommendation_mongo'
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
     volumes:
-      - /mnt/recommendation:/data/db
+      - recommendation:/data/db
     
   mongodb-reservation:
     image: mongo:4.4.6
-    container_name: 'hotel_reserv_reservation_mongo'
     hostname: reservation-db
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
     volumes:
       - /mnt/reservation:/data/db 
 
   mongodb-user:
     image: mongo:4.4.6
-    container_name: 'hotel_reserv_user_mongo'
     hostname: user-db
-    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
     volumes:
-      - /mnt/user:/data/db
+      - user:/data/db
+
+volumes:
+  geo:
+  profile:
+  rate:
+  recommendation:
+  user:
