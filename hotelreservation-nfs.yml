@@ -16,7 +16,7 @@ services:
     environment:
       - TLS
     build: DeathStarBench/hotelReservation
-    image: 127.0.0.1:5000/hotel_reserv_frontend_single_node
+    image: 127.0.0.1:4000/hotel_reserv_frontend_single_node
     entrypoint: frontend
     ports:
       - "5000:5000"
@@ -31,7 +31,7 @@ services:
     environment:
       - TLS
     build: DeathStarBench/hotelReservation
-    image: 127.0.0.1:5000/hotel_reserv_profile_single_node
+    image: 127.0.0.1:4000/hotel_reserv_profile_single_node
     entrypoint: profile
     depends_on:
       - mongodb-profile
@@ -44,7 +44,7 @@ services:
 
   search:
     build: DeathStarBench/hotelReservation
-    image: 127.0.0.1:5000/hotel_reserv_search_single_node
+    image: 127.0.0.1:4000/hotel_reserv_search_single_node
     entrypoint: search
     depends_on:
       - consul
@@ -59,7 +59,7 @@ services:
     environment:
       - TLS
     build: DeathStarBench/hotelReservation
-    image: 127.0.0.1:5000/hotel_reserv_geo_single_node
+    image: 127.0.0.1:4000/hotel_reserv_geo_single_node
     entrypoint: geo
     depends_on:
       - mongodb-geo
@@ -73,7 +73,7 @@ services:
     environment:
       - TLS
     build: DeathStarBench/hotelReservation
-    image: 127.0.0.1:5000/hotel_reserv_rate_single_node
+    image: 127.0.0.1:4000/hotel_reserv_rate_single_node
     entrypoint: rate
     depends_on:
       - mongodb-rate
@@ -88,7 +88,7 @@ services:
     environment:
       - TLS
     build: DeathStarBench/hotelReservation
-    image: 127.0.0.1:5000/hotel_reserv_recommend_single_node
+    image: 127.0.0.1:4000/hotel_reserv_recommend_single_node
     entrypoint: recommendation
     depends_on:
       - mongodb-recommendation
@@ -102,7 +102,7 @@ services:
     environment:
       - TLS
     build: DeathStarBench/hotelReservation
-    image: 127.0.0.1:5000/hotel_reserv_user_single_node
+    image: 127.0.0.1:4000/hotel_reserv_user_single_node
     entrypoint: user
     depends_on:
       - mongodb-user
@@ -116,7 +116,7 @@ services:
     environment:
       - TLS
     build: DeathStarBench/hotelReservation
-    image: 127.0.0.1:5000/hotel_reserv_rsv_single_node
+    image: 127.0.0.1:4000/hotel_reserv_rsv_single_node
     entrypoint: reservation
     depends_on:
       - mongodb-reservation
