@@ -105,7 +105,7 @@ for i in range(params.n_servers):
         # We know that the AMD machines support device pass-through.
         # XXX: This is restrictive, as other machine types might support it, too. Not clear how to constrain the hardware type to a set of machines, rather than just a single type.
         n.hardware_type = "c6525-25g"
-    n.addService(pg.Execute(shell="bash", command="/local/repository/virtualize.sh"))
+    n.addService(pg.Execute(shell="bash", command="/local/repository/init.sh"))
     mylink.addInterface(iface)
 
 for i in range(params.n_clients):
@@ -113,7 +113,7 @@ for i in range(params.n_clients):
     n = request.RawPC('client%u' % i)
     n.disk_image = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD'
     iface = n.addInterface('interface-%u' % (params.n_servers + i))
-    n.addService(pg.Execute(shell="bash", command="/local/repository/virtualize.sh"))
+    n.addService(pg.Execute(shell="bash", command="/local/repository/init.sh"))
     mylink.addInterface(iface)
 
 # Print the generated rspec

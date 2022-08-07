@@ -4,12 +4,12 @@
 
 # All output and commands go to logfile in /tmp
 set -x
-exec 1>/tmp/virtualize.log 2>&1
+exec 1>/tmp/init.log 2>&1
 
 HOSTNAME=`hostname -s`
 export MAKEFLAGS=-j
 
-echo "virtualize.sh credentials:"
+echo "init.sh credentials:"
 echo PWD=$PWD
 echo USER=$USER
 echo GROUP=$GROUP
@@ -39,4 +39,4 @@ case $HOSTNAME in
 	;;
 esac
 
-echo "virtualize.sh done"
+echo "init.sh done"
