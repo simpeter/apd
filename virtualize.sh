@@ -6,24 +6,32 @@
 set -x
 exec 1>/tmp/virtualize.log 2>&1
 
-echo "virtualize.sh credentials:"
-echo $PWD
-echo $USER
-echo $GROUP
-
 HOSTNAME=`hostname -s`
+export MAKEFLAGS=-j
+
+echo "virtualize.sh credentials:"
+echo PWD=$PWD
+echo USER=$USER
+echo GROUP=$GROUP
+echo HOSTNAME=$HOSTNAME
+
+# Install a bunch of useful tools
+sudo apt-get update
+sudo apt-get install --yes libxml-xpath-perl joe nfs-kernel-server
 
 case $HOSTNAME in
     server*)
-	# Install virtual machine, plus some tools
-	sudo apt-get update
-	sudo apt-get install --yes snapd libxml-xpath-perl joe
+	# Install virtual machine
+	sudo apt-get install --yes snapd
 	sudo snap install lxd
 	;;
 
     client*)
-	# Install the client tools
-	/local/repository/start_client.sh
+	# Build wrk2
+	cd /local/repository/DeathStarBench
+	sudo apt-get install --yes python3-aiohttp libssl-dev libz-dev luarocks lua-socket
+	sudo luarocks install luasocket
+	make -C hotelReservation/wrk2
 	;;
 
     *)
