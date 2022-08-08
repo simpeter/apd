@@ -94,7 +94,7 @@ into. Depending on which OS and SSH package you use, the process will
 be different. We provide quick instructions for popular combinations
 in this section.
 
-TODO: Xiangfeng to describe MacOS setup
+**Mac OS.** Follow steps in this [link](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent)
 
 **Linux and OpenSSH.** If it's not already running, you can start an
 SSH authentication agent by typing `ssh-agent` into any terminal. This
