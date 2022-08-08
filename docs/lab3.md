@@ -129,7 +129,65 @@ reservation latency and throughput.
 
 ## Assignment 2: Availability (5 pts)
 
+You will now evaluate the availability of the hotel reservation app
+with your database and compare it to that of MongoDB. Remember that
+the app is only considered available if it is responding within the
+service level objective (SLO) of 500ms. It is not enough for the
+service to simply be able to respond if those responses take too long.
 
+To get a clear picture of service response times, you will run a
+benchmark that records each request along with the latency of the
+associated response. You should visualize these latencies by drawing a
+scatterplot of successful operation latency over time. The x axis
+shows operation latency, the y axis is time from the beginning of the
+experiment. Each operation will have one dot plotted. You can then
+assess when latencies return to within the SLO.
 
 ### Detailed Instructions
 
+This assignment requires the `lab3` configuration.
+
+`start_docker.sh`. Now, run `start_nfs.sh` to start a remote NFS mount
+from `client0`. Then, run:
+
+```console
+build_swarm.sh hotelreservation-nfs.yml
+```
+
+to build a special version of the hotel reservation app that uses the
+NFS mount for reservations. The NFS mount is required to carry over
+the database stored on one server to the other server.
+
+You can then deploy the swarm with:
+
+```console
+docker stack deploy --compose-file hotelreservation-nfs.yml hotelreservation
+```
+
+On the client, generate the operation latency data with:
+
+```console
+stdbuf -oL ./wrk2/wrk -D fixed -t 1 -c 1 -s /local/repository/reserve_only.lua http://server0:5000 -R 10 -P -d 100 -T1s | tee lat.txt
+```
+
+This will send 10 reservation requests per second and output each
+request's latency on the console. It will also write the latencies to
+the file `lat.txt`. You will process this file to graph the operation
+latencies. Remember to graph only `complete` operations, not `failed`
+ones.
+
+When done, you will then repeat this process with your database. To do
+so, you can use:
+
+```console
+build_swarm.sh hotelreservation-nvmdb-nfs.yml
+```
+
+which will build the swarm with your database. Before running it, make
+sure to remove the old swarm and clean up the NFS directory. You can
+remove the old swarm with:
+
+```console
+docker compose down -t1
+docker volume prune
+```
