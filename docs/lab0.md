@@ -236,12 +236,12 @@ Run the iperf3 client on a client machine and the iperf3 server inside `vm1`.
 On the server side:
 
 ```console
-VM1_IP=$(sudo lxc exec vm1 -- sh -c "ifconfig | grep '240' " | awk '{ print $2}')
-LOCAL_IP=$(ifconfig | grep -s '10.10.' | awk '{ print $2 }')
-sudo lxc network forward create lxdfan0 $LOCAL_IP target_address=$VM1_IP
+simpeter@server0:~$ VM1_IP=$(sudo lxc exec vm1 -- sh -c "ifconfig | grep '240' " | awk '{ print $2}')
+simpeter@server0:~$ LOCAL_IP=$(ifconfig | grep -s '10.10.' | awk '{ print $2 }')
+simpeter@server0:~$ sudo lxc network forward create lxdfan0 $LOCAL_IP target_address=$VM1_IP
 # NOTE: Do not close the SSH session after the last command or you'll
 # lose connectivity to the server
-sudo lxc exec vm1 -- bash
+simpeter@server0:~$ sudo lxc exec vm1 -- bash
 root@vm1:~# iperf3 -s
 ------------------------------------------------------------
 Server listening on TCP port 5001
@@ -252,7 +252,7 @@ TCP window size:  128 KByte (default)
 [  4]  0.0-10.0 sec  10.7 GBytes  9.16 Gbits/sec
 ^C
 root@vm1:~# exit
-sudo lxc network forward delete lxdfan0 10.10.1.1
+simpeter@server0:~$ sudo lxc network forward delete lxdfan0 10.10.1.1
 ```
 
 On the client side:
