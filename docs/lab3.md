@@ -176,6 +176,21 @@ the file `lat.txt`. You will process this file to graph the operation
 latencies. Remember to graph only `complete` operations, not `failed`
 ones.
 
+This scipt will run for 100 seconds. During this time, you should kill
+the database, with:
+
+```console
+./kill_reservation.sh
+```
+
+The script will automatically find the right machine and kill the
+database process on it. This will cause Docker to eventually detect
+the failure and restart the database, which will recover before
+serving further requests. This entire process should be reflected in
+your graphed scatterplot. There will be a time when no completed
+operations are processed and potentially a time where latencies are
+longer than usual.
+
 When done, you will then repeat this process with your database. To do
 so, you can use:
 
@@ -191,3 +206,8 @@ remove the old swarm with:
 docker compose down -t1
 docker volume prune
 ```
+
+Now, plot the operation latencies of the app using your database
+during fail-over. When done, compare both scatterplot and comment on
+the measured recovery times. Also, you should discuss how recovery
+time of your database might be accelerated.
