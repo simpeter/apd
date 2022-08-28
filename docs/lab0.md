@@ -14,12 +14,12 @@ access the nodes in CloudLab. Click on `Submit
 Request`. We will approve your request within 24 hours. If you already
 have a CloudLab account, simply request to join the `cse453` project.
 
-## Form a group of up to 3 students and let us know who is in it
+## Form a group of 2 or 3 students and let us know who is in it
 
-TODO: Anirudh to describe: Find a group, let us know who's in it and
-their cloudlab accounts. We will assign the group to a subgroup in
-`cse453` project. The group should then use that subgroup in CloudLab
-going forward.
+All projects of this course will be performed in groups of 2-3 students. Please 
+declare your group's membership via TODO and by TODO. We will assign the group 
+to a subgroup in `cse453` project. The group should then use that subgroup in CloudLab
+going forward. 
 
 ## Clone this repository and send us a link
 
@@ -41,7 +41,8 @@ To start a new experiment, follow these steps:
    configure the number of server machines and the number of client
    machines under advanced options. Click on `Next` to move to the
    next page.
-3. Finalize: Name and choose the cluster you want to start your
+3. Finalize: Name your experiment, select your group name as the Group, instead of cse453, and 
+   choose the cluster you want to start your
    experiment. If you are curious about the hardware CloudLab
    provides, you can refer to this
    [page](http://docs.cloudlab.us/hardware.html). In case your request
@@ -51,7 +52,7 @@ To start a new experiment, follow these steps:
    sure you select a cluster with enough machines. Each lab
    automatically constrains the hardware choice to machines that have
    the features necessary to complete it, so you cannot make a wrong
-   choice here.
+   choice here. 
 4. Schedule: Optionally, select when you would like to start this
    experiment. If you want to start your experiment immediately, skip
    this step and click `Finish`.
