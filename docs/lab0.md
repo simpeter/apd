@@ -5,7 +5,13 @@ infrastructure. Please go through all the steps, make sure that each
 one works, that you have access to everything described here, and that
 you **send us a link to your clone of this repository**.
 
-## Create a CloudLab Account ([Link](https://www.cloudlab.us/signup.php?pid=cse453))
+## Form a group of 2 or 3 students and let us know who is in it
+
+All projects of this course will be performed in groups of 2-3 students. Please 
+declare your group's membership via TODO and by TODO. 
+
+
+## Create a CloudLab Account ([Link](https://www.cloudlab.us/signup.php?pid=cse453)) and join the your project group
 
 The majority of the project runs on CloudLab, for which you need an
 account. To create an account, please use your UW email and use UW
@@ -14,12 +20,9 @@ access the nodes in CloudLab. Click on `Submit
 Request`. We will approve your request within 24 hours. If you already
 have a CloudLab account, simply request to join the `cse453` project.
 
-## Form a group of 2 or 3 students and let us know who is in it
-
-All projects of this course will be performed in groups of 2-3 students. Please 
-declare your group's membership via TODO and by TODO. We will assign the group 
-to a subgroup in `cse453` project. The group should then use that subgroup in CloudLab
-going forward. 
+Once you created an account and declared your group's membership, we will randomly assign 
+one of the group member as the "group leader" and the leader can add their teammate(s). 
+The group should then use that subgroup in CloudLab going forward. 
 
 ## Clone this repository and send us a link
 
