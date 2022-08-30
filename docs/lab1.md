@@ -20,10 +20,11 @@ efficiency, as this drives down operating cost. All of these demands
 are embodied in the performance of a service.
 
 Studies have shown that users can tolerate about half a second (500ms)
-of service latency. Anything above this makes users increasingly
-likely to assume that there is something wrong with the provided
-service and go elsewhere. Hence, this number is typically used as an
-upper bound on user quality of service tolerance.
+of service latency. (service latency means, for example, the time when 
+the user clicks a website link to when the resulting page is fully loaded). 
+Anything above this makes users increasingly likely to assume that there is 
+something wrong with the provided service and go elsewhere. Hence, this number 
+is typically used as an upper bound on user quality of service tolerance.
 
 We are going to ignore the developer goals (simplicity and elasticity)
 for now. The DeathStarBench applications are developed as
@@ -34,10 +35,10 @@ simplicity and elasticity.
 
 We typically assess performance by evaluating service latency provided
 under a variety of load conditions. System load has a major effect on
-the provided service. If a service is overloaded, it is going to
-provide terrible service---only the few lucky users that got through
-will get an answer and even that answer is going to take a while, as
-other answers will be processed first. Lower load conditions are going
+the provided service. If a service is overloaded (i.e., the service 
+approaches or exceeds its capacity), it is going to provide terrible 
+service---a large portion of users' request is going to take a while,
+as other answers will be processed first. Lower load conditions are going
 to provide a spread of better service latencies. To see how a system
 performs under a variety of load conditions, we draw latency-load
 curves. For each load level (presented on the x axis), we assess
@@ -88,9 +89,9 @@ start measuring with the default profile for hotel reservation using
 the `wrk2` client. Make sure that you gather enough data points to
 clearly show the latency-load curve that is going to result as you
 drive load up towards overload. Also, make sure you configure `wrk2`
-to generate enough load. Otherwise, your curve will fail to
-materialize (it will not look like a curve). Remember that we are
-interested in 99%-ile latency, not average.
+to generate enough load (hint: try to find the maximum load first). 
+Otherwise, your curve will fail to materialize (it will not look like a curve). 
+Remember that we are interested in 99%-ile latency, not average.
 
 We have provided shell scripts in `/local/repository` that will help
 you setup each virtualization mode. We explain how to run them,

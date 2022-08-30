@@ -196,7 +196,7 @@ user@client0:~$ curl 'http://server0:5000/user?username=Cornell_1&password=11111
 
 You should be able to get the same result.
 
-## Installing wrk2 on Client Machine
+<!-- ## Installing wrk2 on Client Machine
 
 Many assignments will use `wrk2`, a HTTP benchmarking tool, as the load generator. You will install wrk2 on client machines in this step.
 
@@ -204,14 +204,13 @@ Many assignments will use `wrk2`, a HTTP benchmarking tool, as the load generato
 # Install wrk2
 cd /local/repository
 ./start_client.sh
-```
-## Testing wrk2 on Client Machine
+``` -->
+## Running wrk2 on Client Machine
 
-Once `wrk2` is installed, you can test it with the following command.
-
+Many assignments will use `wrk2`, a HTTP benchmarking tool, as the load generator. `wrk2` will be automatically built on machine initialization. Run it with the following command:
 ```console
-user@client0:/local/repository$ cd DeathStarBench/hotelReservation/
-user@client0:/local/repository/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 2000
+user@client0:/local/repository$ /local/repository/DeathStarBench/hotelReservation
+user@client0:/local/repository/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 2000 
 Running 10s test @ http://server0:5000
   10 threads and 100 connections
   Thread Stats   Avg      Stdev     99%   +/- Stdev
@@ -221,6 +220,8 @@ Running 10s test @ http://server0:5000
 Requests/sec:   5453.90
 Transfer/sec:      2.25MB
 ```
+
+Once you finish testing, stop and remove the hotel reservation application via `sudo docker stack rm hotelreservation`.
 
 ## Starting VMs
 
@@ -313,7 +314,7 @@ throughput. -->
    reason. We are providing a boilerplate blurb for this purpose,
    here.
 
-        I am still running experiments. Please grant me a short extension.
+        I am still running experiments. Please grant me a short extension. 
 
    We recommend you save your data and create a new experiment
    whenever you can. If you do have a need to extend the nodes, do not
