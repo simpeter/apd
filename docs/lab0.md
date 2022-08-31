@@ -296,11 +296,12 @@ LOCAL_IP=$(ifconfig | grep -s '10.10.' | awk '{ print $2 }')
 sudo lxc network forward create lxdfan0 $LOCAL_IP target_address=$VM1_IP
 # NOTE: Do not close the SSH session after the last command or you'll
 # lose connectivity to the server
+
 sudo lxc exec vm1 -- docker stack deploy --compose-file hotelreservation.yml hotelreservation
 ```
 
 Then, run curl on one of the client machines (make sure all services
-are running via `docker service ls` in `vm1`):
+are running via `sudo lxc exec vm1 -- docker service ls`):
 
 ```console
 user@client0:~$ curl 'http://server0:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
