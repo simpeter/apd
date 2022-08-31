@@ -210,18 +210,31 @@ cd /local/repository
 Many assignments will use `wrk2`, a HTTP benchmarking tool, as the load generator. `wrk2` will be automatically built on machine initialization. Run it with the following command:
 ```console
 xfzhu@client0:~$ cd /local/repository/DeathStarBench/hotelReservation
-user@client0:/local/repository/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 2000 
+user@client0:/local/repository/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 2000 -L
 Running 10s test @ http://server0:5000
   10 threads and 100 connections
+  Thread calibration: mean lat.: 3.821ms, rate sampling interval: 15ms
+  Thread calibration: mean lat.: 3.833ms, rate sampling interval: 15ms
+  Thread calibration: mean lat.: 3.870ms, rate sampling interval: 16ms
   Thread Stats   Avg      Stdev     99%   +/- Stdev
-    Latency     2.29s     1.32s    4.76s    58.85%
+    Latency     3.81ms    2.74ms  12.71ms   83.30%
     Req/Sec       -nan      -nan   0.00      0.00%
-  54504 requests in 9.99s, 22.50MB read
-Requests/sec:   5453.90
-Transfer/sec:      2.25MB
+  Latency Distribution (HdrHistogram - Recorded Latency)
+ 50.000%    2.63ms
+ 75.000%    5.24ms
+ 90.000%    7.79ms
+ 99.000%   12.71ms
+ 99.900%   16.88ms
+ 99.990%   21.15ms
+ 99.999%   28.03ms
+100.000%   28.03ms
+----------------------------------------------------------
+  19769 requests in 10.01s, 8.15MB read
+Requests/sec:   1975.06
+Transfer/sec:    834.26KB
 ```
 
-Once you finish testing, stop and remove the hotel reservation application via `sudo docker stack rm hotelreservation`.
+Feel free to run `./wrk2/wrk` to learn the command line options of wrk. Once you finish testing, stop and remove the hotel reservation application via `sudo docker stack rm hotelreservation`.
 
 ## Starting VMs
 
