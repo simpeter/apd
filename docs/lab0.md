@@ -287,6 +287,7 @@ TCP window size:  374 KByte (default)
 ```
 
 ## Run DeathStarBench in VMs and Test It
+ 
 
 Similar to testing DeathStarBench in bare metal servers, on `server0`, run:
 
@@ -303,6 +304,7 @@ sudo lxc exec vm1 -- docker stack deploy --compose-file hotelreservation.yml hot
 Then, run curl on one of the client machines (make sure all services
 are running via `sudo lxc exec vm1 -- docker service ls`):
 
+NOTE: you may experience some errors in this step. will look into how to fix it soon (Xiangfeng)
 ```console
 user@client0:~$ curl 'http://server0:5000/reservation?inDate=2015-04-19&outDate=2015-04-24&lat=nil&lon=nil&hotelId=9&customerName=Cornell_1&username=Cornell_1&password=1111111111&number=1'
 {"message":"Reserve successfully!"}
