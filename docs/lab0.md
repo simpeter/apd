@@ -230,10 +230,14 @@ Running 10s test @ http://server0:5000
 100.000%   28.03ms
 ----------------------------------------------------------
   19769 requests in 10.01s, 8.15MB read
-Requests/sec:   1975.06
+Completed Requests/sec (Goodput):   1939.59
+Sent Requests/sec (Throughput):   2094.68
 Transfer/sec:    834.26KB
 ```
 
+Note: wrk2 is a open load generator, which means requests 
+are sent according to the schedule. By contrast, in an closed-loop
+load generator, new requests are triggered by response arrival.
 Feel free to run `./wrk2/wrk` to learn the command line options of wrk. Once you finish testing, stop and remove the hotel reservation application via `sudo docker stack rm hotelreservation`.
 
 ## Starting VMs
