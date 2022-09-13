@@ -67,7 +67,15 @@ done
 sudo lxc cp hotelreservation.yml vm1:/root
 sudo lxc exec vm1 -- sh -c "sudo docker swarm init --advertise-addr 10.10.1.1"
 
-echo "Add other VMs via the join command presented by docker"
+# echo "Add other VMs via the join command presented by docker"
+JOIN_COMMAND=$(sudo lxc exec vm1 -- sh -c "sudo docker swarm join-token worker | awk '/docker/ {print $1}'")
+
+# Start Docker on all servers
+for i in `seq 1 $((n_servers - 1))`; do
+  ssh -oStrictHostKeyChecking=no server$i.$DOMAIN "sudo lxc exec vm$((i+1)) -n -- sh -c  '$JOIN_COMMAND'"
+done
+
+
 
 # Add the network forward (warning: this forwards the entire host IP -- keep an SSH session open)
 #sudo lxc network forward create lxdbr0 <local_cloudlab_host-ip> target_address=<VM-IP>
