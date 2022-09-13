@@ -64,7 +64,7 @@ sh get-docker.sh\""
 done
 
 # Install DeathStarBench
-sudo lxc cp hotelreservation.yml vm1:/root
+sudo lxc file push hotelreservation.yml vm1/root/
 sudo lxc exec vm1 -- sh -c "sudo docker swarm init --advertise-addr 10.10.1.1"
 
 # echo "Add other VMs via the join command presented by docker"

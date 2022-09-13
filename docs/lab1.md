@@ -99,22 +99,23 @@ here. For each of the configurations, make sure that the previous
 instance of DeathStarBench is not running anymore. Otherwise, you can
 get performance crosstalk (lots of noise).
 
-1. See `docker_example.sh` for instructions on how to install docker
-   and DeathStarBench, as well as how to configure a swarm and run the
-   hotel reservation benchmark on it.
+1. Run `./start_docker.sh` to install and start docker. Then, follow
+   instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#install-and-start-deathstarbench-on-bare-metal-machines) 
+   to setup the benchmark.
    
 2. Run `start_vms.sh` to setup VMs and a virtual network on each
-   CloudLab machine. Then, follow the `docker_example.sh` to setup the
-   benchmark within those VMs.
+   CloudLab machine. Then, follow instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#run-deathstarbench-in-vms-and-test-it) 
+   to setup the benchmark within those VMs.
 
 3. Run `start_vms_passthru.sh` to setup VMs using each bare metal
    machine's physical network interface that is connected to the
-   internal network (`10.10.1.x`). Then, follow the
-   `docker_example.sh` to setup the benchmark within those VMs.
+   internal network (`10.10.1.x`). Then, follow instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#run-deathstarbench-in-vms-and-test-it) 
+   to setup the benchmark within those VMs.
 
-4. Run `start_vms.sh` with parameter `trap+emulate`. Then, follow the
-   `docker_example.sh` to setup the benchmark within those VMs.
-
+4. Run `start_vms.sh` with parameter `trap+emulate`. 
+   Then, follow instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#run-deathstarbench-in-vms-and-test-it) 
+   to setup the benchmark within those VMs.
+   
 For each setup, run `wrk2` from your client machine, using the
 workload configuration file provided in the hotel reservation
 benchmark. Specify a load rate and record the measured 99-percentile
