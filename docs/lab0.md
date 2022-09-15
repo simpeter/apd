@@ -42,8 +42,8 @@ To start a new experiment, follow these steps:
    page. Go to `cse453repo` profile and click `instantiate` button.
 2. Parameterize: select the lab you are working on. For lab 4, you can
    configure the number of server machines and the number of client
-   machines under advanced options. Click on `Next` to move to the
-   next page.
+   machines under advanced options. For lab 0-3, do not change the default
+   configuration. Click on `Next` to move to the next page.
 3. Finalize: Name your experiment, select your group name as the Group, instead of cse453, and 
    choose the cluster you want to start your
    experiment. If you are curious about the hardware CloudLab
