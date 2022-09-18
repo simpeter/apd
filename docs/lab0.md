@@ -209,7 +209,7 @@ cd /local/repository
 
 Many assignments will use `wrk2`, a HTTP benchmarking tool, as the load generator. `wrk2` will be automatically built on machine initialization. Run it with the following command:
 ```console
-xfzhu@client0:~$ cd /local/repository/DeathStarBench/hotelReservation
+user@client0:~$ cd /local/repository/DeathStarBench/hotelReservation
 user@client0:/local/repository/DeathStarBench/hotelReservation$ ./wrk2/wrk -D exp -t 10 -c 100 -d 10 -s ./wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua http://server0:5000 -R 2000 -L
 Running 10s test @ http://server0:5000
   10 threads and 100 connections

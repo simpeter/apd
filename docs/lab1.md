@@ -112,7 +112,7 @@ get performance crosstalk (lots of noise).
    internal network (`10.10.1.x`). Then, follow instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#run-deathstarbench-in-vms-and-test-it) 
    to setup the benchmark within those VMs.
 
-4. Run `start_vms.sh` with parameter `trap+emulate`. 
+4. Run `start_vms.sh` with parameter `--tcg`. 
    Then, follow instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#run-deathstarbench-in-vms-and-test-it) 
    to setup the benchmark within those VMs.
    
