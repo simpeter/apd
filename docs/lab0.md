@@ -314,7 +314,7 @@ sudo lxc exec vm1 -- docker stack deploy --compose-file hotelreservation.yml hot
 ```
 
 Then, run curl on one of the client machines (make sure all services
-are running via `sudo lxc exec vm1 -- docker service ls`):
+are running via `sudo lxc exec vm1 -- docker service ls` or `sudo lxc exec vm1 -- docker stack ps hotelreservation`):
 
 NOTE: you may experience some errors in this step. will look into how to fix it soon (Xiangfeng)
 ```console

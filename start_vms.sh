@@ -14,7 +14,8 @@ test x`hostname -s` == xserver0 || { echo "This script has to run on server0"; e
 while [[ $# -gt 0 ]]; do
     case "$1" in
 	--tcg)
-	    LXC_OPTS='-c raw.qemu.conf="[machine] accel=\"tcg\"" -c raw.qemu="-cpu max"'
+	    # LXC_OPTS='-c raw.qemu.conf="[machine] accel=\"tcg\"" -c raw.qemu="-cpu max"'
+      LXC_OPTS=(-c raw.qemu.conf="[machine] accel=\"tcg\"" -c raw.qemu="-cpu max")
 	    shift
 	    ;;
 	-h | --help)
@@ -114,11 +115,11 @@ EOF"
 done
 
 # Launch $nvms VMs on LXD cluster
-for i in `seq $nvms`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB $LXC_OPTS; done
+for i in `seq $nvms`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB "${LXC_OPTS[@]}"; done
 
 # Wait until all VMs are up
-echo "Waiting 30 seconds for VMs to start..."
-sleep 30
+echo "Waiting 120 seconds for VMs to start..."
+sleep 120
 
 # Install docker on all VMs
 for i in `seq $nvms`; do

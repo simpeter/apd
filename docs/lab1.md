@@ -114,7 +114,9 @@ get performance crosstalk (lots of noise).
 
 4. Run `start_vms.sh` with parameter `--tcg`. 
    Then, follow instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#run-deathstarbench-in-vms-and-test-it) 
-   to setup the benchmark within those VMs.
+   to setup the benchmark within those VMs. (Note: it may take a while to 
+   start the DeathStarBench in this mode. Make sure all containers are running before starting your 
+   measurement.)
    
 For each setup, run `wrk2` from your client machine, using the
 workload configuration file provided in the hotel reservation
@@ -221,10 +223,13 @@ client. Depending on the benchmark, different configurations are
 useful:
 
 1. Start both clients at roughly the same time, using two logins to
-   your client machine.
+   your client machine. 
 
 2. Start the background client, running for a long time. Then, in
    another terminal, start the foreground client.
+
+Note: when measuring the second tenat, you need to change the port number in `wrk2` 
+command from `http://server0:5000` to `http://server0:5001`.
 
 ### Bonus: Latency over Time (3 pts)
 
