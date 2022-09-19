@@ -30,6 +30,14 @@ TODO: Anirudh to describe: Students should clone the main repo and
 then point to it in CloudLab. Send us a link. Will use this to submit
 results.
 
+## Before Started
+
+- Check SSH Keys
+   - Go to `UserName` -> `Manage SSH Keys`. See if your public SSH key is included, if not, please upload the public key file again. 
+
+- Change the default shell
+   - Go to `Manage Account` -> `Default Shell`. Change default shell to `bash` or `zsh`. We highly recommended `bash` since most of our script are bash script.
+
 ## Start an Experiment
 
 TODO: Change this to point to students' repo. Explain how to setup web
@@ -341,4 +349,3 @@ throughput. -->
    extend them by more than one day. **We will terminate any cluster
    running for more than 48 hours**.
 
-3. If you want to change the default shell, go to `Manage Account` -> `Default Shell`
