@@ -82,10 +82,14 @@ does it signify?
 
 ### Detailed Instructions
 
-(Note: for assignment 1, please use the utah cluster.)
-Instantiate the `cse453repo` profile with 3 machines in `passthru`
-mode for the experiment and deploy DeathStarBench on all machines,
-running the hotel reservation workload. Then, attach your client and
+(Note: Please use the Utah cluster for this assignment.)
+Instantiate the `cse453repo` profile with 3 servers in `passthru`
+mode for the experiment and deploy DeathStarBench on all machines, 
+running the hotel reservation workload. Check the [`resource availability`](https://www.cloudlab.us/resinfo.php)
+page first and select the node type with enough available machines (minimum 4). 
+TODO: update the list of machine we can choose.
+
+Then, attach your client and
 start measuring with the default profile for hotel reservation using
 the `wrk2` client. Make sure that you gather enough data points to
 clearly show the latency-load curve that is going to result as you
