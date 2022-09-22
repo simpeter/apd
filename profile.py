@@ -34,6 +34,9 @@ pc.defineParameter("n_servers", "Number of server machines",
 pc.defineParameter("n_clients", "Number of client machines",
                    portal.ParameterType.INTEGER, 1, advanced=True)
 
+pc.defineParameter("node_type", "Node Type",
+                   portal.ParameterType.NODETYPE, "c6525-25g", legalValues=["c6525-25g", "c6525-100g"], advanced=True)                   
+
 # Parameter to set virtualized mode or not
 modelist = [
     ('default', 'default - Any x86 machine'),
@@ -104,7 +107,7 @@ for i in range(params.n_servers):
     if params.mode == "passthru":
         # We know that the AMD machines support device pass-through.
         # XXX: This is restrictive, as other machine types might support it, too. Not clear how to constrain the hardware type to a set of machines, rather than just a single type.
-        n.hardware_type = "c6525-25g"
+        n.hardware_type = params.node_type
     n.addService(pg.Execute(shell="bash", command="/local/repository/init.sh"))
     mylink.addInterface(iface)
 
