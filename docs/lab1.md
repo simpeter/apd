@@ -202,22 +202,21 @@ disparate tenant loads. The benchmark is the same, but you keep one
 tenant at the load that you determined to be the knee-point of the
 latency-load curve in assignment 1, when the tenant was running
 alone. Keep that load running in the background (just set a long
-duration). Then, set a load of 300 requests/s for the tenant under
-measurement and investigate the 99%-ile latency.
+duration). Then, set a load of 1/3 the load of the first tenat requests/s 
+for the second tenant and investigate the 99%-ile latency of the first tenat.
 
 For the second benchmark, you should also compare these latencies with
 a scenario where multiple clients connect to the same tenant's
 service, without there being a second tenant. How do the latencies
-compare?
+compare? 
 
 ### Detailed Instructions
 
 Instantiate the `cse453repo` profile with 3 machines in `default` mode
 for each experiment. Deploy DeathStarBench on all machines, running
-the hotel reservation workload, as in assignment 1. Then, copy
-`hotelreservation2.yml` from `/local/repository` to
-`DeathStarBench/hotelreservation` and start it, too (to start the
-second tenant). Finally, attach your client and start measuring with
+the hotel reservation workload, as in assignment 1. Then, run
+`sudo docker stack deploy --compose-file hotelreservation2.yml hotelreservation2` 
+to start the second tenant. Finally, attach your client and start measuring with
 the default profile for hotel reservation using the `wrk2`
 client. Depending on the benchmark, different configurations are
 useful:
@@ -237,7 +236,8 @@ Is the background workload affected by the foreground tenant?
 Investigate request latencies over time for the background workload,
 as you start and stop the foreground tenant. You can draw these
 background-tenant latencies over time on a graph. The `-P` option of
-the `wrk2` program will help you with it.
+the `wrk2` program will store the latency of each request in the directory
+you run it. 
 
 ## Assignment 3: Consolidation (5 pts)
 
@@ -253,4 +253,7 @@ machines used. Is the comparison favorable? Stipulate what might
 impact whether the comparison is favorable or not.
 
 ### Detailed Instructions
-
+You only need to run the experiment for bare mental servers running containers.
+First, start the experiment with only one server. Then, run the workload as described
+in assignment 1 using the same set of loads you used in assignment 1. Finally,
+compare the load to latency curve (pay closer attention to the knee-point).

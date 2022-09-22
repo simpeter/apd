@@ -8,8 +8,7 @@ you **send us a link to your clone of this repository**.
 ## Form a group of 2 or 3 students and let us know who is in it
 
 All projects of this course will be performed in groups of 2-3 students. Please 
-declare your group's membership via TODO and by TODO. 
-
+declare your group's membership via canvas and by Oct 6th EOD. 
 
 ## Create a CloudLab Account ([Link](https://www.cloudlab.us/signup.php?pid=cse453)) and join the your project group
 
