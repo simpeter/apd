@@ -7,16 +7,11 @@ you **send us a link to your clone of this repository**.
 
 ## Form a group of 2 or 3 students and let us know who is in it
 
-<<<<<<< HEAD
-All projects of this course will be performed in groups of 2-3 students. Please 
-declare your group's membership via canvas and by Oct 6th EOD. 
-=======
 All projects of this course will be performed in groups of 2-3
 students. Please declare your group's membership via Canvas by October
 6. Please include a link to your group's repository (see next step).
 
 ## Clone this repository and send us a link
->>>>>>> fcc5be307012bf9bc03e47c19c1b7ff17d3363b1
 
 TODO: Anirudh to describe: Students should clone the main repo and
 then point to it in CloudLab. Send us a link. Will use this to submit
