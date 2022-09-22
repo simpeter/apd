@@ -50,8 +50,8 @@ sudo lxc start vm$((i + 1))"
 done
 
 # Wait until all VMs are up
-echo "Waiting 30 seconds for VMs to start..."
-sleep 30
+echo "Waiting 120 seconds for VMs to start..."
+sleep 120
 
 # Install docker on all VMs
 for i in `seq 0 $((n_servers - 1))`; do

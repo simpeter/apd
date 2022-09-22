@@ -7,10 +7,22 @@ you **send us a link to your clone of this repository**.
 
 ## Form a group of 2 or 3 students and let us know who is in it
 
+<<<<<<< HEAD
 All projects of this course will be performed in groups of 2-3 students. Please 
 declare your group's membership via canvas and by Oct 6th EOD. 
+=======
+All projects of this course will be performed in groups of 2-3
+students. Please declare your group's membership via Canvas by October
+6. Please include a link to your group's repository (see next step).
 
-## Create a CloudLab Account ([Link](https://www.cloudlab.us/signup.php?pid=cse453)) and join the your project group
+## Clone this repository and send us a link
+>>>>>>> fcc5be307012bf9bc03e47c19c1b7ff17d3363b1
+
+TODO: Anirudh to describe: Students should clone the main repo and
+then point to it in CloudLab. Send us a link. Will use this to submit
+results.
+
+## Create a CloudLab Account ([Link](https://www.cloudlab.us/signup.php?pid=cse453)) and join your project group
 
 The majority of the project runs on CloudLab, for which you need an
 account. To create an account, please use your UW email and use UW
@@ -23,13 +35,7 @@ Once you created an account and declared your group's membership, we will random
 one of the group member as the "group leader" and the leader can add their teammate(s). 
 The group should then use that subgroup in CloudLab going forward. 
 
-## Clone this repository and send us a link
-
-TODO: Anirudh to describe: Students should clone the main repo and
-then point to it in CloudLab. Send us a link. Will use this to submit
-results.
-
-## Before Started
+## Getting Started
 
 - Check SSH Keys
    - Go to `UserName` -> `Manage SSH Keys`. See if your public SSH key is included, if not, please upload the public key file again. 
@@ -305,10 +311,8 @@ Similar to testing DeathStarBench in bare metal servers, on `server0`, run:
 ```console
 VM1_IP=$(sudo lxc exec vm1 -- sh -c "ifconfig | grep '240' " | awk '{ print $2}')
 LOCAL_IP=$(ifconfig | grep -s '10.10.' | awk '{ print $2 }')
-sudo lxc network forward create lxdfan0 $LOCAL_IP target_address=$VM1_IP
-# NOTE: Do not close the SSH session after the last command or you'll
-# lose connectivity to the server
-
+sudo lxc network forward create lxdfan0 $LOCAL_IP
+sudo lxc network forward port add lxdfan0 $LOCAL_IP tcp 5000 $VM1_IP
 sudo lxc exec vm1 -- docker stack deploy --compose-file hotelreservation.yml hotelreservation
 ```
 
