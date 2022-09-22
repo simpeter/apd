@@ -34,7 +34,7 @@ pc.defineParameter("n_servers", "Number of server machines",
 pc.defineParameter("n_clients", "Number of client machines",
                    portal.ParameterType.INTEGER, 1, advanced=True)
 
-pc.defineParameter("node_type", "Node Type",
+pc.defineParameter("node_type", "Node Type (for lab1 only)",
                    portal.ParameterType.NODETYPE, "c6525-25g", legalValues=["c6525-25g", "c6525-100g"], advanced=True)                   
 
 # Parameter to set virtualized mode or not
