@@ -9,13 +9,13 @@ you **send us a link to your clone of this repository**.
 
 All projects of this course will be performed in groups of 2-3
 students. Please declare your group's membership via Canvas by October
-6. Please include a link to your group's repository (see next step).
+6.
 
-## Clone this repository and send us a link
-
-TODO: Anirudh to describe: Students should clone the main repo and
-then point to it in CloudLab. Send us a link. Will use this to submit
-results.
+You might also want to create a **private** gitlab repository for your
+group that you can use for collaboration. You can use this repository
+to submit your solutions to us. In that case, please give us access to
+the repository and include a link to your group's repository when you
+inform us of your group's membership.
 
 ## Create a CloudLab Account ([Link](https://www.cloudlab.us/signup.php?pid=cse453)) and join your project group
 
@@ -40,9 +40,6 @@ The group should then use that subgroup in CloudLab going forward.
 
 ## Start an Experiment
 
-TODO: Change this to point to students' repo. Explain how to setup web
-hook for auto-update of CloudLab.
-
 To start a new experiment, follow these steps:
 
 1. Select a profile: go to your CloudLab dashboard's [`Project
@@ -50,8 +47,9 @@ To start a new experiment, follow these steps:
    page. Go to `cse453repo` profile and click `instantiate` button.
 2. Parameterize: select the lab you are working on. For lab 4, you can
    configure the number of server machines and the number of client
-   machines under advanced options. For lab 0-3, do not change the default
-   configuration. Click on `Next` to move to the next page.
+   machines under advanced options. For lab 0-3, do not change the advanced
+   options. Lab 1 allows you to select a machine from a set of valid
+   options. Click on `Next` to move to the next page.
 3. Finalize: Name your experiment, select your group name as the Group, instead of cse453, and 
    choose the cluster you want to start your
    experiment. If you are curious about the hardware CloudLab
@@ -299,7 +297,6 @@ TCP window size:  374 KByte (default)
 ```
 
 ## Run DeathStarBench in VMs and Test It
- 
 
 Similar to testing DeathStarBench in bare metal servers, on `server0`, run:
 
@@ -346,4 +343,3 @@ throughput. -->
    whenever you can. If you do have a need to extend the nodes, do not
    extend them by more than one day. **We will terminate any cluster
    running for more than 48 hours**.
-
