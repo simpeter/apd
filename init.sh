@@ -15,7 +15,7 @@ echo USER=$USER
 echo GROUP=$GROUP
 echo HOSTNAME=$HOSTNAME
 
-. config.sh
+. /local/repository/config.sh
 
 # Install a bunch of useful tools
 sudo apt-get update
