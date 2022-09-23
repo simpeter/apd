@@ -27,8 +27,10 @@ pc.defineParameter("lab", "Select the lab you are working on",
                    portal.ParameterType.STRING, lablist[0], lablist)
 
 # Node type to reserve (lab 1 only)
-pc.defineParameter("node_type", "Node Type (for lab 1 only)",
-                   portal.ParameterType.NODETYPE, "c6525-25g", longDescription="These are known to work: Utah: c6525-25g, c6525-100g")
+pc.defineParameter("node_type", "Node type (for lab 1 only)",
+                   portal.ParameterType.NODETYPE, "c6525-25g", longDescription="These are known to work:
+Utah: c6525-25g, c6525-100g
+APT: r320")
 
 # Number of server machines
 pc.defineParameter("n_servers", "Number of server machines",
@@ -90,6 +92,8 @@ class Parameters(pg.Resource):
         param.text = '%u' % int(params.n_clients)
         param = ET.SubElement(el,paramXML, name='mode')
         param.text = params.mode
+        param = ET.SubElement(el,paramXML, name='node_type')
+        param.text = params.node_type
 
         return el
 
