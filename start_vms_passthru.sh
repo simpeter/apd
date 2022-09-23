@@ -49,7 +49,7 @@ EOF"
     ssh -tt -oStrictHostKeyChecking=no server$i.$DOMAIN "
 NETDEV=\`ip -br -oneline -4 ad show to 10.10.1.$((i + 1)) | cut -f1,1 -d' '\`
 echo server$i NETDEV=\$NETDEV
-sudo lxc init images:ubuntu/20.04/cloud vm$((i + 1)) --vm -c limits.memory=4GB
+sudo lxc init images:ubuntu/20.04/cloud vm$((i + 1)) --vm -c limits.memory=4GB -c limits.cpu=\`getconf _NPROCESSORS_ONLN\`
 sudo lxc config device add vm$((i + 1)) eth1 nic nictype=physical parent=\$NETDEV
 sudo lxc start vm$((i + 1))"
 done

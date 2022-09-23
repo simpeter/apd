@@ -115,7 +115,7 @@ EOF"
 done
 
 # Launch $nvms VMs on LXD cluster
-for i in `seq $nvms`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB "${LXC_OPTS[@]}"; done
+for i in `seq $nvms`; do sudo lxc launch images:ubuntu/20.04/cloud vm$i --vm -c limits.memory=4GB -c limits.cpu=`getconf _NPROCESSORS_ONLN` "${LXC_OPTS[@]}"; done
 
 # Wait until all VMs are up
 echo "Waiting 120 seconds for VMs to start..."
