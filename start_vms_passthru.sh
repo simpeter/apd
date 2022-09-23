@@ -7,6 +7,11 @@ test x`hostname -s` == xserver0 || { echo "This script has to run on server0"; e
 
 DOMAIN=${HOSTNAME#*.}
 
+# Check that servers have IOMMU enabled
+for i in `seq $((n_servers - 1)) -1 0`; do
+    ssh -oStrictHostKeyChecking=no server$i.$DOMAIN /local/repository/check_iommu.sh
+done
+
 # Start passthrough VMs on all servers
 for i in `seq 0 $((n_servers - 1))`; do
     ssh -oStrictHostKeyChecking=no server$i.$DOMAIN "sudo lxd init --preseed <<EOF
