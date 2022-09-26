@@ -28,7 +28,7 @@ have a CloudLab account, simply request to join the `cse453` project.
 
 Once you created an account and declared your group's membership, we will randomly assign 
 one of the group member as the "group leader" and the leader can add their teammate(s). 
-The group should then use that subgroup in CloudLab going forward. 
+The group should then use that subgroup (e.g., when creating an experiments) going forward. 
 
 ## Getting Started
 
@@ -45,11 +45,14 @@ To start a new experiment, follow these steps:
 1. Select a profile: go to your CloudLab dashboard's [`Project
    Profile`](https://www.cloudlab.us/user-dashboard.php#projectprofiles)
    page. Go to `cse453repo` profile and click `instantiate` button.
-2. Parameterize: select the lab you are working on. For lab 4, you can
+2. Parameterize: select the lab you are working on. Lab 1 allows you 
+   to select a machine from a set of valid options(see lab1 instruction for details). 
+   Click on `Next` to move to the next page.
+<!-- For lab 4, you can
    configure the number of server machines and the number of client
    machines under advanced options. For lab 0-3, do not change the advanced
-   options. Lab 1 allows you to select a machine from a set of valid
-   options. Click on `Next` to move to the next page.
+   options.  -->
+
 3. Finalize: Name your experiment, select your group name as the Group, instead of cse453, and 
    choose the cluster you want to start your
    experiment. If you are curious about the hardware CloudLab
