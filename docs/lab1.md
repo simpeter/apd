@@ -6,6 +6,9 @@ virtualized, for example, impacts application performance. In this
 lab, you will evaluate some of the virtualization and containerization
 solutions presented in the lecture.
 
+Note: Please use this [doc](https://docs.google.com/document/d/1uS6lgpEdUd0KnEcYGbrs1YdBTV_z-TQjsJ1XSgA1EJQ/edit?usp=sharing) as a template when submitting your results.
+(You can make a copy and add your answers.)
+
 ## Defining Performance
 
 Three parties are involved, with different performance goals, in every
@@ -130,10 +133,8 @@ output. Also, make sure that you specify enough threads and
 connections to be able to provide the given load. Please record the
 specified offered rate and what throughput was reported by
 `wrk2`. Doing so will help you determine whether you are indeed
-configuring `wrk2` properly to offer enough load. Also, report the
-offered load for each data point to us.
-
-### Bonus: Error Margin (2 pts)
+configuring `wrk2` properly to offer enough load. 
+<!-- Also, report the offered load for each data point to us. -->
 
 No experiment setup is perfect. In the real world, there are always
 factors outside of our control. From the already mentioned bad
@@ -152,8 +153,7 @@ show that our experiment is indeed measuring the signal and not
 presenting mostly noise. To do so, we attach *error bars* to each data
 point.
 
-Re-run each of the above experiments at least 3 times to get at least
-4 measurements for each data point. Then, re-plot the graphs with
+Run the experiment at least 4 times. Then, plot the graphs with
 error bars attached. You can choose an error bar style that you think
 is most appropriate for this experiment. Styles range from presenting
 average and [standard
