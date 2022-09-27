@@ -28,7 +28,7 @@ pc.defineParameter("lab", "Select the lab you are working on",
 
 # Node type to reserve (lab 1 only)
 pc.defineParameter("node_type", "Node type (for lab 1 only)",
-                   portal.ParameterType.NODETYPE, "c6525-25g", longDescription="These are known to work: Utah: c6525-25g, c6525-100g; APT: r320; Wisconin: c220g2")
+                   portal.ParameterType.NODETYPE, "c6525-25g", longDescription="These are known to work: Utah: c6525-25g, c6525-100g; APT: r320; Wisconin: c220g2, c220g1")
 
 # Number of server machines
 pc.defineParameter("n_servers", "Number of server machines",
