@@ -8,8 +8,8 @@ you **send us a link to your clone of this repository**.
 ## Form a group of 2 or 3 students and let us know who is in it
 
 All projects of this course will be performed in groups of 2-3
-students. Please declare your group's membership via Canvas by October
-6.
+students. Please declare your group's membership via Canvas (Go to `People`->`Groups` and self sign-up) by October
+6. 
 
 You might also want to create a **private** gitlab repository for your
 group that you can use for collaboration. You can use this repository
@@ -346,3 +346,5 @@ throughput. -->
    whenever you can. If you do have a need to extend the nodes, do not
    extend them by more than one day. **We will terminate any cluster
    running for more than 48 hours**.
+
+3. Please terminate your experiment as soon as you finish an assignment.
