@@ -6,5 +6,5 @@ technologies. You will be investigating their features and performance
 from a **data center operator's** perspective. You provide the cloud
 to users and developers. Make them happy---the world counts on you!
 
-The project is subdivided into five labs. For each lab _N_, you can
+The project is subdivided into four labs. For each lab _N_, you can
 find its associated documentation in `docs/labN.md`. Happy learning!
