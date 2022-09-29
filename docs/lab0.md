@@ -26,8 +26,7 @@ access the nodes in CloudLab. Click on `Submit
 Request`. We will approve your request within 24 hours. If you already
 have a CloudLab account, simply request to join the `cse453` project.
 
-Once you created an account and declared your group's membership, we will randomly assign 
-one of the group member as the "group leader" and the leader can add their teammate(s). 
+Once you created an account and declared your group's membership, we will create and add you to the Cloudlab groups. 
 The group should then use that subgroup (e.g., when creating an experiments) going forward. 
 
 ## Getting Started
