@@ -39,7 +39,7 @@ The group should then use that subgroup (e.g., when creating an experiments) goi
 
 ## Start an Experiment
 
-To start a new experiment, follow these steps:
+To start a new experiment, follow the steps below. Please make sure that you **do not create more than one active experiment per group**. Have one team member create the experiment and the other team member(s) will have access.  
 
 1. Select a profile: go to your CloudLab dashboard's [`Project
    Profile`](https://www.cloudlab.us/user-dashboard.php#projectprofiles)
