@@ -178,8 +178,7 @@ SSH into the `server0` node.
 # This directory always exists. It holds a checked-out cse453 repository.
 cd /local/repository
 
-# This script will set up docker and docker swarm. It will output what
-# it is doing. Follow the instructions in the output to add other servers as workers (via `docker swarm join`).
+# This script will set up docker and docker swarm. 
 sudo ./start_docker.sh
 
 # Deploy the hotel reservation application
