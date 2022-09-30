@@ -16,6 +16,7 @@ def draw(latency_dict, title, error_type):
               ecolor = 'black', elinewidth = 2, capsize=5)
   plt.xticks(rate)
   plt.ylabel("Latency(ms)")
+  plt.axhline(y=500, color='blue', linestyle='-')
   plt.xlabel("Request Rate(Req/Sec)")
   plt.title(title)
 
