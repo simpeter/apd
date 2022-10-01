@@ -6,8 +6,7 @@ virtualized, for example, impacts application performance. In this
 lab, you will evaluate some of the virtualization and containerization
 solutions presented in the lecture.
 
-Note: Please use this [doc](https://docs.google.com/document/d/1uS6lgpEdUd0KnEcYGbrs1YdBTV_z-TQjsJ1XSgA1EJQ/edit?usp=sharing) as a template when submitting your results.
-(You can make a copy and add your answers.)
+Note: Please use this [doc](https://docs.google.com/document/d/1uS6lgpEdUd0KnEcYGbrs1YdBTV_z-TQjsJ1XSgA1EJQ/edit?usp=sharing) as a template when submitting your results. (You can make a copy and add your answers). For each assignment, report the type of node you get from Cloudlab.
 
 ## Defining Performance
 
@@ -90,14 +89,14 @@ Instantiate the `cse453repo` profile with 3 servers in `passthru`
 mode for the experiment and deploy DeathStarBench on all machines, 
 running the hotel reservation workload. Check the [`resource availability`](https://www.cloudlab.us/resinfo.php)
 page first and select the node type with enough available machines (minimum 4). 
-TODO: update the list of machine we can choose.
+These machine types are known to work: Utah: c6525-25g, c6525-100g; APT: r320; Wisconin: c220g2, c220g1.
 
 Then, attach your client and
 start measuring with the default profile for hotel reservation using
 the `wrk2` client. Make sure that you gather enough data points to
 clearly show the latency-load curve that is going to result as you
 drive load up towards overload. Also, make sure you configure `wrk2`
-to generate enough load. Otherwise, your curve will fail to materialize 
+to generate enough load and run for enough time (>20s). Otherwise, your curve will fail to materialize 
 (it will not look like a curve). Remember that we are interested in 99%-ile latency, not average.
 
 We have provided shell scripts in `/local/repository` that will help
@@ -177,7 +176,7 @@ tenants, each running their application. You are going to investigate
 this scenario in this assignment.
 
 The performance goals are identical to assignment 1 (we want
-acceptable 99%-ile latency, while maximimzing load). Let's first look
+acceptable 99%-ile latency (i.e. 500ms), while maximimzing load). Let's first look
 at the different virtualization technologies. In this case, we are
 going to ignore device passthrough, as it requires hardware IO
 virtualization to enable multiple tenants to share devices, which is
@@ -209,15 +208,16 @@ alone. Keep that load running in the background (just set a long
 duration). Then, set a load of 1/3 the load of the first tenat requests/s 
 for the second tenant and investigate the 99%-ile latency of the first tenat.
 
-For the second benchmark, you should also compare these latencies with
+<!-- For the second benchmark, you should also compare these latencies with
 a scenario where multiple clients connect to the same tenant's
 service, without there being a second tenant. How do the latencies
-compare? 
+compare?  -->
 
 ### Detailed Instructions
 
 Instantiate the `cse453repo` profile with 3 machines in `default` mode
-for each experiment. Deploy DeathStarBench on all machines, running
+(you can keep using the experiment you created for assignment 1 if they are not expired.). 
+Deploy DeathStarBench on all machines, running
 the hotel reservation workload, as in assignment 1. Then, run
 `sudo docker stack deploy --compose-file hotelreservation2.yml hotelreservation2` 
 to start the second tenant. Finally, attach your client and start measuring with
@@ -231,10 +231,11 @@ useful:
 2. Start the background client, running for a long time. Then, in
    another terminal, start the foreground client.
 
-Note: when measuring the second tenat, you need to change the port number in `wrk2` 
-command from `http://server0:5000` to `http://server0:5001`.
+Note: 
+1. when measuring the second tenat, you need to change the port number in `wrk2` command from `http://server0:5000` to `http://server0:5001`.
+2. If you use different node type for assignment 1 and assignment 2, it is likely the performance changes due to hardware. You need to re-run the experiment to determine the new knee point.
 
-### Bonus: Latency over Time (3 pts)
+### Bonus: Latency over Time (2 pts)
 
 Is the background workload affected by the foreground tenant?
 Investigate request latencies over time for the background workload,
@@ -243,7 +244,7 @@ background-tenant latencies over time on a graph. The `-P` option of
 the `wrk2` program will store the latency of each request in the directory
 you run it. 
 
-## Assignment 3: Consolidation (5 pts)
+## Assignment 3: Consolidation (3 pts)
 
 The cloud operator's goal is to minimize cost. Currently, the hotel
 reservation application requires 3 servers. Can we reduce this number?
@@ -261,3 +262,7 @@ You only need to run the experiment for bare mental servers running containers.
 First, start the experiment with only one server. Then, run the workload as described
 in assignment 1 using the same set of loads you used in assignment 1. Finally,
 compare the load to latency curve (pay closer attention to the knee-point).
+
+Note: 
+1. If you use different node type for assignment 1 and assignment 3, it is likely the performance changes due to hardware. You need to re-run the experiment to determine the new knee point. 
+2. You can reduce the number of servers by 1) restart an experiment with the same node type or 2) remove server 2 and 3 from the `list view` tab.
