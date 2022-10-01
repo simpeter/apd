@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def draw(latency_dict, title):
-  fig = plt.figure(figsize =(10, 5))
+def draw(latency_dict, title, error_type):
+  fig = plt.figure(figsize =(15, 5))
   rate = sorted(latency_dict.keys())
   y = []
   std = []
@@ -21,19 +21,18 @@ def draw(latency_dict, title):
   plt.title(title)
 
   # Display graph
-  plt.savefig(title+".png")
+  plt.show()
 
 if __name__ == "__main__":
     # Format: {rate: [latency1, latency2...]} (e.g., {100:[11,10,23], 200:[12,20,22])
     # Rate = Request per second and Latency = latency in microsecond
-    baremetal = {} # TODO: Add your result here
-    draw(baremetal, "Bare_Mental")
+    baremetal_tenant1 = {} # TODO: Add your result here
+    baremetal_tenant2 = {} # TODO: Add your result here
+    draw(baremetal_tenant1, "Bare_Mental_Tenant1")
+    draw(baremetal_tenant2, "Bare_Mental_Tenant2")
 
-    vm = {} # TODO: Add your result here
-    draw(vm, "Virtual_Machine")
+    vm_tenant1 = {} # TODO: Add your result here
+    vm_tenant2 = {} # TODO: Add your result here
+    draw(vm_tenant1, "Virtual_Machine_Tenant1")
+    draw(vm_tenant2, "Virtual_Machine_Tenant2")
 
-    vm_passthrough = {} # TODO: Add your result here
-    draw(vm_passthrough, "Virtual_Machine_Passthrough")
-
-    vm_trap_emulate = {} # TODO: Add your result here
-    draw(vm_passthrough, "Virtual_Machine_Trap_Emulate")
