@@ -217,13 +217,12 @@ compare?  -->
 
 Instantiate the `cse453repo` profile with 3 machines in `default` mode
 (you can keep using the experiment you created for assignment 1 if they are not expired.). 
-Deploy DeathStarBench on all machines, running
-the hotel reservation workload, as in assignment 1. Then, run
-`sudo docker stack deploy --compose-file hotelreservation2.yml hotelreservation2` 
-to start the second tenant. Finally, attach your client and start measuring with
-the default profile for hotel reservation using the `wrk2`
-client. Depending on the benchmark, different configurations are
-useful:
+
+1. (for bare mental servers) Run `./start_docker.sh` to install and start docker. Deploy hotel reservation on all machines as in assignment 1. Then, run `sudo docker stack deploy --compose-file hotelreservation2.yml hotelreservation2` to start the second tenant. 
+
+2. (For VMs) Run `start_vms.sh` to setup VMs and a virtual network on each CloudLab machine. Deploy hotel reservation on all VMs as in assignment 1. Then, run './start_vms2.sh` to set up the second VM on each machine. Deploy the hotel reservation on second VMs (use the same set of commands by replace `vm1` with `vm4`.) 
+
+Depending on the benchmark, different configurations are useful:
 
 1. Start both clients at roughly the same time, using two logins to
    your client machine. 
