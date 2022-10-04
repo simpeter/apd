@@ -123,7 +123,9 @@ get performance crosstalk (lots of noise).
    to setup the benchmark within those VMs. (Note: it may take a while to 
    start the DeathStarBench in this mode. Make sure all containers are running before starting your 
    measurement.)
-   
+
+You need reload the machines if you want to switch between different setups. If you just want to delete all VMs, you can use `delete_vms.sh`.
+
 For each setup, run `wrk2` from your client machine, using the
 workload configuration file provided in the hotel reservation
 benchmark. Specify a load rate and record the measured 99-percentile
