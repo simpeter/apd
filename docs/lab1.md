@@ -243,7 +243,7 @@ background-tenant latencies over time on a graph. The `-P` option of
 the `wrk2` program will store the latency of each request in the directory
 you run it. 
 
-## Assignment 3: Consolidation (3 pts)
+## Assignment 3: Consolidation (5 pts)
 
 The cloud operator's goal is to minimize cost. Currently, the hotel
 reservation application requires 3 servers. Can we reduce this number?
