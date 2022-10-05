@@ -237,8 +237,8 @@ Running 10s test @ http://server0:5000
 100.000%   28.03ms
 ----------------------------------------------------------
   19769 requests in 10.01s, 8.15MB read
-Completed Requests/sec (Goodput):   1939.59
-Sent Requests/sec (Throughput):   2094.68
+Completed Requests/sec (Throughput):   1939.59
+Sent Requests/sec (Load):   2094.68
 Transfer/sec:    834.26KB
 ```
 
