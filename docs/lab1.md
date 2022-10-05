@@ -39,12 +39,12 @@ We typically assess performance by evaluating service latency provided
 under a variety of load conditions. System load has a major effect on
 the provided service. If a service is overloaded (i.e., the service 
 approaches or exceeds its capacity), it is going to provide terrible 
-service---a large portion of users' request is going to take a while,
+service---a large portion of users' requests is going to take a while,
 as other answers will be processed first. Lower load conditions are going
 to provide a spread of better service latencies. To see how a system
-performs under a variety of load conditions, we draw latency-load
-curves. For each load level (presented on the x axis), we assess
-service latency (presented on the y axis).
+performs under a variety of load conditions, we draw latency-throughput
+curves. For each throughput level (presented on the x-axis), we assess
+service latency (presented on the y-axis).
 
 For cloud operators, it is typically not enough to keep average
 service latencies below 500ms. Averages ignore the distribution of
@@ -62,7 +62,7 @@ not. In our project, we will care about 99% of users.
 Assume that we have a number of virtualization technologies at our
 disposal:
 
-1. Bare metal servers running containers
+1. Bare metal servers 
 2. Virtual machines (VMs) running with hardware virtualization and a
    software IO path
 3. VMs running with hardware virtualization and hardware device
@@ -73,14 +73,16 @@ You will evaluate each of these technologies for their provided
 application performance. To do so, you will run the hotel reservation
 DeathStarBench application using each of these technologies and
 evaluate 99 percentile service latencies under a variety of load
-points. Draw the latency-load curve for each technology.
+points. Draw the latency-throughput curve for each technology.
 
-Once you have all four curves, you should interpret them. What load
+Once you have all four curves, you should interpret them. What throughput
 can each setup handle before 99%-ile latencies become untenable
 (larger than 500ms)? Which technology provides the best performance?
 Why does each technology provide each level of performance? What are
-the characteristics of each curve? Where is the knee point and what
+the characteristics of each curve? Where is the max point<sup>1</sup> and what
 does it signify?
+
+1.for this lab, max point means the maximum throughput you can get under a specific tail latency target (i.e. 500ms)
 
 ### Detailed Instructions
 
@@ -89,38 +91,38 @@ Instantiate the `cse453repo` profile with 3 servers in `passthru`
 mode for the experiment and deploy DeathStarBench on all machines, 
 running the hotel reservation workload. Check the [`resource availability`](https://www.cloudlab.us/resinfo.php)
 page first and select the node type with enough available machines (minimum 4). 
-These machine types are known to work: Utah: c6525-25g, c6525-100g; APT: r320; Wisconin: c220g2, c220g1.
+These machine types are known to work: Utah: c6525-25g, c6525-100g; APT: r320; Wisconsin: c220g2, c220g1.
 
 Then, attach your client and
 start measuring with the default profile for hotel reservation using
 the `wrk2` client. Make sure that you gather enough data points to
-clearly show the latency-load curve that is going to result as you
+clearly show the latency-throughput curve that, as you
 drive load up towards overload. Also, make sure you configure `wrk2`
 to generate enough load and run for enough time (>20s). Otherwise, your curve will fail to materialize 
 (it will not look like a curve). Remember that we are interested in 99%-ile latency, not average.
 
 We have provided shell scripts in `/local/repository` that will help
-you setup each virtualization mode. We explain how to run them,
+you set up each virtualization mode. We explain how to run them,
 here. For each of the configurations, make sure that the previous
 instance of DeathStarBench is not running anymore. Otherwise, you can
 get performance crosstalk (lots of noise).
 
 1. Run `./start_docker.sh` to install and start docker. Then, follow
    instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#install-and-start-deathstarbench-on-bare-metal-machines) 
-   to setup the benchmark.
+   to set up the benchmark.
    
-2. Run `start_vms.sh` to setup VMs and a virtual network on each
+2. Run `start_vms.sh` to set up VMs and a virtual network on each
    CloudLab machine. Then, follow instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#run-deathstarbench-in-vms-and-test-it) 
-   to setup the benchmark within those VMs.
+   to set up the benchmark within those VMs.
 
-3. Run `start_vms_passthru.sh` to setup VMs using each bare metal
+3. Run `start_vms_passthru.sh` to set up VMs using each bare metal
    machine's physical network interface that is connected to the
    internal network (`10.10.1.x`). Then, follow instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#run-deathstarbench-in-vms-and-test-it) 
-   to setup the benchmark within those VMs.
+   to set up the benchmark within those VMs.
 
 4. Run `start_vms.sh` with parameter `--tcg`. 
    Then, follow instructions in [Lab0](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/docs/lab0.md#run-deathstarbench-in-vms-and-test-it) 
-   to setup the benchmark within those VMs. (Note: it may take a while to 
+   to set up the benchmark within those VMs. (Note: it may take a while to 
    start the DeathStarBench in this mode. Make sure all containers are running before starting your 
    measurement.)
 
@@ -132,14 +134,14 @@ benchmark. Specify a load rate and record the measured 99-percentile
 latency and throughput. Pay close attention to any errors in `wrk2`'s
 output. Also, make sure that you specify enough threads and
 connections to be able to provide the given load. Please record the
-specified offered rate and what throughput was reported by
+specified offered load and what throughput was reported by
 `wrk2`. Doing so will help you determine whether you are indeed
 configuring `wrk2` properly to offer enough load. 
 <!-- Also, report the offered load for each data point to us. -->
 
 No experiment setup is perfect. In the real world, there are always
 factors outside of our control. From the already mentioned bad
-Internet connection down to the temperature that day affecting server
+Internet connection down to the temperature that day affects server
 performance, each impact the experiment outcome. Hence, re-running the
 experiment is going to produce slightly different results. The
 difference in results is generally described as *noise* or *error*. We
@@ -155,15 +157,13 @@ presenting mostly noise. To do so, we attach *error bars* to each data
 point.
 
 Run the experiment at least 4 times. Then, plot the graphs with
-error bars attached. You can choose an error bar style that you think
-is most appropriate for this experiment. Styles range from presenting
+error bars attached. There are multiple error bar styles, ranging from presenting
 average and [standard
 deviation](https://en.wikipedia.org/wiki/Standard_deviation), to
 median and percentiles, as well as median, minimum, and maximum.
-
-When presenting your graphs, explain why you selected this style of
-error bars. Also, interpret the results. What level of noise is
-visible and why might it be there. Is the level of noise acceptable?
+For this lab, we will use the average and standard deviation.
+After plotting the graphs, interpret the results. What level of noise is
+visible, and why might it be there? Is the level of noise acceptable?
 
 ### Bonus: Device Pass-through for Containers? (2 pts)
 
@@ -199,13 +199,13 @@ You will again evaluate each of these technologies for their provided
 application performance. To do so, you will run the hotel reservation
 DeathStarBench application using each of these technologies and
 evaluate 99 percentile service latencies under a variety of load
-points for both tenants. Draw the latency-load curve for each
+points for both tenants. Draw the latency-throughput curve for each
 technology and tenant, keeping both tenants' load identical.
 
 In a second benchmark, you will evaluate the technologies for
 disparate tenant loads. The benchmark is the same, but you keep one
-tenant at the load that you determined to be the knee-point of the
-latency-load curve in assignment 1, when the tenant was running
+tenant at the load that you determined to be the max point of the
+latency-throughput curve in assignment 1, when the tenant was running
 alone. Keep that load running in the background (just set a long
 duration). Then, set a load of 1/3 the load of the first tenat requests/s 
 for the second tenant and investigate the 99%-ile latency of the first tenat.
@@ -234,7 +234,7 @@ Depending on the benchmark, different configurations are useful:
 
 Note: 
 1. when measuring the second tenat, you need to change the port number in `wrk2` command from `http://server0:5000` to `http://server0:5001`.
-2. If you use different node type for assignment 1 and assignment 2, it is likely the performance changes due to hardware. You need to re-run the experiment to determine the new knee point.
+2. If you use different node type for assignment 1 and assignment 2, it is likely the performance changes due to hardware. You need to re-run the experiment to determine the new max point.
 
 ### Bonus: Latency over Time (2 pts)
 
@@ -252,8 +252,8 @@ reservation application requires 3 servers. Can we reduce this number?
 Start the experiment with just a single server and measure latency
 over load.
 
-How does the measured knee-point of the curve compare to the one
-measured in assignment 1? Calculate the ratio of the knee-point
+How does the measured max point of the curve compare to the one
+measured in assignment 1? Calculate the ratio of the max point
 throughputs between the two cases and compare it to the ratio of
 machines used. Is the comparison favorable? Stipulate what might
 impact whether the comparison is favorable or not.
@@ -262,8 +262,8 @@ impact whether the comparison is favorable or not.
 You only need to run the experiment for bare mental servers running containers.
 First, start the experiment with only one server. Then, run the workload as described
 in assignment 1 using the same set of loads you used in assignment 1. Finally,
-compare the load to latency curve (pay closer attention to the knee-point).
+compare the load to latency curve (pay closer attention to the max point).
 
 Note: 
-1. If you use different node type for assignment 1 and assignment 3, it is likely the performance changes due to hardware. You need to re-run the experiment to determine the new knee point. 
+1. If you use different node type for assignment 1 and assignment 3, it is likely the performance changes due to hardware. You need to re-run the experiment to determine the new max point. 
 2. You can reduce the number of servers by 1) restart an experiment with the same node type or 2) remove server 2 and 3 from the `list view` tab.
