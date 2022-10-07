@@ -242,7 +242,7 @@ Is the background workload affected by the foreground tenant?
 Investigate request latencies over time for the background workload,
 as you start and stop the foreground tenant. You can draw these
 background-tenant latencies over time on a graph. The `-P` option of
-the `wrk2` program will store the latency of each request in the directory
+the `wrk2` program will store the latency (in microsecond) of each request in the directory
 you run it. 
 
 ## Assignment 3: Consolidation (5 pts)
