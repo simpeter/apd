@@ -87,8 +87,7 @@ does it signify?
 ### Detailed Instructions
 
 (Note: Please use the Utah cluster for this assignment.)
-Instantiate the `cse453repo` profile with 3 servers in `passthru`
-mode for the experiment and deploy DeathStarBench on all machines, 
+Instantiate the `cse453repo` profile for lab 1 and deploy DeathStarBench on all machines, 
 running the hotel reservation workload. Check the [`resource availability`](https://www.cloudlab.us/resinfo.php)
 page first and select the node type with enough available machines (minimum 4). 
 These machine types are known to work: Utah: c6525-25g, c6525-100g; APT: r320; Wisconsin: c220g2, c220g1.
@@ -217,10 +216,10 @@ compare?  -->
 
 ### Detailed Instructions
 
-Instantiate the `cse453repo` profile with 3 machines in `default` mode
-(you can keep using the experiment you created for assignment 1 if they are not expired.). 
+Instantiate the `cse453repo` profile for lab 1
+(you can keep using the experiment you created for assignment 1 if they are not expired).
 
-1. (for bare mental servers) Run `./start_docker.sh` to install and start docker. Deploy hotel reservation on all machines as in assignment 1. Then, run `sudo docker stack deploy --compose-file hotelreservation2.yml hotelreservation2` to start the second tenant. 
+1. (for bare metal servers) Run `./start_docker.sh` to install and start docker. Deploy hotel reservation on all machines as in assignment 1. Then, run `sudo docker stack deploy --compose-file hotelreservation2.yml hotelreservation2` to start the second tenant. 
 
 2. (For VMs) Run `start_vms.sh` to setup VMs and a virtual network on each CloudLab machine. Deploy hotel reservation on all VMs as in assignment 1. Then, run `./start_vms2.sh` to set up the second VM on each machine. Deploy the hotel reservation on second VMs (use the same set of commands by replace `vm1` with `vm4`.) 
 
