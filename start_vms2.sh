@@ -21,7 +21,7 @@ done
 wait
 
 # Install DeathStarBench
-sudo lxc file push hotelreservation.yml vm4/root/
+sudo lxc file push hotelreservation2.yml vm4/root/
 sudo lxc exec vm4 -- sh -c "sudo docker swarm init"
 
 JOIN_COMMAND=$(sudo lxc exec vm4 -- sh -c "sudo docker swarm join-token worker | awk '/docker/ {print $1}'")
