@@ -188,7 +188,7 @@ sudo docker stack deploy --compose-file hotelreservation.yml hotelreservation
 sudo docker service ls
 ```
 
-Make sure all services are running before you move to the next section.
+Make sure all services are running by checking that their replica fractions are full (e.g.: 1/1 or 3/3) before you move to the next section.
 
 ## Testing DeathStarBench using curl
 
