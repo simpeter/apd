@@ -221,7 +221,7 @@ Instantiate the `cse453repo` profile for lab 1
 
 1. (for bare metal servers) Run `./start_docker.sh` to install and start docker. Deploy hotel reservation on all machines as in assignment 1. Then, run `sudo docker stack deploy --compose-file hotelreservation2.yml hotelreservation2` to start the second tenant. 
 
-2. (For VMs) Run `start_vms.sh` to setup VMs and a virtual network on each CloudLab machine. Deploy hotel reservation on all VMs as in assignment 1. Then, run `./start_vms2.sh` to set up the second VM on each machine. Deploy the hotel reservation on second VMs (use the same set of commands by replace `vm1` with `vm4` and `5000` with `5001`.) 
+2. (For VMs) Run `start_vms.sh` to setup VMs and a virtual network on each CloudLab machine. Deploy hotel reservation on all VMs as in assignment 1. Then, run `./start_vms2.sh` to set up the second VM on each machine. Deploy the hotel reservation on second VMs (use the same set of commands by replace `vm1` with `vm4`, `5000` with `5001` and `hotelreservation` with `hotelreservation2`.) 
 
 Depending on the benchmark, different configurations are useful:
 
