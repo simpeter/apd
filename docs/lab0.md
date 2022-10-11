@@ -179,7 +179,7 @@ SSH into the `server0` node.
 cd /local/repository
 
 # This script will set up docker and docker swarm. 
-sudo ./start_docker.sh
+./start_docker.sh
 
 # Deploy the hotel reservation application
 sudo docker stack deploy --compose-file hotelreservation.yml hotelreservation
