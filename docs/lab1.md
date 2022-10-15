@@ -248,8 +248,8 @@ you run it.
 
 The cloud operator's goal is to minimize cost. Currently, the hotel
 reservation application requires 3 servers. Can we reduce this number?
-Start the experiment with just a single server and measure latency
-over load.
+Start the experiment with just a single server and determine the
+latency-throughput curve.
 
 How does the measured max point of the curve compare to the one
 measured in assignment 1? Calculate the ratio of the max point
@@ -261,7 +261,7 @@ impact whether the comparison is favorable or not.
 You only need to run the experiment for bare mental servers running containers.
 First, start the experiment with only one server. Then, run the workload as described
 in assignment 1 using the same set of loads you used in assignment 1. Finally,
-compare the load to latency curve (pay closer attention to the max point).
+compare the latency-throughput curves (pay close attention to the max point).
 
 Note: 
 1. If you use different node type for assignment 1 and assignment 3, it is likely the performance changes due to hardware. You need to re-run the experiment to determine the new max point. 
