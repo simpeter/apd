@@ -18,7 +18,7 @@ def draw(latency_dict, title):
   plt.xticks(sorted(rate))
   plt.ylabel("Latency (ms)")
   plt.axhline(y=500, color='blue', linestyle='-')
-  plt.xlabel("Request Rate (Req/Sec)")
+  plt.xlabel("Throughput (Req/Sec)")
   plt.title(title)
 
   # Display graph
@@ -26,8 +26,8 @@ def draw(latency_dict, title):
 
 
 if __name__ == "__main__":
-  # Format: {rate: [latency1, latency2...]} (e.g., {100:[11,10,23], 200:[12,20,22])
-  # Rate = Request per second and Latency = latency in microsecond
+  # Format: {throughput: [latency1, latency2...]} (e.g., {100:[11,10,23], 200:[12,20,22])
+  # Throughput = completed Request per second and Latency = latency in microsecond. 
   baremetal = {}  # TODO: Add your result here
   draw(baremetal, "Bare_Metal")
 
