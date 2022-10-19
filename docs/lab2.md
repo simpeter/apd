@@ -55,24 +55,25 @@ fast enough to provide good performance with synchronous
 journaling. Hence, another way to view the performance benefit of NVM
 is that the added performance can be used to provide extra features.
 
-`start_docker.sh`. Now, compile and start our special version of the
+Run `start_docker.sh`. Then, compile and start our special version of the
 hotel reservation app:
 
 ```console
 sudo docker compose -f hotelreservation-tmpfs.yml up -d --build -t1
 ```
 
-Measure the maximum throughput of this deployment with `wrk2` using
+Make sure all services are running via `sudo docker ps` and measure 
+the maximum throughput of this deployment with `wrk2` using
 the same client commands as shown in lab 0. When done, you can
 shutdown and clean up this deployment via:
 
 ```console
 sudo docker compose -f hotelreservation-tmpfs.yml down -t1
-sudo rm -rf /mnt/*
+sudo rm -rf /mnt/* 
 sudo docker volume prune
 ```
 
-Now, run `start_tmpfs.sh` to start the `tmpfs` ramdisk. Redeploy
+Now, run `start_tmpfs.sh` to start the `tmpfs` ramdisk (You can ignore the "xxx: not mounted" message). Redeploy
 `hotelreservation-tmpfs.yml` and remeasure. What is the performance
 difference?
 
@@ -95,10 +96,8 @@ why?
 
 Based on your knowledge, you can adjust a number of experiment
 parameters to investigate the app's performance reaction. For example,
-you can change the mix of workload operations, by editing the Lua
-script that generates these operations on the client side. The script
-resides in
-`/local/repository/DeathStarBench/hotelReservation/wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua`. For
+you can change the mix of workload operations, by editing the [Lua
+script](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/reserve_only.lua#L114) that generates these operations on the client side. For
 example, you can execute just reservations, by changing the weights
 assigned to each operation type at the end of the script. We have
 provided `/local/repository/reserve_only.lua` to show how it is done.
