@@ -63,7 +63,7 @@ sudo docker compose -f hotelreservation-tmpfs.yml up -d --build -t1
 ```
 
 Make sure all services are running via `sudo docker ps` and measure 
-the maximum throughput of this deployment with `wrk2` using
+the maximum throughput (disregarding latency) of this deployment with `wrk2` using
 the same client commands as shown in lab 0. When done, you can
 shutdown and clean up this deployment via:
 
@@ -94,8 +94,8 @@ for data storage, so you should figure out which requests will send
 queries to MongoDB. Which ones use the storage system the most and
 why?
 
-Based on your knowledge, you can adjust a number of experiment
-parameters to investigate the app's performance reaction. For example,
+Based on this knowledge, you can adjust the experiment
+to investigate the app's performance reaction. Specifically,
 you can change the mix of workload operations, by editing the [Lua
 script](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/reserve_only.lua#L114) that generates these operations on the client side. For
 example, you can execute just reservations, by changing the weights
