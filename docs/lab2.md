@@ -110,11 +110,11 @@ of ways that storage stacks can be optimized for the underlying
 technology. In particular, modifying file systems is one option cloud
 operators have to transparently accelerate cloud
 applications. Operators can go even further and provide entire
-database backends that are hyper-optimized for their cloud
+database backends that are optimized for their cloud
 infrastructure and the applications running on top. The efficiency
 gains can be passed on to the user by offering the backend for a
 cheaper price, but at the same performance as a vanilla cloud
-offering, such as MongoDB. Or we can offer it at a higher price, but
+offering, such as MongoDB. Or we can offer it at the same price, but
 with better performance and/or more features.
 
 In this assignment, you will develop a rudimentary, but optimized
