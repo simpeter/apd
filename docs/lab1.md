@@ -254,8 +254,8 @@ latency-throughput curve.
 How does the measured max point of the curve compare to the one
 measured in assignment 1? Calculate the ratio of the max point
 throughputs between the two cases and compare it to the ratio of
-machines used. Is the comparison favorable? Stipulate what might
-impact whether the comparison is favorable or not.
+machines used. Which configuration is better? Stipulate what might
+impact this result.
 
 ### Detailed Instructions
 You only need to run the experiment for bare mental servers running containers.
