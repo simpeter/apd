@@ -75,12 +75,10 @@ DeathStarBench application using each of these technologies and
 evaluate 99 percentile service latencies under a variety of load
 points. Draw the latency-throughput curve for each technology.
 
-Once you have all four curves, you should interpret them. What throughput
-can each setup handle before 99%-ile latencies become untenable
-(larger than 500ms)? Which technology provides the best performance?
-Why does each technology provide each level of performance? What are
-the characteristics of each curve? Where is the max point<sup>1</sup> and what
-does it signify?
+Once you have all four curves, you should interpret them. What are the
+characteristics of each curve? Where is the max point<sup>1</sup> and
+what does it signify? Which technology provides the best performance?
+Why does each technology provide each level of performance?
 
 1.for this lab, max point means the maximum throughput you can get under a specific tail latency target (i.e. 500ms)
 
