@@ -53,7 +53,8 @@ situations, but this version is. The reason for using asynchronous
 journaling in the vanilla version is that SSDs and HDDs are often not
 fast enough to provide good performance with synchronous
 journaling. Hence, another way to view the performance benefit of NVM
-is that the added performance can be used to provide extra features.
+is that the added performance can be used to provide synchronous
+journaling as a feature.
 
 Run `start_docker.sh`. Then, compile and start our special version of the
 hotel reservation app:
