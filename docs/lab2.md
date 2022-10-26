@@ -78,13 +78,13 @@ Now, run `start_tmpfs.sh` to start the `tmpfs` ramdisk (You can ignore the "xxx:
 `hotelreservation-tmpfs.yml` and remeasure. What is the performance
 difference?
 
-To help explain how the hotel reservation app's storage system works,
-read the Go code and look at jaeger traces. Jaeger is a request
+To understand the performance difference you get, you need to understand 
+how the hotel reservation app's storage system works by 
+reading the Go code and looking at jaeger traces. Jaeger is a request
 tracing framework that encompasses all the Go services in the
 application for a sample of executed requests. For example, after you
 have executed a few requests via `wrk2`, you can visit port 16686 of
-the server's public IP address (the same you used to SSH into the
-server) from your web browser to see Jaeger's web interface and
+the server's public IP address from your web browser to see Jaeger's web interface and
 investigate which microservices spent how much time to process a
 particular request. You can then investigate the Go code of these
 services, which you can find in
@@ -96,12 +96,13 @@ queries to MongoDB. Which ones use the storage system the most and
 why?
 
 Based on this knowledge, you can adjust the experiment
-to investigate the app's performance reaction. Specifically,
-you can change the mix of workload operations, by editing the [Lua
-script](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/reserve_only.lua#L114) that generates these operations on the client side. For
-example, you can execute just reservations, by changing the weights
-assigned to each operation type at the end of the script. We have
-provided `/local/repository/reserve_only.lua` to show how it is done.
+to investigate the app's performance reaction. Two options are:
+
+1. You can change the mix of workload operations, by editing the [Lua script](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/reserve_only.lua) that generates these operations on the client side. For example, you can execute just reservations, by changing the weights assigned to each operation type at the end of the script, or you can change modify the query itself (e.g., reserve a longer stay.) 
+
+2. You can modify the Go code of each service, by executing more I/O operations per query. 
+
+Report the modifications you made for each attempt and the performance you get.
 
 ## Assignment 2: Storage Software Performance Impact (10 pts)
 
