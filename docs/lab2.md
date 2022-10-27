@@ -4,6 +4,9 @@ In this lab, you are going to investigate the performance impact of
 storage hardware and software technologies on cloud application
 performance.
 
+Note: Please use this [doc](https://docs.google.com/document/d/1HVhm5VNve3vOkfw23YOwMtX3EEhNCotWQftAm8bvRow/edit?usp=sharing) as a template when submitting your results. (You can make a copy and add your answers). For each assignment, report the type of node you get from Cloudlab.
+
+
 ## Assignment 1: Storage Hardware Performance Impact (5 pts)
 
 Storage hardware can have a major impact on cloud application
