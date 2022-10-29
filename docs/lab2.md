@@ -101,14 +101,14 @@ why?
 Based on this knowledge, you can adjust the experiment
 to investigate the app's performance reaction. Two options are:
 
-1. You can change the mix of workload operations, by editing the [Lua script](https://gitlab.cs.washington.edu/syslab/cse453-cloud-project/-/blob/main/reserve_only.lua) that generates these operations on the client side. For example, you can execute just reservations, by changing the weights assigned to each operation type at the end of the script, or you can modify the query itself (e.g., reserve a longer stay.) 
+1. You can change the mix of workload operations, by editing the [Lua script](https://gitlab.cs.washington.edu/syslab/deathstarbench-cse453/-/blob/master/hotelReservation/wrk2/scripts/hotel-reservation/mixed-workload_type_1.lua) that generates these operations on the client side. For example, you can execute just reservations, by changing the weights assigned to each operation type at the end of the script, or you can modify the query itself (e.g., reserve a longer stay.) 
 
 2. You can modify the Go code of each service, by executing more I/O
    operations per query (see assignment 2 for an example of how to
    execute each insert operation 100 times, instead of once). This
    will further emphasize a specific component of each client
    operation, which will help you investigate how the component is
-   affected by leveraging NVM for storage.
+   affected by leveraging NVM for storage. 
 
 Report the modifications you made for each attempt and the performance you get.
 
