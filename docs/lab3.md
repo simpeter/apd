@@ -166,7 +166,7 @@ the database stored on one server to the other server.
 You can then deploy the swarm with:
 
 ```console
-docker stack deploy --compose-file hotelreservation-nfs.yml hotelreservation
+sudo docker stack deploy --compose-file hotelreservation-nfs.yml hotelreservation
 ```
 
 On the client, generate the operation latency data with:
