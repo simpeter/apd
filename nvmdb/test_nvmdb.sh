@@ -1,8 +1,8 @@
 #!/bin/bash
 
+# Replace ./example, below, with the binary name of your database backend
 DB_BINARY=./example
 
-# Replace ./example, below, with the binary name of your database backend
 coproc $DB_BINARY
 echo out = ${COPROC[0]}, in = ${COPROC[1]} >/dev/stderr
 
