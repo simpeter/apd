@@ -150,9 +150,10 @@ written to storage. For simplicity, you can assume that each hotel has
 only one room, that you will not run out of NVM storage space, and
 that there are no device errors. You also do not have to worry about
 concurrency or multi-threading. Finally, you do not have to worry
-about crash consistency **yet**. We will change this in the next
-assignment, so you might want to start thinking about a design that
-can support crash consistency.
+about crash consistency **yet**. You may assume the memory is persistent
+so there is no need to explicitly persist any data (e.g. write to a file)
+We will change this in the next assignment, so you might want to start
+thinking about a design that can support crash consistency.
 
 You should evaluate the performance of the hotel reservation app with
 your database and compare it to the performance of the app with
