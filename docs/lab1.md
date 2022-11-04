@@ -57,7 +57,7 @@ of users. This is typically 99% of users or more. The actual number
 depends on our assessment of what is in our control and what is
 not. In our project, we will care about 99% of users.
 
-## Assignment 1: Performance (5 pts)
+## Assignment 1: Performance (6 pts)
 
 Assume that we have a number of virtualization technologies at our
 disposal:
@@ -167,7 +167,7 @@ visible, and why might it be there? Is the level of noise acceptable?
 Would device pass-through work with containers? If so, how would it
 work? If not, why not?
 
-## Assignment 2: Performance Isolation (5 pts)
+## Assignment 2: Performance Isolation (6 pts)
 
 Of course, tenants do not just run applications on cloud hosts in
 isolation. The common case is that machines are shared among multiple
@@ -242,7 +242,7 @@ background-tenant latencies over time on a graph. The `-P` option of
 the `wrk2` program will store the latency (in microsecond) of each request in the directory
 you run it. 
 
-## Assignment 3: Consolidation (5 pts)
+## Assignment 3: Consolidation (3 pts)
 
 The cloud operator's goal is to minimize cost. Currently, the hotel
 reservation application requires 3 servers. Can we reduce this number?
