@@ -143,8 +143,8 @@ service to simply be able to respond if those responses take too long.
 To get a clear picture of service response times, you will run a
 benchmark that records each request along with the latency of the
 associated response. You should visualize these latencies by drawing a
-scatterplot of successful operation latency over time. The x axis
-shows operation latency, the y axis is time from the beginning of the
+scatterplot of successful operation latency over time. The y axis
+shows operation latency, the x axis is time from the beginning of the
 experiment. Each operation will have one dot plotted. You can then
 assess when latencies return to within the SLO. Also, you should
 discuss how recovery time of your database might be accelerated.
