@@ -1,0 +1,18 @@
+version: '3'
+services:
+  frontend:
+    image: hotel/frontend
+    ports:
+      - "5000:5000"
+    environment:
+      - GRPC_WORKER_THREADS=8
+  geo:
+    image: hotel/geo
+  profile:
+    image: hotel/profile
+  mongodb:
+    image: mongo:5.0
+    volumes:
+      - mongo_data:/data/db
+volumes:
+  mongo_data:
