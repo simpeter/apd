@@ -24,6 +24,8 @@ case $HOSTNAME in
 	# Install virtual machine
 	sudo apt-get install --yes snapd
 	sudo snap install lxd
+	./start_docker.sh
+	sudo docker stack deploy --compose-file hotelreservation.yml hotelreservation
 	;;
 
     client*)
@@ -32,6 +34,7 @@ case $HOSTNAME in
 	sudo apt-get install --yes python3-aiohttp libssl-dev libz-dev luarocks lua-socket
 	sudo luarocks install luasocket
 	make -C hotelReservation/wrk2
+	sudo make -C hotelReservation/wrk2 install
 	;;
 
     *)

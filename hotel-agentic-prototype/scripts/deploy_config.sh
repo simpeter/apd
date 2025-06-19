@@ -7,9 +7,9 @@ export GRPC_WORKER_THREADS
 
 cd /local/repository
 
-docker stack rm hotelreservation
-sleep 5
-docker stack deploy --compose-file hotelreservation.yml hotelreservation
+#docker stack rm hotelreservation
+#sleep 5
+#docker stack deploy --compose-file hotelreservation.yml hotelreservation
 
 # docker-compose down
 # docker-compose up -d --build

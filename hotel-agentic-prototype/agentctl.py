@@ -15,7 +15,7 @@ for config_file in sorted(os.listdir(CONFIG_DIR)):
 
     output_file = "wrk.out"
     with open(output_file, "w") as out:
-        subprocess.run(["wrk", "-t2", "-c50", "-d30s", "-R500", "-s", "loadgen/hotel_wrk.lua", "http://localhost:5000/reserve"], stdout=out)
+        subprocess.run(["wrk", "-t2", "-c50", "-d30s", "-R500", "-s", "loadgen/hotel_wrk.lua", "http://server0:5000/reserve"], stdout=out)
 
     result = subprocess.run(["python3", "scripts/parse_wrk_output.py", output_file], capture_output=True, text=True)
     stats = json.loads(result.stdout)
