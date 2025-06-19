@@ -1,0 +1,14 @@
+{
+  "best": {
+    "throughput": 561.85,
+    "p95_latency_ms": 0,
+    "config": "config1.env"
+  },
+  "all": [
+    {
+      "throughput": 561.85,
+      "p95_latency_ms": 0,
+      "config": "config1.env"
+    }
+  ]
+}
