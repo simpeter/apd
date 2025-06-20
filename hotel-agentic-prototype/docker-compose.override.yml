@@ -1,0 +1,35 @@
+version: "3"
+services:
+  frontend:
+    deploy:
+      replicas: ${FRONTEND_REPLICAS:-3}
+
+  memcached-rate:
+    environment:
+      - MEMCACHED_THREADS=${MEMCACHED_THREADS:-2}
+
+  memcached-profile:
+    environment:
+      - MEMCACHED_THREADS=${MEMCACHED_THREADS:-2}
+
+  memcached-reserve:
+    environment:
+      - MEMCACHED_THREADS=${MEMCACHED_THREADS:-2}
+
+  mongodb-geo:
+    command: mongod --wiredTigerEngineConfigString "cache_size=${MONGODB_CACHE_SIZE_GB:-0.5}G"
+
+  mongodb-profile:
+    command: mongod --wiredTigerEngineConfigString "cache_size=${MONGODB_CACHE_SIZE_GB:-0.5}G"
+
+  mongodb-rate:
+    command: mongod --wiredTigerEngineConfigString "cache_size=${MONGODB_CACHE_SIZE_GB:-0.5}G"
+
+  mongodb-recommendation:
+    command: mongod --wiredTigerEngineConfigString "cache_size=${MONGODB_CACHE_SIZE_GB:-0.5}G"
+
+  mongodb-reservation:
+    command: mongod --wiredTigerEngineConfigString "cache_size=${MONGODB_CACHE_SIZE_GB:-0.5}G"
+
+  mongodb-user:
+    command: mongod --wiredTigerEngineConfigString "cache_size=${MONGODB_CACHE_SIZE_GB:-0.5}G"

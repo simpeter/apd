@@ -1,15 +1,20 @@
 #!/bin/bash
-# Usage: ./deploy_config.sh configs/config1.env
 
-CONFIG_FILE=$1
-source $CONFIG_FILE
-export GRPC_WORKER_THREADS
+set -e
 
-cd /local/repository
+if [ -z "$1" ]; then
+  echo "Usage: $0 <config_file.env>"
+  exit 1
+fi
 
-#docker stack rm hotelreservation
-#sleep 5
-#docker stack deploy --compose-file hotelreservation.yml hotelreservation
+CONFIG_FILE="$1"
 
-# docker-compose down
-# docker-compose up -d --build
+# Load variables from .env-style file
+echo "Loading config from $CONFIG_FILE"
+set -o allexport
+source "$CONFIG_FILE"
+set +o allexport
+
+# Deploy using both base and override Compose files
+echo "Deploying stack..."
+ssh server0 "sudo docker stack deploy -c /local/repository/hotelreservation.yml -c /local/repository/hotel-agentic-prototype/docker-compose.override.yml hotelreservation"
