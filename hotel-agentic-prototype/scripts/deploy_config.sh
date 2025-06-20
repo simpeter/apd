@@ -17,4 +17,4 @@ set +o allexport
 
 # Deploy using both base and override Compose files
 echo "Deploying stack..."
-ssh server0 "sudo docker stack deploy -c /local/repository/hotelreservation.yml -c /local/repository/hotel-agentic-prototype/docker-compose.override.yml hotelreservation"
+sudo docker stack deploy -c /local/repository/hotelreservation.yml -c /local/repository/hotel-agentic-prototype/docker-compose.override.yml hotelreservation
