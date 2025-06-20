@@ -2,9 +2,14 @@
   {
     "id": "H1",
     "description": "frontend CPU constraint (vary replica count)",
-    "active": true,
-    "tested_values": [],
-    "best": null,
+    "active": false,
+    "tested_values": [
+      4,
+      8,
+      12,
+      16
+    ],
+    "best": "config_H1_4.env",
     "param": "FRONTEND_REPLICAS",
     "values": [
       1,
@@ -16,9 +21,13 @@
   {
     "id": "H2",
     "description": "MongoDB thread pool limitation (wiredTiger cache size)",
-    "active": true,
-    "tested_values": [],
-    "best": null,
+    "active": false,
+    "tested_values": [
+      10,
+      30,
+      60
+    ],
+    "best": "config_H2_10.env",
     "param": "MONGODB_CACHE_SIZE_GB",
     "values": [
       0.25,
@@ -29,7 +38,7 @@
   {
     "id": "H3",
     "description": "Memcached thread count too low",
-    "active": true,
+    "active": false,
     "tested_values": [],
     "best": null,
     "param": "MEMCACHED_THREADS",

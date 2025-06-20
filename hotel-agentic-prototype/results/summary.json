@@ -1,48 +1,48 @@
 {
   "best": {
-    "throughput": 498.4,
-    "p95_latency_ms": 1.13,
-    "config": "config1.env"
+    "throughput": 498.39,
+    "p95_latency_ms": 1.34,
+    "config": "config_H1_4.env"
   },
   "all": [
     {
-      "throughput": 498.4,
-      "p95_latency_ms": 1.13,
+      "throughput": 498.37,
+      "p95_latency_ms": 1.45,
       "config": "config1.env"
     },
     {
-      "throughput": 498.36,
-      "p95_latency_ms": 1.08,
+      "throughput": 498.37,
+      "p95_latency_ms": 1.36,
       "config": "config_H1_12.env"
     },
     {
       "throughput": 498.37,
-      "p95_latency_ms": 1.04,
+      "p95_latency_ms": 1.47,
       "config": "config_H1_16.env"
     },
     {
-      "throughput": 498.37,
-      "p95_latency_ms": 0.99,
+      "throughput": 498.39,
+      "p95_latency_ms": 1.34,
       "config": "config_H1_4.env"
     },
     {
-      "throughput": 498.4,
-      "p95_latency_ms": 1.05,
+      "throughput": 498.37,
+      "p95_latency_ms": 1.46,
       "config": "config_H1_8.env"
     },
     {
-      "throughput": 498.36,
-      "p95_latency_ms": 1.11,
+      "throughput": 498.37,
+      "p95_latency_ms": 1.51,
       "config": "config_H2_10.env"
     },
     {
-      "throughput": 498.38,
-      "p95_latency_ms": 1.06,
+      "throughput": 490.04,
+      "p95_latency_ms": 1.61,
       "config": "config_H2_30.env"
     },
     {
-      "throughput": 498.37,
-      "p95_latency_ms": 1.05,
+      "throughput": 490.03,
+      "p95_latency_ms": 1.74,
       "config": "config_H2_60.env"
     }
   ]
